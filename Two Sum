@@ -1,0 +1,78 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* temp1;
+        temp1=l1;
+        ListNode* temp2;
+        temp2=l2;
+        int carry=0;
+        ListNode* head;
+        head=NULL;
+    while(temp1!=NULL || temp2!=NULL)
+    {
+        int n;
+        if(temp1==NULL)
+        {
+            n=temp2->val;
+            temp2=temp2->next;
+        }
+        else if(temp2==NULL)
+        {
+            n=temp1->val;
+            temp1=temp1->next;
+        }
+        else
+        {
+            n=temp2->val+temp1->val;
+            temp1=temp1->next;
+            temp2=temp2->next;
+        }
+        int x;
+        x=n%10+carry;
+        carry=n/10+x/10;
+        x=x%10;
+        ListNode* temp=new ListNode(x);
+        ListNode* temp3;
+        temp3=head;
+        if(head==NULL)
+        {
+            head=temp;
+            temp->next=NULL;
+        }
+        else
+        {
+            while(temp3->next!=NULL)
+            {
+                temp3=temp3->next;
+            }
+            temp3->next=temp;
+            temp->next=NULL;
+        }
+        
+    }
+    if(carry!=0)
+    {
+        ListNode* temp=new ListNode(carry);
+        ListNode* temp3;
+        temp3=head;
+        while(temp3->next!=NULL)
+        {
+                temp3=temp3->next;
+        }
+        temp3->next=temp;
+        temp->next=NULL;
+
+    }
+    return head;
+    }
+};
