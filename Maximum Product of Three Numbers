@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int maximumProduct(vector<int>& nums) {
+        int n;
+        n=nums.size();
+        sort(nums.begin(), nums.end());
+        // for(int i=0;i<n;i++)
+        // {
+        //     for(int j=0;j<n-i;j++)
+        //     {
+        //         if(j+1==n)
+        //         break;
+        //         if(nums[j]>nums[j+1])
+        //         {
+        //             int temp;
+        //             temp=nums[j];
+        //             nums[j]=nums[j+1];
+        //             nums[j+1]=temp;
+        //         }
+        //     }
+        // }
+        return max(nums[n-1]*nums[n-2]*nums[n-3],nums[0]*nums[1]*nums[n-1]);
+        // int pro1,pro2;
+        // pro1=nums[n-1]*nums[n-2]*nums[n-3];
+        // pro2=nums[0]*nums[1]*nums[n-1];
+        // if(pro1>pro2)
+        // return pro1;
+        // else
+        // return pro2;
+    }
+};
