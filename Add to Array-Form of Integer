@@ -1,0 +1,63 @@
+class Solution {
+public:
+    vector<int> addToArrayForm(vector<int>& num, int k) {
+        vector<int> knum;
+        while(k>0)
+        {
+            knum.push_back(k%10);
+            k=k/10;
+        }
+        int n;
+        n=knum.size();
+         for(int j=0,k=n-1;j<n/2;j++,k--)
+        {
+            int temp;
+            temp=knum[j];
+            knum[j]=knum[k];
+            knum[k]=temp;
+        }
+        int l;
+        l=num.size();
+        vector<int> nums;
+        int carry=0;
+        for(int i=n-1,j=l-1;j>=0 || i>=0;j--,i--)
+        {
+            if(i>=0 && j>=0)
+            {
+                int sum=0;
+                sum=sum+carry+knum[i]+num[j];
+                nums.push_back(sum%10);
+                carry=sum/10;
+            }
+            if(min(i,j)<0)
+            {
+                if(i<0)
+                {
+                    int sum=0;
+                    sum=sum+carry+num[j];
+                    nums.push_back(sum%10);
+                    carry=sum/10;
+                }
+                else
+                {
+                    int sum=0;
+                    sum=sum+carry+knum[i];
+                    nums.push_back(sum%10);
+                    carry=sum/10;
+                }
+            }
+        }
+        if(carry>0)
+        nums.push_back(carry);
+        n=nums.size();
+         for(int j=0,k=n-1;j<n/2;j++,k--)
+        {
+            int temp;
+            temp=nums[j];
+            nums[j]=nums[k];
+            nums[k]=temp;
+        }
+        return nums;
+        
+    }
+};
