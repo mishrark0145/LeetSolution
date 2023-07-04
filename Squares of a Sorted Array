@@ -1,0 +1,70 @@
+// Online C++ compiler to run C++ program online
+//it doesnot working on leetcode compiler
+//merge sort (basic logic)
+//for o(n)
+#include <iostream>
+#include<vector>
+#include<cmath>
+using namespace std;
+
+int main() {
+    int n;
+    cin>>n;
+    vector<int> nums;
+    for(int i=0;i<n;i++)
+    {
+        int cu;
+        cin>>cu;
+        nums.push_back(cu);
+    }
+    int k;
+        for(int i=0;i<n;i++)
+        {
+            if(nums[i]>=0)
+            {
+                k=i;
+                break;
+            }
+        }
+        for(int i=0;i<n;i++)
+        {
+            nums[i]=pow(nums[i],2);
+        }
+        vector<int> arr;
+        int l,r;
+        l=k-1;
+        r=k;
+        while(l>=0 && r<n)
+        {
+            if(nums[l]<=nums[r]){
+                int temp;
+                temp=nums[l];
+                arr.push_back(temp);
+                l--;
+            }
+            if(nums[l]>nums[r]){
+                int temp;
+                temp=nums[r];
+                arr.push_back(temp);
+                r++;
+            }
+        }
+        if(l<0 && r<n)
+        {
+            int temp;
+            temp=nums[r];
+            arr.push_back(temp);
+            r++;
+        }
+        if(l>=0 && r>=n)
+        {
+            int temp;
+            temp=nums[l];
+            arr.push_back(temp);
+            l--;
+        }    
+       for(int i=0;i<n;i++)
+       {
+           cout<<arr[i]<<" ";
+       }
+}
