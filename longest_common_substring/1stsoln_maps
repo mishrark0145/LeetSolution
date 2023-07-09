@@ -1,0 +1,33 @@
+/*
+we have made an unordered maps and stored the string elements as keys
+we are gonna add a key if its not in the array then find the size of the map then compare it with the maxi
+now if the element is in the map
+then we will move to the occurrence of that repeating character and make the iterator i to it now after that we will clear the map and again start the same operation
+*/
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char,int> m;
+        int maxi=0;
+        int p;
+        for(int i=0;i<s.size();i++){
+            if(m.find(s[i])==m.end()){
+                m[s[i]]=m[s[i]]+1;
+                p=m.size();
+                maxi=max(maxi,p);
+                
+            }   
+            else{
+                int j;
+                for(j=i-p;j<i;j++){
+                    if(s[j]==s[i]){
+                        i=j;
+                        break;
+                    } 
+                }
+                m.clear(); 
+            }
+        }
+        return maxi;
+    }
+};
