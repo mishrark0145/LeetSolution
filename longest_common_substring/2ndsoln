@@ -1,0 +1,29 @@
+// we will be using unordered set 
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_set<char> m;
+        int maxi=0;
+        int p;
+        for(int i=0;i<s.size();i++){
+            if(m.find(s[i])==m.end()){
+                m.insert(s[i]);
+                p=m.size();
+                maxi=max(maxi,p);
+                
+            }   
+            else{
+                int j;
+                for(j=i-p;j<i;j++){
+                    if(s[j]==s[i]){
+                        i=j;
+                        break;
+                    } 
+                }
+                m.clear(); 
+            }
+        }
+        return maxi;
+    }
+
+};
