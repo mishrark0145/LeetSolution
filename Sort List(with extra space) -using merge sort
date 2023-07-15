@@ -1,0 +1,89 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+
+    void merge(ListNode* lh,ListNode* rh,int lh_size,int rh_size){
+        int i=1,j=1;
+        vector<int> arr;
+        ListNode* temp;
+        temp=lh;
+        while(i<=lh_size && j<=rh_size){
+            if(lh->val>rh->val){
+                arr.push_back(rh->val);
+                rh=rh->next;
+                j++;
+            }
+            else{
+                arr.push_back(lh->val);
+                lh=lh->next;
+                i++;
+            }
+        }
+        if(i>lh_size){
+            while(j<=rh_size){
+                arr.push_back(rh->val);
+                rh=rh->next;
+                j++;
+            }
+        }
+        if(j>rh_size){
+            while(i<=lh_size){
+                arr.push_back(lh->val);
+                lh=lh->next;
+                i++;
+            }
+        }
+        int n=arr.size();
+        lh=temp;
+        for(int k=0;k<n;k++){
+            lh->val=arr[k];
+            lh=lh->next;
+        }
+    }
+
+
+
+    void merge_sort(ListNode* temp1,int size){
+        if(size==1 || size==0) return ;
+        int mid;
+        mid=size/2;
+        int rh_size,lh_size;
+        lh_size=mid;
+        rh_size=size-mid;
+        ListNode* lh;
+        ListNode* rh;
+        lh=temp1;
+        int n=1;
+        while(n<=mid){
+            temp1=temp1->next;
+            n++;
+        }
+        cout<<size<<n;
+        rh=temp1;
+        merge_sort(lh,lh_size);
+        merge_sort(rh,rh_size);
+        merge(lh,rh,lh_size,rh_size);
+    }
+
+    ListNode* sortList(ListNode* head) { 
+        ListNode* temp1;
+        temp1=head;
+        int n=0;
+        while(temp1!=NULL){
+            temp1=temp1->next;
+            n++;
+        }
+        temp1=head;
+        merge_sort(temp1,n);
+        return head;
+    }
+};
