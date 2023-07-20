@@ -1,0 +1,51 @@
+class Solution {
+public:
+    string addBinary(string a, string b) {
+        int m,n;
+        m=a.size();
+        n=b.size();
+        int carry=0;
+        string c;
+        int i,j;
+        for(i = m-1 , j = n-1 ; j >= 0 && i >= 0 ; j-- , i--)
+        {
+            int sum=0;
+            sum=sum+carry+a[i]-'0'+b[j]-'0';
+            if(sum==1)
+            carry=0;
+            if(sum==2)
+            carry=1,sum=0;
+            if(sum==3)
+            carry=1,sum=1;
+            c.push_back(sum+'0');
+        }
+        while(j>=0){
+          int sum=0;
+          sum=sum+carry+b[j]-'0';
+          if(sum==1)
+            carry=0;
+          if(sum==2)
+            carry=1,sum=0;
+          c.push_back(sum+'0'); 
+          j--;  
+        }
+            
+        while(i>=0){
+          int sum=0;
+          sum=sum+carry+a[i]-'0';
+          if(sum==1)
+            carry=0;
+          if(sum==2)
+            carry=1,sum=0;
+          c.push_back(sum+'0');  
+          i--; 
+        }
+
+        if(carry!=0){
+           c.push_back(carry+'0');
+        }
+        
+        reverse(c.begin(),c.end());
+        return c;
+    }
+};
