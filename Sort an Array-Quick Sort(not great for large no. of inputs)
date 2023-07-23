@@ -1,0 +1,35 @@
+class Solution {
+public:
+    vector<int> sortArray(vector<int>& nums) {
+        int n = nums.size();
+        quick_sort(nums,0,n-1);
+        return nums;
+    }
+
+    void quick_sort( vector<int>& nums , int i , int e){
+        if( i >= e) return;
+        int c;
+        c = pivot(nums, i , e);
+        quick_sort( nums , i , c - 1 );
+        quick_sort( nums , c + 1 , e );
+    }
+
+    int pivot( vector<int>& nums , int i , int e){
+        int pivot_value = nums[i];
+        int st = i  ;
+        int end = e;
+        while( st < end){
+            while( nums[st] <= pivot_value && st < e ){
+                st++;
+            }
+            while( nums[end] > pivot_value && end > i ){
+                end--;
+            }
+            if( st < end){
+                swap( nums[st] , nums[end] );
+            }
+        }
+        swap( nums[i] , nums[end] );
+        return end;
+    }
+};
