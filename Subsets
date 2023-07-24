@@ -1,0 +1,27 @@
+class Solution {
+public:
+    
+    void Subsets(vector<int>& nums , int n , vector<vector<int>>& subset){
+        if( n < 0) return subset.push_back({});
+        Subsets(nums,n-1,subset);
+        int size = subset.size();
+        for( int i = 0 ; i < size ; i++){
+            vector<int> temp;
+            int temp_size = subset[i].size();
+            for(int j = 0 ; j < temp_size ; j++){
+                temp.push_back(subset[i][j]);
+            }
+            temp.push_back(nums[n]);
+            subset.push_back(temp);
+        }
+       
+    }
+    
+    
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n=nums.size();
+        vector<vector<int>> subset;
+        Subsets(nums,n-1,subset);
+        return subset;
+    }
+};
