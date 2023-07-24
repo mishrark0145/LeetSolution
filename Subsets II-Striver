@@ -1,0 +1,33 @@
+class Solution {
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        int n = nums.size();
+        set<vector<int>> subset;
+        sort(nums.begin(),nums.end());
+        findsubset(subset , n-1 , nums);
+        vector<vector<int>> subs;
+        cout<<subset.size()<<endl;
+        for(auto it = subset.begin() ; it != subset.end() ; it++){
+            subs.push_back(*it);
+        }
+        return subs;
+    }
+
+    void findsubset(set<vector<int>>& subset, int n , vector<int>& nums){
+        if( n < 0) {
+            subset.insert({{}});
+            return;
+        }
+        findsubset(subset , n-1 , nums);
+        vector<vector<int>> temp;
+        cout<<subset.size()<<endl;
+        for( auto i = subset.begin() ; i != subset.end() ; i++){
+            temp.push_back(*i);
+        }
+        cout<<temp.size()<<endl;
+        for( int j = 0 ; j < temp.size() ; j++){
+            temp[j].push_back(nums[n]);
+            subset.insert(temp[j]);
+        }
+    }
+};
