@@ -1,0 +1,34 @@
+void Subsets(vector<int>& num , int n , vector<vector<int>>& subset){
+        if( n < 0) return subset.push_back({});
+        Subsets(num,n-1,subset);
+        int size = subset.size();
+        for( int i = 0 ; i < size ; i++){
+            vector<int> temp;
+            int temp_size = subset[i].size();
+            for(int j = 0 ; j < temp_size ; j++){
+                temp.push_back(subset[i][j]);
+            }
+            temp.push_back(num[n]);
+            subset.push_back(temp);
+        }
+       
+    }
+
+
+vector<int> subsetSum(vector<int> &num){
+		
+        int n=num.size();
+        vector<vector<int>> subset;
+        Subsets(num,n-1,subset);
+        vector<int> sum;
+		for(int i = 0 ; i < subset.size() ; i++){
+			int temp=0;
+			for(int j = 0 ; j < subset[i].size() ; j++ ){
+				temp = temp + subset[i][j];
+			}
+			sum.push_back(temp);
+		}
+		sort(sum.begin(),sum.end());
+        return sum;
+    }
+
