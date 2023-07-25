@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        set<vector<int>> subset;
+        vector<int> temp;
+        sort(nums.begin(),nums.end());
+        findsubset(subset,nums,temp,0);
+        vector<vector<int>> subsets;
+        for(auto &val: subset){
+            subsets.push_back(val);
+        }
+        return subsets;
+    }
+
+    void findsubset(set<vector<int>>& subset, vector<int>& nums, vector<int>& temp, int cr){
+        if( cr >= nums.size()){
+            subset.insert(temp);
+            return;
+        }
+
+        findsubset(subset,nums,temp,cr+1);// Explore without including current element
+
+        temp.push_back(nums[cr]);
+        findsubset(subset,nums,temp,cr+1);// Explore including current element
+        // Backtrack: Remove the last element to restore the original state
+        temp.pop_back();
+
+    }
+};
