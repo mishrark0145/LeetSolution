@@ -1,0 +1,22 @@
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> subset;
+        int n = nums.size();
+        vector<int> temp;
+        findsubset(subset,nums,temp,0);
+        return subset;
+    }
+
+    void findsubset(vector<vector<int>>& subset, vector<int>& nums, vector<int>& temp, int cr){
+        if( cr >= nums.size()){
+            subset.push_back(temp);
+            return;
+        }  
+        findsubset(subset,nums,temp,cr+1);
+        temp.push_back(nums[cr]);
+        findsubset(subset,nums,temp,cr+1);
+        temp.pop_back(); 
+
+    }
+};
