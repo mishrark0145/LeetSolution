@@ -14,27 +14,39 @@ public:
         if( head == NULL || head->next == NULL || k==0){
             return head;
         }
-        ListNode* count = head;
+        ListNode* curr = head;
         int size = 1;
-        while( count->next != NULL){
-            count = count->next;
+        while( curr->next != NULL){
+            curr = curr->next;
             size++;
         }
         if(k % size ==0) return head;
 
         k = k % size;
 
-        while(k--){
-            ListNode* dummy = head;
-            ListNode* temp = head;
-            while( temp->next->next != NULL){
-                temp = temp->next;
-            }
-            head = temp->next;
-            temp->next = NULL;
-            head->next = dummy;
-            dummy = head;
+        k = size - k;
+
+        curr = head;
+        while( curr->next != NULL){
+            curr = curr->next;
         }
+        //making the last node point to the first node
+        curr->next = head;
+
+        size =1;
+
+        while(true){
+            if(size == k){
+                curr = head->next;
+                head->next = NULL;
+                head = curr;
+                break;
+            }  
+            head = head->next;
+            size++;
+            
+        }
+
         return head;
     }
 };
