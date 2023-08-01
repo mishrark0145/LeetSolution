@@ -1,0 +1,43 @@
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        vector<int> ans;
+        stack<int> s;
+        int n = nums.size();
+        for( int i = 2*n -1 ; i >= 0 ; i--){
+                
+            while( !s.empty() && s.top() <= nums[i % n] ){
+                s.pop();
+            }
+                    
+            if( i < n){
+                if( !s.empty()){
+                    ans.push_back(s.top());
+                }
+                else{
+                    ans.push_back(-1);
+                }
+            }    
+            s.push(nums[i % n]);
+        }   
+
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+
+/*
+    1.Initialize an empty stack s to keep track of elements from the input vector nums while processing them.
+    2.Initialize an empty vector ans, which will store the next greater elements corresponding to each element in nums.
+    3.Get the size of the input vector nums and store it in n.
+    4.Iterate over the elements of the input vector nums in reverse order (backwards loop) starting from the 2*n - 1 index down to 0.
+    5.Within the loop, compare the current element (nums[i % n]) with the top of the stack (s.top()).
+If the top of the stack is less than or equal to the current element, pop elements from the stack until the condition is no longer satisfied. This step is crucial for finding the next greater element for each element in nums.
+When the loop index (i) is less than n (i.e., we have reached the original elements in nums), do the following:
+If the stack is not empty, it means the current element has a next greater element, so push the top of the stack (s.top()) to the ans vector.
+If the stack is empty, it means there is no next greater element for the current element, so push -1 to the ans vector.
+Push the current element (nums[i % n]) onto the stack.
+After completing the loop, the ans vector will have the next greater element for each element in the input vector nums, but in reverse order (because of the backwards loop).
+Reverse the ans vector using reverse(ans.begin(), ans.end()) to get the correct order of next greater elements.
+Return the ans vector.
+*/
