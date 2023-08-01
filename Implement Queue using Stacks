@@ -1,0 +1,62 @@
+class MyQueue {
+public:
+stack<int> input;
+stack<int> output;
+    MyQueue() { }
+    
+    //we will use the input and output stack to implelment this
+    //for push add the value to input
+    //for pop if output is not empty the output.pop else make element by element to the output from input and then do output.pop
+    //same do for the top just replace the operatin to output.top
+
+    void push(int x) {
+        input.push(x);
+    }
+    
+    int pop() {
+        if( !output.empty() ) {
+            int value = output.top();
+            output.pop();
+            return value;
+        }
+        else{
+            int size = input.size();
+            while( size > 0 ){
+                output.push( input.top());
+                input.pop();
+                size--;
+            }
+            int value = output.top();
+            output.pop();
+            return value;
+        }
+    }
+    
+    int peek() {
+        if( !output.empty() ) {
+            return output.top();
+        }
+        else{
+            int size = input.size();
+            while( size--){
+                output.push( input.top());
+                input.pop();
+            }
+            return output.top();
+        }
+    }
+    
+    bool empty() {
+        if(input.empty() && output.empty()) return true;
+        else return false;
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
