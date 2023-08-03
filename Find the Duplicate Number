@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        //we will be using tortoise and hare method to find the duplicate like we find the starting cycle node in the linked list 2 question same logic
+        //but here we will use the value of the array as index for our fast and slow pointer
+        int slow = nums[0];
+        int fast = nums[0];
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while( slow != fast);
+
+        fast = nums[0];
+        while( fast != slow){
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
+};
