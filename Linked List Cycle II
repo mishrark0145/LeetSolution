@@ -1,0 +1,44 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if( head == nullptr) return nullptr;
+        ListNode* slow = head , *fast = head;
+        bool flag = false;
+        //finding whethere there is a loop or not in the linked list using floyds cycle algo
+        while( fast != nullptr && fast -> next != nullptr){
+            slow = slow -> next;
+            fast = fast -> next -> next;
+            if(fast == slow) {
+                cout<<slow->val<<endl;
+                flag = true;
+                break;
+            }
+        }
+        if( !flag ) return nullptr;
+        // here i have used like from intiution if you look if we start from head and the point where fast and slow are equal and move on bye one then when they meet that is the starting of the loop i.e. that is the node of the linked list where the loop is starting
+        else{
+            ListNode* temp = slow;
+            while( head != temp){
+                head = head -> next;
+                temp = temp -> next;
+            }
+            return temp;
+        }
+    }
+};
+
+//the fast pointer will be conveirng 2 times the slow pointer does 
+//l1 = nodes till starting of loop
+// l2 = no of nodes before collison
+// n = no of cycles fast pointer does
+// c= no of nodes in the loop
+// fast = 2*slow
+// l1 + l2 + n*c = 2*(l1 + l2)
