@@ -1,0 +1,66 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        int sizeA = 1;
+        int sizeB = 1;
+
+        ListNode* ptrA = headA;
+        ListNode* ptrB = headB;
+        while( ptrA -> next != nullptr || ptrB -> next != nullptr){
+            if(ptrA -> next != nullptr){
+                sizeA++;
+                ptrA = ptrA -> next;
+            }
+            if(ptrB -> next != nullptr){
+                sizeB++;
+                ptrB = ptrB -> next;
+            }
+        }
+        //here we have found out how much is one node is has more no of nodes in it
+        int equal;
+        //if sizeA is greater than we make it so that ptrA is at the same position as of ptrB
+        if( sizeA > sizeB){
+            equal = sizeA -sizeB;
+            ptrA = headA;
+            while(equal > 0){
+                ptrA = ptrA -> next;
+                equal--;
+            }
+            ptrB = headB;
+        }
+        //if sizeB is greater than we make it so that ptrB is at the same position as of ptrA
+        else{
+            equal = sizeB -sizeA;
+            ptrB = headB;
+            while(equal > 0){
+                ptrB = ptrB -> next;
+                equal--;
+            }
+            ptrA = headA;
+        }
+        //flag to check if it one of the list has reached null then return false
+         bool flag = true;
+            //moving them simultaneouslt till they meet 
+            while(ptrA != ptrB  && flag ){
+            if(ptrA -> next != nullptr){
+                ptrA = ptrA -> next;
+                flag = true;
+            }
+            flag = false;
+            if(ptrB -> next != nullptr){
+                ptrB = ptrB -> next;
+                flag = true;
+            }
+            }
+            if(flag) return ptrA;
+            else return nullptr;
+    }
+};
