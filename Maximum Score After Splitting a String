@@ -1,0 +1,55 @@
+class Solution {
+public:
+    int maxScore(string s) {
+        // int n = s.size();
+        // int count = 1;
+        // int left = 0;
+        // int right = 0;
+        // int score = 0;
+        // for(int j = 0 ; j < n ; j++){
+        //     if( j < count){
+        //         if(s[j] == '0')
+        //             left++;    
+        //     }
+        //     else{
+        //         if(s[j] == '1'){
+        //             right++;
+        //         }
+        //     }
+        // }
+        // count++;
+        // score = max(right + left , score);
+        // while( count < n){
+        //     if( s[count - 1] == '0'){
+        //         left++;
+        //     }
+        //     if( s[count - 1] == '1'){
+        //         right--;
+        //     }
+        //     score = max( score , right + left);
+        //     count++;
+        // }
+        // return score;
+
+
+        // score = no. of zeroes in the left str - no. of one in the left str + total no. of ones 
+
+        int n = s.length();
+        int total = 0;
+        int score = INT_MIN;
+        int left_z = 0;
+        int left_o = 0;
+        for( int i = 0 ; i < n - 1 ; i++){
+            if( s[i] == '1'){
+                left_o++;
+            }
+            else{
+                left_z++;
+            }
+            score = max(score , (left_z - left_o ));
+        }
+        if( s[n - 1] == '1')
+            left_o++;
+        return score + left_o++;
+    }
+};
