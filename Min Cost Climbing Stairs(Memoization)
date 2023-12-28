@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int minCostClimbingStairs(vector<int>& cost) {
+        int cost_0;
+        int cost_1;
+        vector<int> dp(cost.size(), -1);
+        cost_0 = rec(cost , 0 , dp);
+        cost_1 = rec( cost , 1 , dp);
+        cout<< cost_0 <<" "<< cost_1 <<endl;
+        return min( cost_0 , cost_1);
+    }
+
+    int rec(vector<int>& cost , int i , vector<int>& dp){
+        if( i > cost.size() - 1){
+            return 0;
+        }
+        if( dp[i] != -1){
+            return dp[i];
+        }
+        int left = cost[i] + rec(cost , i + 1, dp);
+        int right = INT_MAX;
+        if( i <= cost.size() - 2){
+            right = cost[i] + rec(cost , i + 2 , dp);
+        }
+        dp[i] = min( left , right);
+        return dp[i];
+    }
+};
