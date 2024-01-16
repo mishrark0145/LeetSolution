@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int result = 0;
+        for( int k = 0 ; k < 32 ; k++){
+            int count_zero = 0;
+            int count_one = 0;
+            int temp = (1<<k);
+            for( int &nums : nums){
+                if( (nums&temp) == 0) count_zero++;
+                else count_one++;
+            }
+            if( count_zero % 3 == 0) result = result ^ (1<<k);
+        }
+        return result;
+    }
+};
