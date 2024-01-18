@@ -1,0 +1,62 @@
+// Memoization
+
+int rec(int n, vector<vector<int>> &points , int last , vector<vector<int>>& dp){
+    
+    if( n == 0){
+        int maxi = 0;
+        for( int i = 0 ; i < 3 ; i++ ){
+            if( i != last){
+                maxi = max( maxi , points[0][i]);
+            }
+        }
+        return maxi;
+    }
+
+    if( dp[n][last] != -1) return dp[n][last];
+
+    int maxi = 0;
+    for( int j = 0 ; j < 3 ; j++){
+        if( j != last){
+            int sum = points[n][j] + rec( n - 1 , points , j , dp);
+            maxi = max( sum , maxi);
+        }
+    }
+    
+    return dp[n][last] = maxi;
+}
+
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    vector<vector<int>> dp( n , vector<int>( 4 , -1));
+    return rec( n - 1 , points , 3 , dp);;
+}
+
+
+//Tabulization
+
+
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    vector<vector<int>> dp( n , vector<int>( 4 , -1));
+
+    dp[0][0] = max( points[0][1] , points[0][2]);
+    dp[0][1] = max( points[0][0] , points[0][2]);
+    dp[0][2] = max( points[0][0] , points[0][1]);
+    dp[0][3] = max( points[0][0] ,max( points[0][1] , points[0][2]));
+
+    for( int days = 1 ; days < n ; days++){
+        for( int last = 0 ; last < 4 ; last++){
+            dp[days][last] = 0;
+            for(int task = 0; task < 3 ; task++){
+                if( task != last){
+                    int point = points[days][task] + dp[ days - 1][task];
+                    dp[days][last] = max( dp[days][last] , point);
+                }
+            }
+        }
+    }
+
+    return dp[ n - 1][3];
+
+}
+
