@@ -60,3 +60,37 @@ int ninjaTraining(int n, vector<vector<int>> &points)
 
 }
 
+//Space Optimization
+
+
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    vector<vector<int>> dp( 2 , vector<int>( 4 , -1));
+
+    dp[0][0] = max( points[0][1] , points[0][2]);
+    dp[0][1] = max( points[0][0] , points[0][2]);
+    dp[0][2] = max( points[0][0] , points[0][1]);
+    dp[0][3] = max( points[0][0] ,max( points[0][1] , points[0][2]));
+
+    for( int days = 1 ; days < n ; days++){
+        for( int last = 0 ; last < 4 ; last++){
+            dp[1][last] = 0;
+            for(int task = 0; task < 3 ; task++){
+                if( task != last){
+                    int point = points[days][task] + dp[0][task];
+                    dp[1][last] = max( dp[1][last] , point);
+                }
+            }
+        }
+        dp[0][0] = dp[1][0];
+        dp[0][1] = dp[1][1];
+        dp[0][2] = dp[1][2];
+        dp[0][3] = dp[1][3];
+    }
+
+    return dp[1][3];
+
+}
+
+ 
+
