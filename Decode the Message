@@ -1,0 +1,19 @@
+class Solution {
+public:
+    string decodeMessage(string key, string message) {
+        map<char,char> mp;
+        char temp = 97;
+        for( int i = 0 ; i < key.size() ; i++){
+            if( key[i] == ' ') continue;
+            if( mp.find(key[i]) == mp.end()){
+                mp[key[i]] = temp;
+                temp++;
+            }          
+        }
+        for( int i = 0 ; i < message.size() ; i++){
+            if( message[i] == ' ') continue;
+            message[i] = mp.find(message[i]) -> second; 
+        }
+        return message;
+    }
+};
