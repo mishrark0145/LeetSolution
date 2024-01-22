@@ -1,0 +1,64 @@
+//Memoization
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int m = triangle.size();
+        vector<vector<int>> dp( m , vector<int>( m , -1));
+        return rec( 0 , 0 , triangle , dp);
+    }
+
+    int rec( int row , int col , vector<vector<int>>& triangle , vector<vector<int>>& dp){
+        if( row == triangle.size() - 1){
+            return triangle[row][col];
+        }
+        if( dp[row][col] != -1) return dp[row][col];
+        int curr = triangle[row][col] + rec( row + 1 , col , triangle , dp);
+        int next = triangle[row][col] + rec( row + 1 , col + 1 , triangle , dp);
+        return dp[row][col] = min( curr , next );
+    }
+};
+
+//Tabulation
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int m = triangle.size();
+        vector<vector<int>> dp( m , vector<int>( m , -1));
+        for( int j = 0 ; j < m ; j++){
+            dp[m -1][j] = triangle[m - 1][j];
+        }
+        for( int row = m - 2 ; row >= 0 ; row--){
+            for( int col = row ; col >= 0 ; col--){
+                int btm = triangle[row][col] + dp[row + 1][col];
+                int dig = triangle[row][col] + dp[row + 1][col + 1];
+                dp[row][col] = min( btm , dig );
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+//Space Optimization
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int m = triangle.size();
+        vector<int> front( m , 0);
+        for( int j = 0 ; j < m ; j++){
+            front[j] = triangle[m - 1][j];
+        }
+        for( int row = m - 2 ; row >= 0 ; row--){
+            vector<int> curr( row + 1 , 0);
+            for( int col = row ; col >= 0 ; col--){
+                int btm = triangle[row][col] + front[col];
+                int dig = triangle[row][col] + front[col + 1];
+                curr[col] = min( btm , dig );
+            }
+            front = curr;
+        }
+        return front[0];
+    }
+};
