@@ -1,0 +1,49 @@
+//Memoization
+
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int row = grid.size();
+        int col = grid[0].size();
+        vector<vector<int>> dp( row , vector<int>( col , -1));
+        return rec( row - 1 , col - 1 , grid , dp);
+    }
+
+    int rec(int row , int col , vector<vector<int>>& grid , vector<vector<int>>& dp){
+        if( row == 0 && col == 0){
+            return grid[0][0];
+        }
+        //we are here returning the maxm value so when it will return the min of the two will be the correct one otherwise if we return 0 then it can give wrong answer
+        if( row < 0 || col < 0) return 1e9;
+        if( dp[row][col] != -1) return dp[row][col];
+        int up = grid[row][col] + rec( row - 1 , col , grid , dp);
+        int left = grid[row][col] + rec( row , col - 1 , grid , dp);
+        return dp[row][col] = min(up , left);
+    }
+};
+
+//Tabulation
+
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> dp( m , vector<int>( n , -1));
+        for( int row = 0 ; row < m ; row++){
+            for( int col = 0 ; col < n ; col++){
+                if( row == 0 && col == 0){
+                    dp[ row][col] = grid[0][0];
+                    continue;
+                }
+                //we are here defining the maxm value the up and left can get , we are not directly writing it as int_max as the value of the integer will overflow
+                int up = 1e9;
+                int left = 1e9;
+                if( row != 0)   up = grid[row][col] + dp[row - 1][col];
+                if( col != 0 )  left = grid[row][col] + dp[row][col - 1];
+                dp[row][col] = min(up , left);
+            }
+        }
+        return dp[ m - 1][n - 1];
+    }
+};
