@@ -1,0 +1,58 @@
+//Memoization(TLE)
+
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        int temp = 1e9;
+        vector<vector<int>> dp( n , vector<int>( n , -1));
+        for(int i = 0 ; i < n ; i++){
+            temp = min( temp , rec( 0 , i , matrix , dp));
+        }
+        return temp;
+    }
+
+    int rec( int row , int col , vector<vector<int>>& matrix , vector<vector<int>>& dp){
+        if( col < 0 || col >= matrix.size()){
+            return 1e9;
+        }
+        if( row == matrix.size() - 1){
+            return matrix[row][col];
+        }
+        if( dp[row][col] != -1) return dp[row][col];
+        int left = matrix[row][col] + rec( row + 1 , col - 1 , matrix, dp);
+        int down = matrix[row][col] + rec( row + 1 , col , matrix, dp);
+        int right = matrix[row][col] + rec( row + 1 , col + 1, matrix, dp);
+        return dp[row][col] = min( left , min( down , right));
+    }
+};
+
+//Tabulation
+
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        vector<vector<int>> dp( n , vector<int>( n , -1));
+        for( int i = 0 ; i < n ; i++){
+            dp[n - 1][i] = matrix[n - 1][i]; 
+        }
+        for( int row = n - 2 ; row >= 0 ; row--){
+            for( int col = n - 1 ; col >= 0 ; col--){
+                int left = 1e9;
+                int right = 1e9;
+                if( col > 0) left = matrix[row][col] + dp[ row + 1][col - 1];
+                int down = matrix[row][col] + dp[ row + 1][col];;
+                if( col < n - 1) right = matrix[row][col] + dp[ row + 1][col + 1];;
+                dp[row][col] = min( left , min( down , right));
+            }
+        }
+        int mini = dp[0][0];
+        for( int i = 1 ; i < n ; i++){
+            mini = min(dp[0][i] , mini);
+        }
+        return mini;
+    }
+};
+
+//Space Optimization
