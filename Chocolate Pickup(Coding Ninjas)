@@ -1,0 +1,128 @@
+// My first soultion to this problem (TLE)
+
+#include <bits/stdc++.h>
+
+int rec( int row , int ali_col , int bob_col , vector<vector<int>>& grid){
+    if(ali_col < 0 || ali_col >= grid[0].size() || bob_col < 0 || bob_col >= grid[0].size()){
+        return -1e9;
+    }
+    if( row == grid.size() - 1){
+        if( bob_col == ali_col) return -1e9;
+        return grid[row][ali_col] + grid[row][bob_col];
+    }
+    int move = -1e9;
+    for( int i = -1 ; i <= 1 ; i++){
+        for( int j = -1 ; j <= 1 ; j++){
+            if( ali_col != bob_col){
+                move = max( move , grid[row][ali_col] + grid[row][bob_col] + rec(row + 1 , ali_col + i , bob_col + j , grid));
+            }
+        }
+    }
+    return move;
+}
+
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    return rec( 0 , 0 , c - 1 , grid );
+}
+
+//Memoizaton( My Solution )
+
+#include <bits/stdc++.h>
+
+int rec( int row , int ali_col , int bob_col , vector<vector<int>>& grid , vector<vector<vector<int>>>& dp){
+    if(ali_col < 0 || ali_col >= grid[0].size() || bob_col < 0 || bob_col >= grid[0].size()){
+        return -1e9;
+    }
+    if( row == grid.size() - 1){
+        if( bob_col == ali_col) return -1e9;
+        return grid[row][ali_col] + grid[row][bob_col];
+    }
+    if(dp[row][ali_col][bob_col] != -1) return dp[row][ali_col][bob_col];
+    int move = -1e9;
+    for( int i = -1 ; i <= 1 ; i++){
+        for( int j = -1 ; j <= 1 ; j++){
+            if( ali_col != bob_col){
+                move = max( move , grid[row][ali_col] + grid[row][bob_col] + rec(row + 1 , ali_col + i , bob_col + j , grid , dp));
+            }
+        }
+    }
+    return dp[row][ali_col][bob_col] = move;
+}
+
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    vector<vector<vector<int>>> dp( r , vector<vector<int>>( c , vector<int>( c , -1)));
+    return rec( 0 , 0 , c - 1 , grid , dp);
+}
+
+//Memoization(Striver Like Solution) better code as it is not giving when bob and alice col are equal a very large value so it will give a better time complexity
+
+#include <bits/stdc++.h>
+
+int rec( int row , int ali_col , int bob_col , vector<vector<int>>& grid , vector<vector<vector<int>>>& dp){
+    if(ali_col < 0 || ali_col >= grid[0].size() || bob_col < 0 || bob_col >= grid[0].size()){
+        return -1e8;
+    }
+    if (row == grid.size() - 1) {
+        if (bob_col == ali_col) return grid[row][ali_col];
+        return grid[row][ali_col] + grid[row][bob_col];
+    }
+    if(dp[row][ali_col][bob_col] != -1) return dp[row][ali_col][bob_col];
+    int move = -1e8;
+    for( int i = -1 ; i <= 1 ; i++){
+        for( int j = -1 ; j <= 1 ; j++){
+            int value = 0;
+            if( ali_col == bob_col) value = grid[row][ali_col];
+            else value = grid[row][ali_col] + grid[row][bob_col];
+            value += rec(row + 1 , ali_col + i , bob_col + j , grid, dp);
+            move = max( move , value);
+        }
+    }
+    return dp[row][ali_col][bob_col] = move;;
+}
+
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    vector<vector<vector<int>>> dp( r , vector<vector<int>>( c , vector<int>( c , -1)));
+    return rec( 0 , 0 , c - 1 , grid , dp);
+}
+
+//Tabulation
+
+#include <bits/stdc++.h>
+
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    vector<vector<vector<int>>> dp( r , vector<vector<int>>( c , vector<int>( c , 0)));
+    for( int j1 = 0 ; j1 < c ; j1++){
+        for( int j2 = 0 ; j2 < c ; j2++){
+            if( j1 != j2)
+                dp[r - 1][j1][j2] = grid[ r - 1][j1] + grid[r - 1][j2];
+            else dp[r - 1][j1][j2] = grid[r - 1][j1];
+        }
+    }
+
+    for( int row = r - 2 ; row >= 0 ; row--){
+        for( int ali_col = 0 ; ali_col < c  ; ali_col++){
+            for( int bob_col = 0 ; bob_col < c  ; bob_col++){
+                int move = -1e8;
+                for( int i = -1 ; i <= 1 ; i++){
+                    for( int j = -1 ; j <= 1 ; j++){
+                        int value = 0;
+                        if( ali_col == bob_col) value = grid[row][ali_col];
+                        else value = grid[row][ali_col] + grid[row][bob_col];
+                        if(ali_col + i < 0 || ali_col + i >= c || bob_col + j < 0 || bob_col + j >= c){
+                            value += -1e8;
+                        }
+                        else{
+                            value += dp[row + 1][ali_col + i][bob_col + j];
+                        }
+                        move = max( move , value);
+                    }
+                }
+                dp[row][ali_col][bob_col] = move;
+            }
+        }
+    }
+    return dp[0][0][c - 1];
+    
+}
+
+
