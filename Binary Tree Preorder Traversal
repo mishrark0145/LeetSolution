@@ -1,0 +1,40 @@
+//recursive approach
+
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if( root == nullptr) return ans;
+        rec( root , ans);
+        return ans;
+    }
+    void rec( TreeNode* root , vector<int>& ans){
+        if( root == nullptr) return;
+        //first put the data in the vector
+        ans.push_back( root -> val);
+        //go left 
+        rec( root -> left , ans);
+        //go right
+        rec( root -> right , ans);
+    }
+};
+
+//iterative approach
+
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if( root == nullptr) return ans;
+        stack<TreeNode*> s;
+        s.push(root);
+        while( !s.empty()){
+            TreeNode* node = s.top();
+            s.pop();
+            ans.push_back( node -> val);
+            if( node -> right != nullptr) s.push( node -> right);
+            if( node -> left != nullptr) s.push( node -> left);
+        }
+        return ans;
+    }
+};
