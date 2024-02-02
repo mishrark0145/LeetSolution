@@ -1,0 +1,32 @@
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int n = nums.size();
+        int sum = 0;
+        for( int i = 0 ; i < n ; i++){
+            sum += nums[i];
+        }
+        //here as we know suppose we have to partition it in two parts s1 ans s2
+        // s1 + s2 = sum and s1 - s2 = 0
+        //therefore s1=s2=sum/2
+        //now if the sum is odd then it is not possible to divide the array in two parts
+        if( sum % 2 != 0) return false;
+        vector<vector<int>> dp( n , vector<int>( sum/2 + 1 , -1));
+        return rec( n - 1 , sum/2 , nums , dp);
+    }
+
+    bool rec( int ind ,int target , vector<int>& nums , vector<vector<int>>& dp){
+        if( target < 0){
+            return false;
+        }
+        if( ind < 0){
+            return (target == 0);
+        }
+        if( dp[ind][target] != -1) return dp[ind][target];
+        //number goes to subset( i.e. target gets reduced for current index)
+        bool sub1 = rec( ind - 1 , target - nums[ind] , nums , dp);
+        //number not goes to subset
+        bool sub2 = rec( ind - 1 , target , nums , dp);
+        return dp[ind][target] = sub1 | sub2;
+    }
+};
