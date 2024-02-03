@@ -1,0 +1,31 @@
+//Memoization(with the given condtion in accordance)
+
+class Solution {
+public:
+    int minimizeTheDifference(vector<vector<int>>& mat, int target) {
+        int n = mat.size();
+        //here i have used the dp size of the target as 4900 + 1 as the target can be negative
+        //and the sum of the rows maxm value is 4900 so thats why i have specified the size 
+        vector<vector<int>> dp( n , vector<int>( 2*70*70 + 1  , -1));
+        return rec( n - 1 , target , mat , dp);
+    }
+
+    int rec( int ind , int target , vector<vector<int>>& mat , vector<vector<int>>& dp){
+        if( ind == 0){
+            int minm = 1e9;
+            for( int i = 0 ; i < mat[0].size() ; i++){
+                minm = min( minm , abs( target - mat[0][i]));
+            }
+            return minm;
+        }
+        if( dp[ind][4900 + target] != -1) return dp[ind][ 4900 + target];
+        int minm = 1e9;
+        for( int col = 0 ; col < mat[ind].size() ; col++){
+            int temp = rec( ind - 1 , target - mat[ind][col] , mat , dp);
+            minm = min( minm , temp);
+        }
+        return dp[ind][4900 + target] = minm;
+    }
+};
+
+//Tabulation
