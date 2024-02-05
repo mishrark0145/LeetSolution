@@ -1,0 +1,24 @@
+//Memoization
+
+int rec( int ind , vector<int>& arr , int target , vector<vector<int>>& dp ){
+	if( ind == -1 ){
+		return target == 0;
+	}
+	if( dp[ind][target] != -1) return dp[ind][target];
+	int not_take = rec( ind - 1 , arr , target  , dp);
+	int take = 0;
+	if( arr[ind] <= target)
+		take = rec( ind - 1 , arr , target - arr[ind] , dp );
+	return dp[ind][target] = (take + not_take)%(1000000007);
+}
+
+int findWays(vector<int>& arr, int k)
+{
+	int n = arr.size();
+	vector<vector<int>> dp( n , vector<int>( k + 1 , -1));
+	int result = rec( n - 1 , arr , k , dp );
+	// cout<<result<<endl;
+	return  result%(1000000007);
+}
+
+//Tabulation
