@@ -1,0 +1,26 @@
+//Memoization
+
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if( amount == 0) return 0;
+        int n = coins.size();
+        vector<vector<int>> dp( n , vector<int>( amount + 1 , -1));
+        int result = rec( n - 1 , amount , coins , dp);
+        if( result >= 1e9) return -1;
+        else return result;
+    }
+
+    int rec( int ind , int amount , vector<int>& coins , vector<vector<int>>& dp){
+        if(ind == -1){
+            if( amount == 0) return 0;
+            else return 1e9;
+        }
+        if( dp[ind][amount] != -1) return dp[ind][amount];
+        int pick = 1e9;
+        if( coins[ind] <= amount)
+        pick = 1 + rec( ind , amount - coins[ind] , coins , dp);
+        int not_pick = 0 + rec( ind - 1 , amount , coins ,dp);
+        return dp[ind][amount] = min( pick , not_pick);
+    }
+};
