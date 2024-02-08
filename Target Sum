@@ -1,0 +1,20 @@
+//Basic Solution
+
+class Solution {
+public:
+    int sum = 0 ;
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int n = nums.size();
+        return rec( n - 1 , target , nums );
+    }
+
+    int rec( int ind , int target , vector<int>& nums){
+        if( ind == -1){
+            return target == 0;
+        }
+        int plus = rec( ind - 1 , target + nums[ind] , nums );
+        int minus = rec( ind - 1 , target - nums[ind] , nums );
+        return plus + minus;
+    }
+};
+
