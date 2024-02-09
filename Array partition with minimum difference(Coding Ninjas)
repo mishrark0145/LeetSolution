@@ -1,0 +1,39 @@
+(49/50 testcases passed)
+
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	int sum = 0 ;
+	for( int i = 0 ; i < n ; i++){
+		sum += arr[i];
+	}
+	//here we have calculated the sum now to calculate the diffrence between two subset we can use the concept from subset sum equal to target
+	//we will take the target as sum now we make the tabulation dp then at the last row of the dp matrix we will have that
+	//ture or false and it will tell that till the last index can we make that target from the given arr
+	//ex. if arr[] = {3,2,7} sum = 12 the the dp[2][13] will be formed and at the last row for each column we will have true false
+	//dp[2][0] = true , dp[2][1] = false , dp[2][2] = true , dp[2][3] = true so on like that
+	vector<vector<bool>> dp( n , vector<bool>( sum + 1 , false));
+	for( int i = 0 ; i < n ; i++){ 
+		dp[i][0] = true;
+	}
+	if( arr[0] <= sum) dp[0][arr[0]] = true;
+	for( int ind = 1  ; ind < n ; ind++){
+		for( int target = 1 ; target <= sum ; target++){
+			bool not_pick = dp[ind - 1][target];
+			bool pick = false;
+			if( arr[ind] <= target)
+				pick = dp[ind - 1][target - arr[ind]];
+			dp[ind][target] = pick | not_pick;	
+		}
+	}
+	//after that we will check for the sum values for which the dp is ture for the given arr 
+	//no where it will be true there we will find the value of the second subset just by simply subtracting from the sum 
+	//now we can find the aboslute diff
+	//here i have only run it till sum/2 bcz after that it will repeat it self( this we can see by taking any example)
+	int minm = 1e9;
+	for( int i = 0 ; i <= sum/2 ; i++){
+		if( dp[n - 1][i] == true){
+			minm = min( abs( sum - 2*i) , minm);
+		}
+	}
+	return minm;
+}
