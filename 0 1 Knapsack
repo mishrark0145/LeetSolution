@@ -1,0 +1,46 @@
+//Memoization
+
+#include <bits/stdc++.h> 
+
+int rec( int ind , int maxWeight , vector<int>& weight , vector<int>& value , vector<vector<int>>& dp){
+    if( ind == 0){
+        if( weight[0] <= maxWeight) return value[0];
+        else return 0;
+    }
+    if( dp[ind][maxWeight] != -1) return dp[ind][maxWeight];
+    int not_take = 0 + rec( ind - 1 , maxWeight , weight , value , dp);
+    int take = 0;
+    if( weight[ind] <= maxWeight)
+        take = value[ind] + rec( ind - 1 , maxWeight - weight[ind] ,weight ,  value , dp);
+    return dp[ind][maxWeight] = max( take , not_take);    
+}
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
+    vector<vector<int>> dp( n , vector<int>( maxWeight + 1 , -1));
+	return rec( n - 1 , maxWeight , weight , value , dp);
+}
+
+//Tabulation
+
+#include <bits/stdc++.h> 
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
+    vector<vector<int>> dp( n , vector<int>( maxWeight + 1 , 0));
+	
+    //base case id if come up with any weight( starting from weight[0] ) which is less then or equal to maxWeight then we can steal it
+
+    for( int w = weight[0] ; w <= maxWeight ; w++){
+        dp[0][w] = value[0];
+    }
+    
+    for( int ind = 1 ; ind < n ; ind++){
+        for( int maxi = 1 ; maxi <= maxWeight ; maxi++){
+            int not_take = 0 + dp[ind - 1][maxi];
+            int take = 0;
+            if( weight[ind] <= maxi)
+                take = value[ind] + dp[ind - 1][maxi - weight[ind]];
+            dp[ind][maxi] = max( take , not_take);
+        }
+    }
+    return dp[n - 1][maxWeight];
+}
