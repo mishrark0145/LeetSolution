@@ -51,3 +51,33 @@ public:
 
 //Tabulation
 
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int n = nums.size();
+        int totsum = 0 ;
+        for( int i = 0 ; i < n ; i++){
+            totsum += nums[i];
+        }
+        if( (target + totsum) % 2 != 0 || (target + totsum) < 0) return 0;
+        target = (target + totsum)/2;
+
+        vector<vector<int>> dp( n , vector<int>( target + 1 , 0));
+
+        if( nums[0] == 0) dp[0][0] = 2;
+        else dp[0][0] = 1;
+
+        if( nums[0] != 0 && nums[0] <= target) dp[0][nums[0]] = 1;
+
+        for( int ind = 1 ; ind < n ; ind++){
+            for( int t = 0 ; t <= target ; t++){
+                int not_take = dp[ind -1][t];
+                int take = 0;
+                if( nums[ind] <= t)
+                    take = dp[ind -1][t - nums[ind]];
+                dp[ind][t] = take + not_take;    
+            }
+        }
+        return dp[n - 1][target];
+    }
+};
