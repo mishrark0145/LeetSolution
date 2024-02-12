@@ -1,0 +1,35 @@
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        int len = s.size();
+        string str( len , '$');
+        for( int i = 0 ; i < len ; i++){
+            str[i] = s[len - i - 1];
+        }
+        
+        //to find the palidrome subsequence in the given string
+        //we will make a second string and fill with the reverse of the original string
+        //now with these two string we will find the longest common subsequence
+
+        vector<vector<int>> dp( len + 1 , vector<int>( len + 1 , 0));
+        //base cases
+        for( int i = 0 ; i <= len ; i++){
+            dp[i][0] = 0;
+        }
+        for( int j = 0 ; j <= len ; j++){
+            dp[0][j] = 0;
+        }
+
+        for( int ind1 = 1 ; ind1 <=len ; ind1++){
+            for( int ind2 = 1 ; ind2 <= len ; ind2++){
+                if( s[ind1 -1] == str[ind2 - 1]){
+                    dp[ind1][ind2] = 1 + dp[ind1 -1][ind2 -1];
+                } 
+                else{
+                    dp[ind1][ind2] = max( dp[ind1 -1][ind2] , dp[ind1][ind2 -1]);
+                }
+            }
+        }
+        return dp[len][len];
+    }
+};
