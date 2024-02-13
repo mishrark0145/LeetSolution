@@ -1,0 +1,62 @@
+class Solution {
+public:
+    string shortestCommonSupersequence(string str1, string str2) {
+        //first we will find the lcs so that we can get the length of the supersequence
+        int n1 = str1.size();
+        int n2 = str2.size();
+        vector<vector<int>> dp( n1 + 1 , vector<int>( n2 + 1 , -1));
+
+        for( int i = 0 ; i <= n1 ; i++){
+            dp[i][0] = 0;
+        }  
+        for( int j = 0 ; j <= n2 ; j++){
+            dp[0][j] = 0;
+        }
+
+        for( int ind1 = 1 ; ind1 <= n1 ; ind1++){
+            for( int ind2 = 1 ; ind2 <= n2 ; ind2++){
+                //if matches
+                if( str1[ind1 - 1] == str2[ind2 -1]){
+                    dp[ind1][ind2] = 1 + dp[ind1 -1 ][ind2 -1];
+                }
+                else{
+                    dp[ind1][ind2] = max( dp[ind1 - 1][ind2] , dp[ind1][ind2 -1]);
+                }
+            }
+        }
+        int i = n1;
+        int j = n2;
+        string str ="";
+        //now to find the supersequence we will make use of the matrix start from the bottom 
+        //when it will match we will add to the ans string only once if it is not 
+        //we will add accordingly which is the previous maximum
+        while( i > 0 && j > 0){
+            if( str1[i -1] == str2[j - 1]){
+                str += str1[ i - 1];
+                i--;
+                j--;
+            }
+            else if( dp[ i - 1][j] > dp[i][j - 1]){
+                    str += str1[i - 1];
+                    i--;
+            }
+            else{
+                str += str2[ j - 1];
+                j--;
+            }
+        }
+        //if there is one of the string is left
+        //then we will add to the ans string
+        while( i > 0){
+            str += str1[ i - 1];
+            i--;
+        }
+        while( j > 0){
+            str += str2[j - 1];
+            j--;
+        }
+        //at last the ans should be reversed bcz we have started from the bottom of the stirng
+        reverse( str.begin() , str.end());
+        return str;
+    }
+};
