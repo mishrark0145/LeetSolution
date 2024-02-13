@@ -1,0 +1,76 @@
+// Common mistake: Wrong Approach:   
+
+// Some people will be tempted to come up with a O(n) time complexity quick solution, which is unfortunately flawed (however can be corrected easily):
+
+//  (i)Reverse S and store it in S’. 
+//  (ii)Find the longest common substring between S and S’  which must also be the longest palindromic substring.
+
+// This seemed to work, let’s see some examples below.
+
+// For example, S = “caba” then  S’ = “abac”.
+
+// The longest common substring between S and S’ is “aba”, which is the answer.
+
+// Let’s try another example: S = “abacdfgdcaba” then S’ = “abacdgfdcaba”.
+
+// The longest common substring between S and S’ is “abacd”. Clearly, this is not a valid palindrome.
+
+// Correct Approach:
+
+
+// We could see that the longest common substring method fails when there exists a reversed copy of a non-palindromic substring in some other part of S. To rectify this, each time we find a longest common substring candidate, we check if the substring’s indices are the same as the reversed substring’s original indices. If it is, then we attempt to update the longest palindrome found so far; if not, we skip this and find the next candidate. This gives us an O(n^2) Dynamic Programming solution which uses O(n^2) space (which could be improved to use O(n) space).
+
+// Dynamic programming Approach: Dynamic programming solution is already discussed here in the previous post. The time complexity of the Dynamic Programming based solution is O(n^2) and it requires O(n^2) extra space. We can find the longest palindrome substring( LPS ) in (n^2) time with O(1) extra space. 
+
+// The algorithm below is very simple and easy to understand. The idea is to Fix a center and expand in both directions for longer palindromes and keep track of the longest palindrome seen so far.
+
+// ALGO:
+
+// Maintain a variable ‘ maxLength = 1 ‘ (for storing LPS length) and ‘ start =0 ‘ (for storing starting index of LPS ).
+// The idea is very simple, we will traverse through the entire string with i=0 to i<(length of string).
+// while traversing, initialize ‘low‘ and ‘high‘ pointer such that low= i-1 and high= i+1.
+// keep incrementing ‘high’ until str[high]==str[i] .
+// similarly keep decrementing ‘low’ until str[low]==str[i].
+// finally we will keep incrementing ‘high’ and decrementing ‘low’ until str[low]==str[high].
+// calculate length=high-low-1, if length > maxLength then maxLength = length and start = low+1 .
+// Print the LPS and return maxLength.
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int n = s.size();
+        //if n < 2 then it can be zero size string or the string it self
+        if( n < 2){
+            return s;
+        }
+
+        int maxlength = 1;
+        int start = 0;
+        int high , low;
+        for( int i = 0 ; i < n ; i++){
+            low = i - 1;
+            high = i + 1;
+            while( high < n && s[high] == s[i]){//increment high
+                high++;
+            }
+            while( low >= 0 && s[low] == s[i]){//decrement low
+                low--;
+            }
+
+            while( low >= 0 && high < n && s[high] == s[low]){
+                high++;
+                low--;
+            }
+            int length = high - low - 1;
+            if( maxlength < length){
+                maxlength = length;
+                start = low + 1;
+            }
+
+        }
+        //now we have the maxlength and the start index of the palindromic substring
+        return s.substr( start , maxlength);
+    }
+};
+
+//Second Approach
