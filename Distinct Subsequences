@@ -1,0 +1,28 @@
+//Memoization
+
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int n1 = s.size();
+        int n2 = t.size();
+        vector<vector<int>> dp( n1 , vector<int>( n2 , -1));
+        return rec( n1 - 1 , n2 - 1 , s , t , dp);
+    }
+
+    int rec( int ind1 , int ind2 , string& s , string& t , vector<vector<int>>& dp){
+        if( ind2 < 0) return 1;
+        if( ind1 < 0) return 0;
+        if( dp[ind1][ind2] != -1) return dp[ind1][ind2];
+        if( s[ind1] == t[ind2]){//if matches
+            return dp[ind1][ind2] = rec( ind1 - 1 , ind2 - 1 , s , t , dp) + rec( ind1 - 1 , ind2 , s , t , dp);//i have added 
+            //when suppose that i dont want that index of the first stirng to be compred
+            //so i will just move the index by 1 (decrement) so the second string not get changed
+            //only the first string is reduced and i am checking for second to find in one
+        }
+        else{//if not matches
+            return dp[ind1][ind2] = rec( ind1 - 1 , ind2 , s , t , dp);
+        }
+    }
+};
+
+//Tabulation
