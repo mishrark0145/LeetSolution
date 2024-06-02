@@ -1,0 +1,56 @@
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        // It is a question on connected components so we can use any traversal techniques
+        // the thing here is we will conisder each cell as a node 
+        // and we will use a 2d array to mark the visited array
+        int n = grid.size();//row
+        int m = grid[0].size();//col
+        vector<vector<int>> visited( n , vector<int>( m , 0));
+
+        // now we will traverse the grid and if that cell is one i.e. land
+        // then we will gonna call bfs also it should no be visited
+        // we make an count such that for each time the bfs we will be calling it
+        // be increase by one to count the number of island
+        int count = 0;
+        for( int row = 0 ; row < n ; row++){
+            for( int col = 0 ; col < m ; col++){
+                if( grid[row][col] == '1' && visited[row][col] == 0){
+                    count++;
+                    bfs( row , col , grid , visited);
+                }
+            }
+        }
+        return count;
+    }
+
+    void bfs( int row , int col , vector<vector<char>>& grid , vector<vector<int>>& visited){
+        visited[row][col] = 1;
+        queue<pair<int,int>> q;
+        q.push( {row , col});
+        
+        int n = grid.size();
+        int m = grid[0].size();
+
+        while( !q.empty()){
+            pair<int,int> node;
+            node = q.front();
+            q.pop();
+
+            // now traversing all the neighbours of the cell that we have poped
+            // we have in total four direction that we have to consider as neighbours
+            
+            //we will be using the directions left right top bottom
+            vector<pair<int,int>> directions = { {0,-1} , {-1,0} , {0,1} , {1,0}};
+            for( auto dir : directions){
+                int nrow = node.first + dir.first;
+                int ncol = node.second + dir.second;
+                if( nrow < n && nrow >= 0 && ncol < m && ncol >= 0 && grid[nrow][ncol] == '1' && visited[nrow][ncol] == 0){
+                    //now as it is a neighbour so we will be gonna add it in the queue and mark it as visited
+                    visited[nrow][ncol] = 1;
+                    q.push( { nrow , ncol});
+                }
+            }
+        }
+    }
+};
