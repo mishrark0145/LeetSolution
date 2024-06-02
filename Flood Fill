@@ -1,0 +1,47 @@
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        // this question is somewhat like traversing the connected graph
+        // here if we consider the staring node which is given and treat each
+        // cell as a node so we have to traverse all the nodes from the starting point and 
+        // also have to change it
+
+        // here we use again the visited matrix whiich is gonna be a 2d array 
+
+        int n = image.size();//row
+        int m = image[0].size();//col
+        //starting pixel color
+        int startpx = image[sr][sc];
+
+        bfs(sr , sc , color , image , visited , startpx);
+        return image;
+    }
+
+    void bfs( int row , int col , int color , vector<vector<int>>& image , int startpx){
+        
+        image[row][col] = color;
+        queue<pair<int,int>> q;
+        q.push( {row,col});
+        
+        while(!q.empty()){
+            pair<int,int> node;
+            node = q.front();
+            q.pop();
+
+            int n = image.size();
+            int m = image[0].size();
+
+            //traverse the neighbours
+            vector<pair<int,int>> directions = { {0,-1} , {-1,0} , {0,1} , {1,0}};
+
+            for( auto dir : directions){
+                int nrow = node.first + dir.first;
+                int ncol = node.second + dir.second;
+                if( nrow < n && nrow >= 0 && ncol < m && ncol >= 0 && image[nrow][ncol] == startpx && image[nrow][ncol] != color){
+                    image[nrow][ncol] = color;
+                    q.push({nrow,ncol});
+                }
+            }
+        }  
+    }
+};
