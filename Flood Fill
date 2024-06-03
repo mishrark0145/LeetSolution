@@ -1,3 +1,5 @@
+//BFS Solution
+
 class Solution {
 public:
     vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
@@ -43,5 +45,38 @@ public:
                 }
             }
         }  
+    }
+};
+
+
+//DFS Solution
+
+class Solution {
+public:
+
+    void dfs(vector<vector<int>>& image , int row , int col , int color , int startpx , vector<pair<int,int>>& directions){
+        //coloring the visited node
+        image[row][col] = color;
+        int n = image.size();
+        int m = image[0].size();
+        //visiting the neighbours
+        for( auto dir: directions){
+            int nrow = row + dir.first;
+            int ncol = col + dir.second;
+            if( nrow < n && nrow >= 0 && ncol < m && ncol >= 0 && image[nrow][ncol] == startpx && image[nrow][ncol] != color){
+                dfs( image , nrow , ncol , color , startpx , directions);
+            }
+        }
+        return;
+    }
+
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        //using dfs
+        int n = image.size();//row
+        int m = image[0].size();//col
+        int startpx = image[sr][sc];
+        vector<pair<int,int>> directions = { {0,-1} , {-1,0} , {0,1} , {1,0}};
+        dfs( image , sr , sc , color , startpx , directions);
+        return image;
     }
 };
