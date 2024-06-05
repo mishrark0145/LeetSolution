@@ -1,0 +1,75 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution {
+  public:
+  
+    bool detect( int source , int V , vector<int> adj[], vector<int>& visited){
+        queue<pair<int,int>> q;
+        //here we have taken the parent node for the staring node as -1
+        q.push({ source , -1});
+        visited[source] = 1;
+        while( !q.empty()){
+            int parent = q.front().second;
+            int node = q.front().first;
+            q.pop();
+            //now we will traverse the neighbours
+            // here we are checking if the node is visited then if the node that is visited is the 
+            //parent of the node from which it is coming then it is not a cycle otherwise it is a cycle
+            for( auto it : adj[node]){
+                if( visited[it] == 1){
+                    if( it == parent){
+                        continue;
+                    }
+                    else
+                        return true;
+                }
+                else{
+                    q.push({ it , node});
+                    visited[it] = 1;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    // Function to detect cycle in an undirected graph.
+    bool isCycle(int V, vector<int> adj[]) {
+        vector<int> visited(V , 0);
+        bool ans = false;
+        for( int i = 0 ; i < V ; i++){
+            if( visited[i] != 1)
+                ans = detect(i ,V , adj , visited);
+            if( ans == true) break;    
+        }
+        return ans;
+    }    
+};
+
+//{ Driver Code Starts.
+int main() {
+    int tc;
+    cin >> tc;
+    while (tc--) {
+        int V, E;
+        cin >> V >> E;
+        vector<int> adj[V];
+        for (int i = 0; i < E; i++) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        Solution obj;
+        bool ans = obj.isCycle(V, adj);
+        if (ans)
+            cout << "1\n";
+        else
+            cout << "0\n";
+    }
+    return 0;
+}
+// } Driver Code Ends
