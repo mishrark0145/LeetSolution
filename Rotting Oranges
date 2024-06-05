@@ -1,0 +1,59 @@
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        //there can be many rotten oranges in the grid so we will first store that in the queue so
+        //that we can start out bfs from each of the rotten oranges
+        int n = grid.size();//row
+        int m = grid[0].size();//col
+        queue<pair<int,int>> q;
+        // we will also take the copy of the grid as we dont want to change the original data
+        vector<vector<int>> oranges = grid;
+        int freshorange = 0;
+        for( int i = 0 ; i < n ; i++){
+            for( int j = 0 ; j < m ; j++){
+                if( grid[i][j] == 1) freshorange++;
+                if( grid[i][j] == 2){
+                    q.push({i,j});
+                }
+            }
+        }
+        if( freshorange == 0) return 0;
+
+        //directions to visit the neighbours
+        vector<pair<int,int>> directions = { {0,-1} , {-1,0} , {0,1} , {1,0}};
+        //we are initiating the count as one because when we will at the last rotten
+        // orange we will still enter the loop so the count will gonna be incremented by one
+        //thats why we are initializing it by -1
+        int count = -1;
+        while(!q.empty()){
+            int size = q.size();
+            //we will iterate over the size of the queue as it is containing all the rotten oranges and that will gonna
+            //be our starting point
+            for( int i = 0 ; i < size ; i++){
+                cout<<"hitstart"<<endl;
+                pair<int,int> node;
+                node = q.front();
+                q.pop();
+                //visite the neighbours
+                for( auto dir : directions){
+                    int nrow = node.first + dir.first;
+                    int ncol = node.second + dir.second;
+                    if( nrow < n && nrow >= 0 && ncol < m && ncol >= 0 && oranges[nrow][ncol] != 0 && oranges[nrow][ncol] == 1){
+                        oranges[nrow][ncol] = 2;
+                        //now we will gonna push this new rotten oragne in the main q bcz
+                        //when this while loop gonna end start matirx we be empty
+                        //so the main while will gonna execute again so now the start matrix will
+                        //agian contain all the rotten oranges in order
+                        q.push({nrow,ncol});
+                        freshorange--;
+                    }
+                }//end of for loop
+            }//end of while loop
+            //now we will increase the count as it is 1 minute passed as out starting queue is empty
+            count++;
+        }
+        
+        if( freshorange == 0) return count;
+        else return -1;
+    }
+};
