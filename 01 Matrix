@@ -1,0 +1,52 @@
+// Multisource BFS
+
+class Solution {
+public:
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        int n = mat.size();
+        int m = mat[0].size();
+        vector<vector<int>> ans(n , vector<int>(m));
+        
+        // here we will go with bfs and by taking all the zeroes as the starting point 
+        // and move level wise to next cells and if it is 1 then we will gonna add one the dist
+
+        //we have make a queue with pair first will take a pair of row and col and second is dist
+        queue<pair<pair<int,int>,int>> q;
+        //visited array
+        vector<vector<int>> visited( n , vector<int>( m , 0));
+        // now we will gonna push all the zeroes as the starting nodes in the queue
+        for( int i = 0 ; i < n ; i ++){
+            for( int j = 0 ; j < m ; j++){
+                if( mat[i][j] == 0){
+                    visited[i][j] = 1;
+                    //as the value is zero then the dist will also be zero in the ans matrix
+                    ans[i][j] = 0;
+                    q.push({{i,j}, 0});
+                }
+            }
+        }
+
+        vector<pair<int,int>> directions = { {0,-1} , {-1,0} , {0,1} , {1,0}};
+        
+        // now we will gonna start the bfs traversal
+        while( !q.empty()){
+            int row = q.front().first.first;
+            int col = q.front().first.second;
+            int dist = q.front().second;
+            q.pop();
+            //visiting the neighbours
+            for( auto dir : directions){
+                int nrow = row + dir.first;
+                int ncol = col + dir.second;
+                if( nrow < n && nrow >= 0 && ncol < m && ncol >= 0 && visited[nrow][ncol] == 0){
+                    //as we encountered a cell which is not visited so it must be one
+                    //now we will just add one to the dist of the parent node ( we are in the loop to visit the neighbours of the parent)
+                    ans[nrow][ncol] = dist + 1;
+                    visited[nrow][ncol] = 1;
+                    q.push({{nrow,ncol} , dist + 1});
+                }
+            }
+        }
+        return ans;
+    }
+};
