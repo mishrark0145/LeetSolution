@@ -1,0 +1,46 @@
+//similar to Surrounded Regions
+
+class Solution {
+public:
+
+    void dfs( int row , int col , vector<vector<int>>& visited , vector<vector<int>>& grid , vector<pair<int,int>> directions){
+        visited[row][col] = 1;
+        int m = grid.size();//row
+        int n = grid[0].size();//col
+        //visitng the neighbours
+        for( auto dir : directions){
+            int nrow = row + dir.first;
+            int ncol = col + dir.second;
+            if( nrow < m && nrow >= 0 && ncol < n && ncol >= 0 && visited[nrow][ncol] == 0 && grid[nrow][ncol] == 1){
+                dfs( nrow , ncol , visited , grid , directions);
+            }
+        }
+    }
+
+    int numEnclaves(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> visited(m , vector<int>(n , 0));
+        vector<pair<int,int>> directions = { {0,-1} , {-1,0} , {0,1} ,{1,0}};
+
+        for( int i = 0 ; i < m ; i++){
+            for( int j = 0 ; j < n ; j++){
+                if(grid[i][j] == 1 && ( i == 0 || i == m - 1 || j == 0 || j == n - 1) && visited[i][j] == 0){
+                    dfs( i , j , visited , grid , directions);
+                }
+            }
+        }
+        //now traversing the visited array and if it is 1 with gird is also one 
+        //then we will not count that 1 we will only count the ones which are not visited in the visited array
+        int count = 0;
+        for( int i = 0 ; i < m ; i++){
+            for( int j = 0 ; j < n ; j++){
+                if( visited[i][j] == 0 && grid[i][j] == 1){
+                    count++;
+                }
+            }
+            cout<<endl;
+        }
+        return count;
+    }
+};
