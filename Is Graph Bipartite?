@@ -1,0 +1,43 @@
+class Solution {
+
+private:
+    bool bfs( int start , vector<int>& color , vector<vector<int>>& graph){
+        //we will start the vertex with the color 0 and the other color will be 1
+        queue<int> q;
+        q.push(start);
+        color[start] = 0;
+        while( !q.empty()){
+            int node = q.front();
+            q.pop();
+            // traversing the neighbours
+            for( auto it : graph[node]){
+                // if the graph is not colored
+                if( color[it] == -1){
+                    // we will color with the opposite of the node
+                    color[it] = !color[node];
+                    q.push(it);
+                }
+                else if(color[it] != -1){
+                    //if the adjacent node does have same color
+                    if(color[it] == color[node]) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+public:
+    bool isBipartite(vector<vector<int>>& graph) {
+        //a bipartite graph is a graph in which we can color the graph with only
+        //two colors such that no two adjacents nodes are having same colors
+        // we will be taking a color vector
+        int V = graph.size();
+        vector<int> color(V , -1);
+        //there can be cases of connected components
+        for( int i = 0 ;  i < V ; i++){
+            if( color[i] == -1)
+                if(!bfs( i , color , graph)) return false;
+        }
+        return true;
+    }
+};
