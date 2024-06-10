@@ -1,0 +1,83 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution {
+    
+  private:
+  
+  bool dfs( int start , vector<int>& visited , vector<int>& path , vector<int> adj[]){
+      // mark the visited node
+      visited[start] = 1;
+      // mark the path vector to 1
+      path[start] = 1;
+      //visting the neighbours
+      for( auto node : adj[start]){
+          //if it is not visited
+          if( visited[node] == 0){
+              //now we will make sure if it is true one time then always true
+              if(dfs(node , visited , path , adj)){
+                  return true;
+              }
+          }
+          //suppose it is visited and path is 1 then it is surely 
+          // a cycle in the directed grpah
+          else if( path[node] == 1){
+              return true;
+          }
+      }
+      //if it comes out of the loop 
+      //then surely the path will not contain the cycle so we will unmark it;
+      path[start] = 0;
+      return false;
+  }
+    
+  public:
+    // Function to detect cycle in a directed graph.
+    bool isCyclic(int V, vector<int> adj[]) {
+        //we will take the visited node
+        vector<int> visited(V , 0);
+        //here we are taking the help of the path vector
+        // as if it is the same path , node has to be vistied again then it will be a cycle
+        // if it is visited and the path of that node is also one then it will be a cycle
+        // otherwise it is not
+        vector<int> path(V , 0);
+        // we will traverse all the elements of the nodes
+        for( int i = 0 ; i < V ; i++){
+            if(!visited[i]){
+                if(dfs( i , visited , path , adj))
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+};
+
+//{ Driver Code Starts.
+
+int main() {
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int V, E;
+        cin >> V >> E;
+
+        vector<int> adj[V];
+
+        for (int i = 0; i < E; i++) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back(v);
+        }
+
+        Solution obj;
+        cout << obj.isCyclic(V, adj) << "\n";
+    }
+
+    return 0;
+}
+
+// } Driver Code Ends
