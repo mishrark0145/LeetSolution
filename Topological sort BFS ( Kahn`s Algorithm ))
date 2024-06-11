@@ -1,0 +1,108 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+	public:
+	//Function to return list containing vertices in Topological order. 
+	vector<int> topoSort(int V, vector<int> adj[]) 
+	{
+	    /*
+	    Kahn’s Algorithm for Topological Sorting:
+        Add all nodes with in-degree 0 to a queue.
+        While the queue is not empty:
+            Remove a node from the queue.
+            For each outgoing edge from the removed node, decrement the in-degree of the destination node by 1.
+            If the in-degree of a destination node becomes 0, add it to the queue.
+        If the queue is empty and there are still nodes in the graph, the graph contains a cycle and cannot be topologically sorted.
+        The nodes in the queue represent the topological ordering of the graph.
+	    */
+	    
+	    // we will first count the indegree of all the nodes
+	    vector<int> indegree(V , 0);
+	    
+	    for( int i = 0 ; i < V ; i++){
+	        for( auto node : adj[i]){
+	            indegree[node]++;
+	        }    
+	    }
+	    
+	    //we will gonna push the nodes which have indegree zero in the queue
+	    queue<int> q;
+	    
+	    for( int i = 0 ; i < V ; i++){
+	        if( indegree[i] == 0){
+	            q.push(i);
+	        }
+	    }
+	    
+	    vector<int> ordering;
+	    
+	    while(!q.empty()){
+	        int node = q.front();
+	        ordering.push_back(node);
+	        q.pop();
+	        
+	        //traversing the adjacents node of the node and reducing the indegree of the adjacents node
+	        for( auto ver : adj[node]){
+	            indegree[ver]--;
+	            if( indegree[ver] == 0){
+	                q.push(ver);
+	            }
+	        }
+	    }
+	    return ordering;
+	}
+};
+
+//{ Driver Code Starts.
+
+/*  Function to check if elements returned by user
+*   contains the elements in topological sorted form
+*   V: number of vertices
+*   *res: array containing elements in topological sorted form
+*   adj[]: graph input
+*/
+int check(int V, vector <int> &res, vector<int> adj[]) {
+    
+    if(V!=res.size())
+    return 0;
+    
+    vector<int> map(V, -1);
+    for (int i = 0; i < V; i++) {
+        map[res[i]] = i;
+    }
+    for (int i = 0; i < V; i++) {
+        for (int v : adj[i]) {
+            if (map[i] > map[v]) return 0;
+        }
+    }
+    return 1;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        int N, E;
+        cin >> E >> N;
+        int u, v;
+
+        vector<int> adj[N];
+
+        for (int i = 0; i < E; i++) {
+            cin >> u >> v;
+            adj[u].push_back(v);
+        }
+        
+        Solution obj;
+        vector <int> res = obj.topoSort(N, adj);
+
+        cout << check(N, res, adj) << endl;
+    }
+    
+    return 0;
+}
+// } Driver Code Ends
