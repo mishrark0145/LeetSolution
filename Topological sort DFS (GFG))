@@ -1,0 +1,112 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+    private:
+    void dfs( int start , vector<int>& visited , stack<int>& s , vector<int> adj[]){
+        visited[start] = 1;//marking the node visited
+        
+        //traversing the neighbours
+        for( auto node : adj[start]){
+            if( !visited[node]){
+                dfs( node , visited , s , adj);
+            }
+        }
+        
+        //now when we have completed the calls we will put that node in the stack
+        s.push(start);
+    }
+    
+    
+	public:
+	//Function to return list containing vertices in Topological order. 
+	vector<int> topoSort(int V, vector<int> adj[]) 
+	{
+	    //Topological sort 
+	    //linear ordering of vertices such that if there is an edge between u and v , u appers before v in that ordering
+	    //two conditions for that graph is
+	    //1. it should be directed 
+	    //2. it must not be cyclic i.e. Acyclic graph
+	    //combining it the graph should be Direct Acyclic Graph(DAG)
+	    
+	    /*Algo
+	    we will implement it by dfs
+	    1st we will start the call by covering all the nodes in a for loop if that node is not visited then call the dfs function
+	    2nd in the dfs function we will use a stack i.e. when we get to an end then while coming back we will gonna put that node in the stack
+	    when all the call ended then the stack will be having the linear ordering
+	    so we will just pop that and store in an array and return that
+	    */
+	    
+	    vector<int> visited(V , 0);
+	    
+	    stack<int> s;
+	    
+	    for( int i = 0 ; i < V ; i++){
+	        if( !visited[i]){
+	            dfs( i , visited , s , adj);
+	        }
+	    }
+	    
+	    vector<int> ordering;
+	    
+	    while( !s.empty()){
+	        ordering.push_back(s.top());
+	        s.pop();
+	    }
+	    
+	    return ordering;
+	}
+};
+
+//{ Driver Code Starts.
+
+/*  Function to check if elements returned by user
+*   contains the elements in topological sorted form
+*   V: number of vertices
+*   *res: array containing elements in topological sorted form
+*   adj[]: graph input
+*/
+int check(int V, vector <int> &res, vector<int> adj[]) {
+    
+    if(V!=res.size())
+    return 0;
+    
+    vector<int> map(V, -1);
+    for (int i = 0; i < V; i++) {
+        map[res[i]] = i;
+    }
+    for (int i = 0; i < V; i++) {
+        for (int v : adj[i]) {
+            if (map[i] > map[v]) return 0;
+        }
+    }
+    return 1;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        int N, E;
+        cin >> E >> N;
+        int u, v;
+
+        vector<int> adj[N];
+
+        for (int i = 0; i < E; i++) {
+            cin >> u >> v;
+            adj[u].push_back(v);
+        }
+        
+        Solution obj;
+        vector <int> res = obj.topoSort(N, adj);
+
+        cout << check(N, res, adj) << endl;
+    }
+    
+    return 0;
+}
+// } Driver Code Ends
