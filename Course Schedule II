@@ -1,0 +1,50 @@
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        // this is similar to course schedule I 
+        // now in this we have to find the order also
+
+        // so we will first convert this into graph then we will do the
+        // kahn`s algo 
+
+        vector<int> adj[numCourses];
+        for(auto it : prerequisites){
+            adj[it[1]].push_back(it[0]);
+        }
+
+        //we will find the indegree
+        int V = numCourses;
+
+        vector<int> indegree(V , 0);
+        for(int i = 0 ; i < V ; i++){
+            for( auto node : adj[i]){
+                indegree[node]++;
+            }
+        }
+
+        queue<int> q;
+
+        for( int i = 0 ; i < V ; i++){
+            if(indegree[i] == 0){
+                q.push(i);
+            }
+        }
+
+        vector<int> order;
+
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            order.push_back(node);
+
+            for(auto ver : adj[node]){
+                indegree[ver]--;
+                if(indegree[ver] == 0){
+                    q.push(ver);
+                }
+            }
+        }
+        if(order.size() == V) return order;
+        else return {};
+    }
+};
