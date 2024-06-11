@@ -1,0 +1,82 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution {
+  public:
+    // Function to detect cycle in a directed graph.
+    bool isCyclic(int V, vector<int> adj[]) {
+        // we will do this by using bfs 
+        // by using the logic of topological sorting (Kahn`s Algo or BFS)
+        // in this we will do this by checking if after the queue get empty but there is 
+        // still some nodes are left which has non zero value in the indegree array
+        
+        vector<int> indegree(V , 0);
+        //finding the indegree
+        for( int i = 0 ; i < V ; i++){
+            for( auto node : adj[i]){
+                indegree[node]++;
+            }
+        }
+        
+        queue<int> q;
+        //pushin the nodes which have indegree zero
+        for( int i = 0 ; i < V ; i++){
+            if( indegree[i] == 0){
+                q.push(i);
+            }
+        }
+        
+        
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            //traversign the neighbours 
+            for( auto ver : adj[node]){
+                indegree[ver]--;//making indegree 1 less
+                //if indegree of that node becomes zero push that into the queue
+                if(indegree[ver] == 0){
+                    q.push(ver);
+                }
+            }
+        }
+        
+        //checking if there is any node which still have indegree zero
+        for( int i = 0 ; i < V ; i++){
+            if(indegree[i] != 0){
+                //if there is non zero vlaue then return true there is a cycle
+                return true;
+            }
+        }
+        //else we will return false there is no cycle
+        return false;
+    }
+};
+
+//{ Driver Code Starts.
+
+int main() {
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int V, E;
+        cin >> V >> E;
+
+        vector<int> adj[V];
+
+        for (int i = 0; i < E; i++) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back(v);
+        }
+
+        Solution obj;
+        cout << obj.isCyclic(V, adj) << "\n";
+    }
+
+    return 0;
+}
+
+// } Driver Code Ends
