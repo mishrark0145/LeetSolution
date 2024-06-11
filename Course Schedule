@@ -1,0 +1,44 @@
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        // here it like topoplogical sorting bcz here we have to maintain an order
+        // now prerequisites[i] = [ ai , bi] you must take course bi first if you want to take course ai.
+        // it is like a graph directed bi -> ai
+        // so we will treat all the rows of the prerequisites as graph nodes where the second element is pointing to the first one
+        // we have to first create the graph directed one
+        int len = prerequisites.size();
+
+        vector<int> indegree(numCourses , 0);
+
+        vector<int> adj[numCourses];
+        for( int i = 0 ; i < len ; i++){
+            indegree[prerequisites[i][0]]++;
+            adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+
+        queue<int> q;
+
+        for( int i = 0 ; i < numCourses ; i++){
+            if(indegree[i] == 0){
+                q.push(i);
+            }
+        }
+
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+
+            for(auto ver : adj[node]){
+                indegree[ver]--;
+                if(indegree[ver] == 0){
+                    q.push(ver);
+                }
+            }
+        }
+
+        for( int i = 0 ; i < numCourses ; i++){
+            if(indegree[i] != 0) return false;
+        }
+        return true;
+    }
+};
