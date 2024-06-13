@@ -1,0 +1,112 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+// User function Template for C++
+class Solution {
+  private:
+  void dfs( int start , stack<int>& s , vector<pair<int,int>> adj[] , vector<int>& visited){
+      visited[start] = 1;
+      
+      //visiting the neighbours
+      for(auto ver : adj[start]){
+          if( visited[ver.first] == 0){
+              dfs(ver.first , s , adj , visited);
+          }
+      }
+      //after the call ended we will push that into the stack
+      s.push(start);
+  }
+    
+    
+  public:
+     vector<int> shortestPath(int N,int M, vector<vector<int>>& edges){
+        //first we will do the topo sort using dfs and store the vertex in the stack
+        //second we will gonna pop each vertex from the stack then we will gonna visit the neighbours
+        //here we will initialize a dist vector and whose entries will be infinite and we will take the source index
+        // and will mark it as zero now will visiting the nieghbours of the top of the stack one by one we will add the current node
+        //distance to the neighbour distance after that we will compare the neighbours distance value with the array and if it is
+        // less that we will change that in the array
+        
+        //before doing the topo sort we will first make the adjacency list 
+        vector<pair<int,int>> adj[N];
+        for( int i = 0 ; i < M ; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int wt = edges[i][2];
+          adj[u].push_back({ v , wt});//adj[u].push_back({ v , w})   u -->  v and its weight is w
+        }
+        
+        //topo sort
+        // O(N + M)
+        vector<int> visited(N , 0);
+        stack<int> s;
+        for( int i = 0 ; i < N ; i++){
+            if(!visited[i]){
+                dfs( i , s , adj , visited );
+            }
+        }
+        
+        //now the first step is completed
+        //now we will gonna pop the nodes
+        //distance vector
+        vector<int> distance(N , 1e9);
+        
+        //make the source node (Which is here zero always in the question) as zero in the distance array
+        distance[0] = 0;
+        // O(N + M)
+        while(!s.empty()){
+            int node = s.top();
+            s.pop();
+            int dist = distance[node];
+            //now we will gonna visit nodes neighbours
+            for( auto ver : adj[node]){
+                int v = ver.first;
+                int wt = ver.second;
+                int temp_dist = dist + ver.wt;
+                if( temp_dist < distance[v]){
+                    distance[v] = temp_dist;
+                }
+            }
+        }
+        
+        //now some nodes might have 1e9 or above value so we will made that to -1 as that node will not be reachable
+        for( int i = 0 ; i < N ; i++){
+            if(distance[i] >= 1e9){
+                distance[i] = -1;
+            }
+        }
+        return distance;
+    }
+};
+
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        vector<vector<int>> edges;
+        for(int i=0; i<m; ++i){
+            vector<int> temp;
+            for(int j=0; j<3; ++j){
+                int x; cin>>x;
+                temp.push_back(x);
+            }
+            edges.push_back(temp);
+        }
+        Solution obj;
+        vector<int> res = obj.shortestPath(n, m, edges);
+        for (auto x : res) {
+            cout << x << " ";
+        }
+        cout << "\n";
+    }
+}
+
+// } Driver Code Ends
