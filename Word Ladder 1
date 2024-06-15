@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        //queue to have string and levels
+        queue<pair<string,int>> q;
+        q.push({ beginWord , 1});//beginWord will be our starting 
+        //store the wordlist in the set so we can check any word fastly
+        unordered_set<string> st( wordList.begin() , wordList.end());
+        //now as we have stored the beginWord in the queue
+        //so if there is any word in the set the we will gonna erase it
+        st.erase(beginWord);
+
+        while(!q.empty()){
+            string word = q.front().first;
+            int steps = q.front().second;
+            q.pop();
+            if( word == endWord) return steps;
+            //now we will gonna change each letter of the word and we will find if it is in the set
+            // if it is then we will gonna push it
+            for( int i = 0 ; i < word.size() ; i++){
+                char original = word[i];
+                for( char ch = 'a' ; ch <= 'z' ; ch++){
+                    word[i] = ch;
+                    //if it exists in the set ( the current word which is gets changed)
+                    if( st.find(word) != st.end()){
+                        q.push({word , steps + 1});
+                        st.erase(word);
+                    }
+                }
+                //now when we come out of the loop we will set the word originial
+                word[i] = original;
+            }
+        }
+        //now after coming out of the while loop if we didnt encounter the endword that means
+        // the answer would now be zero
+        return 0;
+    }
+};
