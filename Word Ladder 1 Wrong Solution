@@ -1,0 +1,127 @@
+class Solution {
+private:
+    void dfs( int start , stack<int>& s , vector<int>& visited , vector<int> adj[]){
+        visited[start] = 1;
+
+        //traverse the neighbours
+        for( auto ver : adj[start]){
+            if(visited[ver] == 0){
+                dfs( ver , s , visited , adj);
+            }
+        }
+        //we the call ended we will just put this in the stack for topological order
+        s.push(start);
+    }
+
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        //define a new string vector that will have the first word as beginword
+        //also we will check in the word list that the last word should be equal to the endword
+        
+        //first we will check if the wordList contains the wrod beginWord
+        for( int i = 0 ; i < wordList.size() ; i++){
+            if( wordList[i] == beginWord){
+                wordList.erase(wordList.begin() + i);
+                break;
+            }
+        }
+        
+        int n = wordList.size();
+        vector<string> newList;
+        newList.push_back(beginWord);
+
+        for( int i = 0 ; i < n ; i++){
+            newList.push_back(wordList[i]);
+        }
+        int len = newList.size();
+
+        //we have to first give the endword an index between 0 to len - 1
+        int endindex = -1;
+        for( int i = 0 ; i < len ; i++){
+            if(newList[i] == endWord){
+                endindex = i;
+                break;
+            }
+        }
+        if( endindex == -1) return 0;
+        //now we will gonna make the graph for this newList using the fact
+        //that there will be a directed edge between two nodes if there is a
+        //difference of 1 between the nodes i.e. char difference
+        vector<int> adj[len];
+        //we are making an adj list to store the words as graph
+        //we will gonna take the index as there nodes numbering
+        //like begin word has zero index so its node is assigned 0
+        //similarly endword would be assin len - 1
+        
+        //we will make a visited array so that if it will go back to the 
+        // original node from which it has come so will not do that
+        int wordsize = beginWord.size();
+        for( int i = 0 ; i < len ; i++){
+            for( int j = 0 ; j < len ; j++){
+                if( i != j ){
+                    string s1 = newList[i];
+                    string s2 = newList[j];
+
+                    int count = 0;
+                    //now we will check for the difference
+                    for( int k = 0 ; k < wordsize ; k++){
+                        if( s1[k] != s2[k]){
+                            count++;
+                        }
+                    }
+                    if(count == 1){
+                        adj[i].push_back(j);
+                    }
+                }    
+            }
+        }
+
+        // now we have the graph and also we have the source node
+        // and number of vertices as len and the adjacency list as adj
+        // so here we will apply the topo soritng to find the distance of the 
+        // last node
+
+        //topo sort using dfs
+        stack<int> s;
+        vector<int> visited(len , 0);
+
+        for( int i = 0 ; i < len ; i++){
+            if( !visited[i]){
+                dfs( i , s , visited , adj);
+            }
+        }
+
+    
+
+        //now we have the source node and we wanted to know the distance form the source to 
+        // all the nodes in a minm way like here right now i will be using the concept that
+        // i used to find the min distance of all the nodes from the source node
+
+        vector<int> distance( len , 1e9);
+        //mark the source node as zero
+        distance[0] = 0;
+        
+        //we will use the stack s
+        while( !s.empty()){
+            int node = s.top();
+            s.pop();
+            int distNode = distance[node];
+            for( auto ver : adj[node]){
+                int tempDist = distNode + 1;
+                if( tempDist < distance[ver]){
+                    distance[ver] = tempDist;
+                }
+            }
+        }
+
+        //now in the distance verctor we got all the nodes distance from the source node and also it is minimum
+        
+        //here the distance to the endword can be determined by distance[endindex]
+        // but we want the tansformation sequence that is here is the number of nodes
+        // so the answer would be distnace[endindex] + 1
+        // but if the value of this is greater than or equal to 1e9 then the sequence is not possible
+        int ans = distance[endindex] + 1;
+        if( ans >= 1e9) return 0;
+        else return ans;
+    }
+};
