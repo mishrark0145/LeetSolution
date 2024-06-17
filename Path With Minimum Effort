@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        // We can apply Dijkstra Algo with priority Queue
+        int rows = heights.size();
+        int cols = heights[0].size();
+        //edge case
+        if( rows - 1 == 0 && cols - 1 == 0 ) return 0;
+        //we wanted to use the priority queue with min heap
+        priority_queue<pair<int,pair<int,int>> , vector<pair<int,pair<int,int>>> , greater<pair<int,pair<int,int>>> > pq;
+        pq.push({0 , {0 , 0}});
+        
+        vector<vector<int>> distance( rows , vector<int>( cols , 1e9));
+        vector<pair<int,int>> directions = { {0,-1} , {-1,0} , {0,1} , {1,0}};
+
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+            int row = it.second.first;
+            int col = it.second.second;
+            int ht = it.first;
+            //traversing the nieghbours 
+            for( auto dir : directions){
+                int nrow = row + dir.first;
+                int ncol = col + dir.second;
+                //boundary cases plus if the max(abs(difference between the cells) , ht) < distance[nrow][ncol]
+                //like this condition will check for that maximum absolute difference
+                if(nrow < rows && nrow >= 0 && ncol < cols && ncol >= 0 && max(abs(heights[row][col] - heights[nrow][ncol]) , ht) < distance[nrow][ncol]){
+                    // now as it is written 
+                    //A route's effort is the maximum absolute difference in heights between two consecutive cells of the route.
+                    distance[nrow][ncol] = max(abs(heights[row][col] - heights[nrow][ncol]) , ht);
+                    pq.push({ distance[nrow][ncol] , {nrow,ncol}});
+                }
+            }
+        }
+        return distance[rows - 1][cols - 1]; 
+    }
+};
