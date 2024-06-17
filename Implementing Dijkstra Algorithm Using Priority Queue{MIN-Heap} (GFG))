@@ -1,4 +1,9 @@
 /*
+ A priority_queue in C++ (implemented as a binary heap) only guarantees that the top element is the maximum (for a max-heap) or the minimum (for a min-heap), 
+depending on the comparator used. It does not maintain the elements in a sorted order like a balanced binary search tree or a sorted array.
+*/
+
+/*
 //sample code on how the priority queue stl works
 //and also how to define priority queue for min-heap data structure
 
@@ -26,10 +31,16 @@ int main(){
 
 */
 
+/*
+pq.push({distance[nextNode], nextNode}): Adds a new pair to the priority queue. The time complexity for each push is 𝑂(log(𝑛)
+pq.top(): Accesses the smallest distance pair currently in the priority queue. This is 𝑂(1)
+pq.pop(): Removes the smallest distance pair from the priority queue. This operation is O(logn).
+*/
+
 /*Time Complexity
 Pesudo Code
 while loop  ---  O(V)
-distance of node -- top()  ----  log(Heap size)
+pop -- pop()  ----  log(Heap size)
 for loop ---  on worst case every node is connected to every other node so neighbours can be V - 1
 in the for loop 
 push in prioirty queue --- log(Heap Size))
