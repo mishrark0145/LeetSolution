@@ -1,0 +1,96 @@
+/*
+//sample code on how the priority queue stl works
+//and also how to define priority queue for min-heap data structure
+
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int main(){
+    //this is how we define priority queue with min heap
+    //i.e. element with least value will be at the top
+    // priority queue in c++ stl is implemented on max heap
+    // so if we wanted to implement using min heap
+    // then we have to define it like this
+    priority_queue < pair<int,int> , vector<pair<int,int>>, greater<pair<int,int>> > pq; 
+    pq.push({0,0});
+    pq.push({4,1});
+    pq.push({4,2});
+    
+    while(!pq.empty()){
+        cout<<pq.top().first<<" "<<pq.top().second<<endl;
+        pq.pop();
+    }
+    return 0;
+}
+
+*/
+
+/*Time Complexity
+Pesudo Code
+while loop  ---  O(V)
+distance of node -- top()  ----  log(Heap size)
+for loop ---  on worst case every node is connected to every other node so neighbours can be V - 1
+in the for loop 
+push in prioirty queue --- log(Heap Size))
+
+TC  = O(V*(log(Heap Size) + (V - 1)*(log(Heap Size))
+TC  = O( V*(log(Heap Size)*V)
+TC  = O(V^2 *log(Heap Size))   ---  heap size can be in worst case(Every one connect to every other node) where if we visits every nodes that will gonna push that into the pq then size will be V^2
+TC  = O(V^2 * log(V^2)) ---  now again in worst case V^2 is equal to no of edges i.e. E 
+TC  = O(E*2*log(V)
+TC  = O(E*log(V))
+
+*/
+
+
+/*
+We can implement this using Queue but in that we have to visit every pair as we are not using any minimal data structure
+so will unecssary visit those with the larger distance
+priority queue has at the top minimal so we will not waste our time visiting unecessary node
+*/
+
+class Solution
+{
+	public:
+	//Function to find the shortest distance of all the vertices
+    //from the source vertex S.
+    vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
+    {
+        //we will do this by using priority queue stl
+        // here we will change that to min heap such that the value whcih is minimum
+        //will be at the top
+        priority_queue< pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>> > pq;
+        //here the pair will store the {distance , node}
+        vector<int> distance( V , 1e9);
+        //the source node will have the vlaue of zero
+        distance[S] = 0;
+        
+        //we will push the source node into the priority queue
+        pq.push({0 , S});// {distacne , node}
+        
+        //while loop
+        while(!pq.empty()){
+            int node = pq.top().second;
+            int dist = pq.top().first;
+            pq.pop();
+            //traversing the neighbours and if we find the distace to that nieghbour
+            // is less that what is present in the distane vector than we will change that
+            // in the array and also we will push that node in the queue
+            for(auto ver : adj[node]){
+                //here the ver is a array with size 2 
+                //so if we wanted that ver to give us vertex so we will use
+                //the value at the 0th index which will give use the vertex
+                int vertex = ver[0];
+                int wt = ver[1];//this is the distance between node and vertex
+                if( dist + wt < distance[vertex]){
+                    int temp = dist + wt;
+                    distance[vertex] = temp;
+                    pq.push({temp , vertex});
+                }
+            }
+        }
+        
+        return distance;
+    }
+};
