@@ -1,0 +1,100 @@
+//We dont need to use dijkstra using priority queue or set bcz here whenwever we are moving from one cell to another we are using unit distance
+//so taking priority queue min heap and set is of no use bcz we will be having the same distance so there is no minimum
+//bcz it will be stored in the queue with like first 1 then 2 then 3 and so on
+
+//Time Complexity
+// O(8*N*N)
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        //if the top left element in the grid is one then there cannot be a clear path
+        if( grid[0][0] == 1) return -1;
+        //otherwise
+        //we can use dijkstra algorithm to solve this problem only using queue
+        //queue of pair first will be distance second will be a pair for row and col
+        queue<pair<int,pair<int,int>>> q;
+        q.push({1 , {0,0}});
+        int n = grid.size();
+        vector<vector<int>> distance( n , vector<int>( n , 1e9));
+        //marking the first cell as ditance 1
+        distance[0][0] = 1;
+        while(!q.empty()){
+            auto it = q.front();
+            pair<int,int> node = it.second;
+            int dist = it.first;
+            int row = node.first;
+            int col = node.second;
+            if( row == n - 1 && col == n - 1){
+                return dist;
+            }
+            q.pop();
+            //traversing the nieghbours
+            for( int delrow = -1 ; delrow <= 1 ; delrow++){
+                for( int delcol = -1 ; delcol <= 1 ; delcol++){
+                    int nrow = row + delrow;
+                    int ncol = col + delcol;
+                    //here nrwo and ncol must bound inside the grid and its value must be zero and last if the distance after adding does not 
+                    //gets a less value then no need to add that
+                    if( nrow < n && nrow >= 0 && ncol < n && ncol >= 0 && grid[nrow][ncol] == 0 && dist + 1 < distance[nrow][ncol]){
+                        distance[nrow][ncol] = dist + 1;
+                        q.push({distance[nrow][ncol] , {nrow,ncol}});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+
+
+
+//Solution Using Set
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        //if the top left element in the grid is one then there cannot be a clear path
+        if( grid[0][0] == 1) return -1;
+        //otherwise
+        //we can use dijkstra algorithm to solve this problem
+        //set of pair first will be distance second will be a pair for row and col
+        set<pair<int,pair<int,int>>> st;
+        st.insert({1 , {0,0}});
+        int n = grid.size();
+        vector<vector<int>> distance( n , vector<int>( n , 1e9));
+        //marking the first cell as ditance 1
+        distance[0][0] = 1;
+        while(!st.empty()){
+            auto it = *(st.begin());
+            pair<int,int> node = it.second;
+            int dist = it.first;
+            int row = node.first;
+            int col = node.second;
+            if( row == n - 1 && col == n - 1){
+                return dist;
+            }
+            st.erase(it);
+            //traversing the nieghbours
+            for( int delrow = -1 ; delrow <= 1 ; delrow++){
+                for( int delcol = -1 ; delcol <= 1 ; delcol++){
+                    int nrow = row + delrow;
+                    int ncol = col + delcol;
+                    //here nrwo and ncol must bound inside the grid and its value must be zero and last if the distance after adding does not 
+                    //gets a less value then no need to add that
+                    if( nrow < n && nrow >= 0 && ncol < n && ncol >= 0 && grid[nrow][ncol] == 0 && dist + 1 < distance[nrow][ncol]){
+                        //this is also done in the set to reduce unnecessary visiting of neighbours
+                        //if distance is not 1e9 that menas it is visited already so it can be present in the set so erase it as 
+                        //it will not give shortest answer
+                        if( distance[nrow][ncol] != 1e9){
+                            st.erase({distance[nrow][ncol] , {nrow,ncol}});
+                        }
+                        distance[nrow][ncol] = dist + 1;
+                        st.insert({distance[nrow][ncol] , {nrow,ncol}});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+};
