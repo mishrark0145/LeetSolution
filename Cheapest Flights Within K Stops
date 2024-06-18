@@ -1,0 +1,124 @@
+
+
+/*
+This solution is done using priority queue on the basis of cost taken here the mistake is that if we take only the distance with minimum
+Then there might be a case where we reached a node with a distance which is less and then we marked that in the price array
+but it takes stops such that in future it will not leads to the destination .
+Now when we got there from a node which got price more but that can take us to the destination but then when
+we will compare that with the price array we will not take that hence we will got the wrong answer
+*/
+//WRONG SOLUTION
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        // again we have to find the minm cost so we can use the dijksta algo with priority queue bcz
+        //here we have to take into the account the price
+        
+        //frist we will make the adjaceny list for the graph
+        vector<pair<int,int>> adj[n];
+        for( int i = 0 ; i < flights.size() ; i++){
+            //flights[i] = [from , to , price]
+            int from = flights[i][0];
+            int to = flights[i][1];
+            int cost = flights[i][2];
+            adj[from].push_back({to , cost});
+        }
+
+        priority_queue< pair<int,pair<int,int>> , vector<pair<int,pair<int,int>>> , greater<pair<int,pair<int,int>>> > pq;
+        //here the first will represent cost
+        //second pair will represent the node at which it is and the stops that it has taken
+        //we will push the src
+        pq.push({0 , {src,0}});
+
+        //a price array
+        vector<int> price(n , 1e9);
+        //for sorurce it will be zero
+        price[src] = 0;
+
+        while(!pq.empty()){
+            auto it = pq.top();
+            int cost = it.first;
+            int node = it.second.first;
+            int stops = it.second.second;
+            pq.pop();
+
+            //if the stops is less than or equal to k then we will move to the neighbours
+            if( stops <= k){
+                for( auto it : adj[node]){
+                    int adjnode = it.first;
+                    int edgewt = it.second;
+                    if( cost + edgewt < price[adjnode]){
+                        //if an node gets a stops greater than k then that node should be the dst node
+                        //otherwise no need to take that
+                        if(stops + 1 <= k || adjnode == dst){
+                            price[adjnode] = cost + edgewt;
+                            pq.push( {price[adjnode] , {adjnode , stops + 1}});
+                        }
+                    }
+                }
+            }
+        }
+        if( price[dst] >= 1e9) return -1;
+        else return price[dst];
+    }
+};
+
+
+//RIGHT SOLUTION
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        //here we will use the stops and we can use the normal queue to implement it 
+        // bcz here we will run the queue till it will get empty with some condition on distances
+        // and number of
+        
+        //frist we will make the adjaceny list for the graph
+        vector<pair<int,int>> adj[n];
+        for( int i = 0 ; i < flights.size() ; i++){
+            //flights[i] = [from , to , price]
+            int from = flights[i][0];
+            int to = flights[i][1];
+            int cost = flights[i][2];
+            adj[from].push_back({to , cost});
+        }
+        queue<pair<int,pair<int,int>>> q;
+        //here the first will represent stops
+        //second pair will represent the node at which it is and the cost
+        //we will push the src
+        q.push({0 , {src,0}});
+
+        //a price array
+        vector<int> price(n , 1e9);
+        //for sorurce it will be zero
+        price[src] = 0;
+        //Time Complexity 
+        //if it is priority queue then it will be E*log(V)
+        //but as we are using queue so there will be no Log(V)
+        // TC = O(E) and E is edges which will be equal to E = Flights.size()
+        while(!q.empty()){
+            auto it = q.front();
+            int stops = it.first;
+            int node = it.second.first;
+            int cost = it.second.second;
+            q.pop();
+
+            //if the stops is less than or equal to k then we will move to the neighbours
+            if( stops <= k){
+                for( auto it : adj[node]){
+                    int adjnode = it.first;
+                    int edgewt = it.second;
+                    if( cost + edgewt < price[adjnode]){
+                        //if an node gets a stops greater than k then that node should be the dst node
+                        //otherwise no need to take that
+                        if(stops + 1 <= k || adjnode == dst){
+                            price[adjnode] = cost + edgewt;
+                            q.push( {stops + 1 , {adjnode , price[adjnode]}});
+                        }
+                    }
+                }
+            }
+        }
+        if( price[dst] >= 1e9) return -1;
+        else return price[dst];
+    }
+};
