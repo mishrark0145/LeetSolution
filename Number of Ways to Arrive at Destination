@@ -1,0 +1,53 @@
+class Solution {
+public:
+    int countPaths(int n, vector<vector<int>>& roads) {
+        // Will dijkstra work?
+        // The key lies in recording not only aa single path for each node 
+        // but all the shortest paths.
+        //make an graph
+        vector<pair<int,int>> adj[n];
+        for( int i = 0 ; i < roads.size() ; i++){
+            adj[roads[i][0]].push_back({roads[i][1] , roads[i][2]});
+            //as the graph is bidirectional
+            adj[roads[i][1]].push_back({roads[i][0] , roads[i][2]});
+        }
+
+        //we will take an ways vector to count the number of ways we are 
+        //reaching a node with the minm distacne taken
+        vector<int> ways(n , 0);
+        //source node will have ways 1;
+        ways[0] = 1;
+
+        //time vector to have the minm time reahced for each node
+        vector<long long> time(n , LLONG_MAX);
+        time[0] = 0;
+        //priority queue with min heap
+        priority_queue< pair<long,int> , vector<pair<long,int>> , greater<pair<long,int>> > pq;    
+        pq.push( { 0 , 0});//{time , node}
+
+        while(!pq.empty()){
+            auto it = pq.top();
+            int node = it.second;
+            long long tt = it.first;
+            int nofways = ways[node];
+            pq.pop();
+
+            //traversing the neihgbours
+            for( auto pt : adj[node]){
+                long long edgewt = pt.second;
+                int adjnode = pt.first;
+                //if we are arriving at this node first with less distance
+                if( (edgewt + tt) < time[adjnode]){
+                    ways[adjnode] = ways[node];
+                    time[adjnode] = (edgewt + tt);
+                    pq.push( { time[adjnode] , adjnode});
+                }
+                else if((edgewt + tt) == time[adjnode]){  
+                    //then we will add the ways from the node that we are coming to the neighbours
+                    ways[adjnode] = (ways[adjnode] + ways[node])%(1000000007);
+                }    
+            }
+        }
+        return ways[n - 1]%1000000007;
+    }
+};
