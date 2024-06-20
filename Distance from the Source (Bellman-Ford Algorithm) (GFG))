@@ -1,0 +1,98 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+// User function Template for C++
+
+class Solution {
+  public:
+    /*  Function to implement Bellman Ford
+    *   edges: vector of vectors which represents the graph
+    *   S: source vertex to start traversing graph with
+    *   V: number of vertices
+    */
+    vector<int> bellman_ford(int V, vector<vector<int>>& edges, int S) {
+        //it helps us to detect the negative cycle 
+        //bellman ford algo
+        
+        //Algorithm is relax all the edges V - 1 times sequestially in any order
+        //Realx means 
+        /*
+          u -> v with a weight wt
+        if( dist[u] + wt < dist[v]) then dist[v] = dist[u] + wt
+        */
+        //distance array
+        vector<int> distance(V , 1e9);
+        distance[S] = 0;
+        int iterations = V - 1;
+        while(iterations--){
+            for( int i = 0 ; i < edges.size() ; i++){
+                int u = edges[i][0];
+                int v = edges[i][1];
+                int wt = edges[i][2];
+                //relaxation condition
+                if(distance[u] != 1e9 && distance[u] + wt < distance[v]){
+                    distance[v] = distance[u] + wt;
+                }
+            }
+        }
+        //now to detect if the graph has a negative cycle 
+        //if the value of the distance array gets changed in the nth iteration then the grpah has -ve cycle
+        for( int i = 0 ; i < edges.size() ; i++){
+                int u = edges[i][0];
+                int v = edges[i][1];
+                int wt = edges[i][2];
+                //relaxation condition
+                if(distance[u] != 1e9 && distance[u] + wt < distance[v]){
+                    //if we get in this if condition that means we are updating the distance
+                    //array that means we have a negative cycle therefore 
+                    return {-1};
+                }
+        }
+        //now to give the vertex for which we cant reach that node 
+        for( int i = 0 ; i < V ; i++){
+            if(distance[i] >= 1e9){
+                distance[i] = 1e8;
+            }
+        }
+        return distance;
+    }
+};
+
+
+//{ Driver Code Starts.
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int N, m;
+        cin >> N >> m;
+        vector<vector<int>> edges;
+
+        for (int i = 0; i < m; ++i) {
+            vector<int> temp;
+            for (int j = 0; j < 3; ++j) {
+                int x;
+                cin >> x;
+                temp.push_back(x);
+            }
+            edges.push_back(temp);
+        }
+
+        int src;
+        cin >> src;
+
+        Solution obj;
+        vector<int> res = obj.bellman_ford(N, edges, src);
+
+        for (auto x : res) {
+            cout << x << " ";
+        }
+        cout << "\n";
+    }
+    return 0;
+}
+
+// } Driver Code Ends
