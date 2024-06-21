@@ -1,0 +1,60 @@
+class Solution {
+public:
+    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+        //here they wanted first the distance between each cities which is minimum
+        //this can be done thorough floyd warshall algo
+
+        //we will make an adjancecny matrix
+        //cost[i][i] = 0
+
+        vector<vector<int>> cost( n , vector<int>( n , 1e9));
+        for( int i = 0 ; i < n ; i++){
+            cost[i][i] = 0;
+        }
+
+        for( int i = 0 ; i < edges.size() ; i++){
+            int row = edges[i][0];
+            int col = edges[i][1];
+            int wt = edges[i][2];
+            //as this is a undirected graph
+            cost[row][col] = wt;
+            cost[col][row] = wt;
+        }
+
+        //now we will apply the floyd warshall algo
+        for( int via = 0 ; via < n ; via++){
+            for( int i = 0 ; i < n ; i ++){
+                for( int j = 0 ; j < n ; j++){
+                    cost[i][j] = min( cost[i][j] , cost[i][via] + cost[via][j]);
+                }
+            }
+        }
+
+        //now in the cost matrix we have the minm distance between two cities
+        // now we have to make the count of cities that is reachable each of the cities under the threshold distance
+        vector<int> city( n , 0);
+        int countOfCities = 1e9;
+        for( int i = 0 ; i < n ; i++){
+            for( int j = 0 ; j < n ; j++){
+                if( cost[i][j] <= distanceThreshold && i != j){
+                    city[i]++;
+                }
+            }
+            countOfCities = min(city[i] , countOfCities);
+        }
+
+        //now we have to give then answer for the city so we can do that by iterating over the city array
+        // it contains how many cities have distance between them less than or equal to distance threshold
+        // as no of cities can be same for the minm count so we have to return the city with the largest number
+        //like city0 city1 city2 city3 here 3 is the largest
+
+        int cityno;
+        for( int i = 0 ; i < n ; i++){
+            if( city[i] == countOfCities){
+                cityno = i;
+            }
+        }
+        return cityno;
+
+    }
+};
