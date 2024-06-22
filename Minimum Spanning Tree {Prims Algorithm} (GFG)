@@ -1,0 +1,93 @@
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+	public:
+	//Function to find sum of weights of edges of the Minimum Spanning Tree.
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {
+        // to find the mst of the spanning tree we will be using the prims algo here
+        // we will take a priority queue to store the {wt , node , parent }
+        // a visited array to mark if the node has been poppped from the priority queue and it is valid
+        
+        // we can also store the edges of the mst
+        
+        priority_queue< pair<pair<int,int> , int> , vector<pair<pair<int,int> , int>> , greater<pair<pair<int,int> , int>> > pq;
+        
+        //we will randomly push any node here we will take the zero node and with -1 as parent and wt to be zero in the queue
+        pq.push({{0 , 0} , -1}); //{wt, node , parent}
+        
+        vector<int> visited( V , 0);
+        
+        //to store the mst we will be using an adjaceny list
+        vector<int> mstlist[V];
+        int sum = 0;
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+            int node = it.first.second;
+            int parent = it.second;
+            int edgewt = it.first.first;
+            
+            if( visited[node] == 1) continue;
+            
+            //we have to add the edge in the mst
+            if( parent != -1){
+                mstlist[parent].push_back(node);
+                mstlist[node].push_back(parent);
+                //as it is an undirected graph
+                
+                sum = sum + edgewt;//as we have added this edge in the mst
+                                   //so its wt can aadded in the sum to find the mst
+            }
+            //if it is not visited then mark it
+            visited[node] = 1;
+            // now traversing the neighbours 
+            for( auto pt : adj[node]){
+                int adjnode = pt[0];
+                int wt = pt[1];
+                if( visited[adjnode] != 1){
+                    pq.push({{wt , adjnode} , node});//{wt , node, parent}
+                }
+            }
+        }
+        return sum;
+    }
+};
+
+//{ Driver Code Starts.
+
+
+int main()
+{
+    int t;
+    cin >> t;
+    while (t--) {
+        int V, E;
+        cin >> V >> E;
+        vector<vector<int>> adj[V];
+        int i=0;
+        while (i++<E) {
+            int u, v, w;
+            cin >> u >> v >> w;
+            vector<int> t1,t2;
+            t1.push_back(v);
+            t1.push_back(w);
+            adj[u].push_back(t1);
+            t2.push_back(u);
+            t2.push_back(w);
+            adj[v].push_back(t2);
+        }
+        
+        Solution obj;
+    	cout << obj.spanningTree(V, adj) << "\n";
+    }
+
+    return 0;
+}
+
+
+// } Driver Code Ends
