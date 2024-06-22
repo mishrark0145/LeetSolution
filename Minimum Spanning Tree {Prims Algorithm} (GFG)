@@ -10,6 +10,8 @@ class Solution
     int spanningTree(int V, vector<vector<int>> adj[])
     {
         // to find the mst of the spanning tree we will be using the prims algo here
+	// now if we only wanted to know the sum of edges for mst then we dont have to take the parent with us we can only take the {wt , node}
+	// that can do the job but here i wanted to get the edges so i have taken the parent also
         // we will take a priority queue to store the {wt , node , parent }
         // a visited array to mark if the node has been poppped from the priority queue and it is valid
         
@@ -25,9 +27,10 @@ class Solution
         //to store the mst we will be using an adjaceny list
         vector<int> mstlist[V];
         int sum = 0;
-        while(!pq.empty()){
+	//E*Log(E)
+        while(!pq.empty()){//O(E)
             auto it = pq.top();
-            pq.pop();
+            pq.pop();//Log(E)
             int node = it.first.second;
             int parent = it.second;
             int edgewt = it.first.first;
@@ -46,10 +49,10 @@ class Solution
             //if it is not visited then mark it
             visited[node] = 1;
             // now traversing the neighbours 
-            for( auto pt : adj[node]){
+            for( auto pt : adj[node]){//O(E)
                 int adjnode = pt[0];
                 int wt = pt[1];
-                if( visited[adjnode] != 1){
+                if( visited[adjnode] != 1){//Log(E)
                     pq.push({{wt , adjnode} , node});//{wt , node, parent}
                 }
             }
