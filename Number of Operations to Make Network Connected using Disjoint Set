@@ -1,0 +1,81 @@
+class Solution {
+public:
+
+    vector<int> size , parent;
+
+    void array(int N){
+        size.resize(N);
+        parent.resize(N);
+        for( int i = 0 ; i < N ; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findParent(int node){
+        if( parent[node] == node){
+            return node;
+        }
+        return parent[node] = findParent(parent[node]);
+    }
+
+    void unionBySize(int u , int v){
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if( ulp_v == ulp_u) return;
+        if( size[ulp_u] > size[ulp_v]){
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+        else{
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+    }
+
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        //now to find the minm no of edges to make the network connected
+        //so if there are k connected components and we want them to be connected to each other
+        //we will require k - 1 edges
+        //now here the condition is we can only use the edges we are given for the network like we can
+        //change the edges to be placed between new vertices
+        //so here we wanted to make the graph at each step for the edges so it is like the
+        //concept of dynamic graphs so therefore we can use the Disjoint set
+        array(n);
+
+        //to count the extra edges
+        int exEdges = 0;
+        //making the graph dynamically 
+        //Time Complexity = O(N + Edges*Alpha)
+        for(int i = 0 ; i < connections.size() ; i++){
+            int u = connections[i][0];
+            int v = connections[i][1];
+            //now if there ultimate parent is not equal then we will add them otherwise we will continue
+            if( findParent(u) == findParent(v)){
+                exEdges++;
+            }
+            else{//it doesnt matches
+                unionBySize(u , v);
+            }
+        }
+        //now to count the connected componets we can look in the parent array if parent[node] = node then that node is
+        //the ultimate parent node of a connected component
+        int nCom = 0;
+        for(int i = 0 ; i < n ; i++){
+            if(parent[i] == i){
+                nCom++;
+            }
+        }
+        //now we have to return the operations
+        //so the required edges are number of connected components - 1
+        //and if the required edges are less than or equal to the extraedges then we can return 
+        //required edges 
+        int reqEdges = nCom - 1;
+        if( reqEdges <= exEdges){
+            return reqEdges;
+        }
+        else{
+            return -1;
+        }
+    }
+};
