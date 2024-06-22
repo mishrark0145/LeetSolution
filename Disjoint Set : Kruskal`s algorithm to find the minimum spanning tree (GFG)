@@ -1,0 +1,130 @@
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+	public:
+	
+	vector<int> parent;
+	vector<int> size;
+	
+	void array( int n){
+	    parent.resize( n);
+	    size.resize(n);
+	    for( int i = 0 ; i < n ; i++){
+	        parent[i] = i;
+	        size[i] = 1;
+	    }
+	}
+	//in this we will also do the path compression 
+	int findParent( int node){
+	    if( parent[node] == node){
+	        return node;
+	    }
+	    return parent[node] = findParent(parent[node]);
+	}
+	
+	//Union by Size
+	void unionBySize( int u , int v){
+	    int ulp_u = findParent(u);
+	    int ulp_v = findParent(v);
+	    //if both have the same ultimate parent then we dont have to do anything
+	    if( ulp_u == ulp_v) return;
+	    //now we will look for the size 
+	    //if the size is smaller for the ulp_v then we will attach the ulp_v to ulp_u
+	    //i.e. parent[ulp_v] = ulp_u
+	    if( size[ulp_v] < size[ulp_u]){
+	        parent[ulp_v] = ulp_u;
+	        size[ulp_u] = size[ulp_u] + size[ulp_v];//we will just add the size to which it is connecting i.e. itself plus to which it is connecting
+	    }
+	    else{
+	        //now this the case for greater than equal to as if it is same then we can do anything
+	        parent[ulp_u] = ulp_v;
+	        size[ulp_v] = size[ulp_v] + size[ulp_u];
+	    }
+	    return;
+	}
+	
+	//Function to find sum of weights of edges of the Minimum Spanning Tree.
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {
+        //we will implement this by using Kruskals algorithm i.e. using disjoint set
+        //so first we have to make the graph using disjoint set 
+        //initially we will take that the graph is a signle nodes only and they are poiting
+        // towards them , we will do the union by size and we will be taking two arrays
+        //one for size and other for parents
+        //now implementing the disjoint set we need the edges
+        //but there is an extra condition in kruskals algo 
+        //we will pass the edges in sorted order
+        vector<pair<int , pair<int,int>>> edges;
+        //{ wt,{u ,v}}
+        for( int i = 0 ; i < V ; i++){
+            for( auto it : adj[i]){
+                int node = i;
+                int adjnode = it[0];
+                int edgewt = it[1];
+                edges.push_back({edgewt , {node , adjnode}});
+            }
+        }
+        //now sorting the edges important point for the kruskals algo
+        //bcz we wanted the minimum spanning tree thats why need to sort this
+        sort( edges.begin() , edges.end());//O(E*Log(E))
+        //making the parent and size array with size V
+        array(V);
+        int mst = 0;
+        //now we will add each edge by using unionbysize for disjoint set data structure
+        for( int i = 0 ; i < edges.size() ; i++){//O(E)
+            auto it = edges[i];
+            int u = it.second.first;
+            int v = it.second.second;
+            int wt = it.first;
+            
+            //now here we will add the edge in the mst if it is not connected that means its ultimate parent is not same
+            if( findParent(u) != findParent(v)){
+                //if we are joining it that means we have to add the weight
+                mst = mst + wt;
+                //that means we have to union it i.e. unionBySize
+                unionBySize( u , v);//we are not passing the wt as we did not want to know the edges in the mst only wt will work
+            }
+            //time complexity for union and finding the parent is constant somewhat
+            // it is O(4*alpha)
+        }
+        return mst;
+    }
+};
+
+//{ Driver Code Starts.
+
+
+int main()
+{
+    int t;
+    cin >> t;
+    while (t--) {
+        int V, E;
+        cin >> V >> E;
+        vector<vector<int>> adj[V];
+        int i=0;
+        while (i++<E) {
+            int u, v, w;
+            cin >> u >> v >> w;
+            vector<int> t1,t2;
+            t1.push_back(v);
+            t1.push_back(w);
+            adj[u].push_back(t1);
+            t2.push_back(u);
+            t2.push_back(w);
+            adj[v].push_back(t2);
+        }
+        
+        Solution obj;
+    	cout << obj.spanningTree(V, adj) << "\n";
+    }
+
+    return 0;
+}
+
+
+// } Driver Code Ends
