@@ -1,0 +1,103 @@
+class Solution {
+public:
+
+    vector<int> size , parent;
+
+    void array(int n){
+        size.resize(n);
+        parent.resize(n);
+        for(int i = 0 ; i < n ; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findParent(int node){
+        if( parent[node] == node){
+            return node;
+        }
+        return parent[node] = findParent(parent[node]);
+    }
+
+    void unionBySize(int u , int v){
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v) return;
+        if(size[ulp_u] < ulp_v){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        //this question is somewhat tough you can for the approach but after knowing that
+        //it will be easyyy
+        // here we have mails and we want if any name contains a mail then if that same name contain
+        //the mail then we have to merge that keeping unique mails for that name
+        //written in question name for an account can be same 
+        //it is merging so we can use disjoint set here
+
+        //we have to first find the mails which are same
+        //then we will store that in a map with then row pointing to it
+        // mail -> row
+        //so if a mail is already in the map then we have to merge that row to the row that
+        //have the mail
+        //so here we are merging the rows using disjoint set
+        unordered_map<string , int > mapMailNode;
+        int n = accounts.size();
+        //disjoint set initialization
+        array(n);
+        for( int i = 0 ; i < n ; i++){
+            //we will neglect the first column as that have names
+            for( int j = 1 ; j < accounts[i].size() ; j++){
+                string mail = accounts[i][j];
+                //if we does not find the mail in the map then we will add it with the index row
+                if( mapMailNode.find(mail) == mapMailNode.end()){
+                    mapMailNode[mail] = i;
+                }
+                else{
+                    //if we find it is present then we will merge the index row 
+                    //here we are taking the length as parent i.e. row as parent
+                    //so here we will merge the i with the value at the mapMailNode[mail] == index
+                    //mergin is done by disjoint set data structure
+                    unionBySize(mapMailNode[mail] , i);//u -> i and mapMailNode[mail] -> v
+                }
+            }
+        }
+        //after this map has all the mails and there index row with it
+        //we will make the list of strings
+        vector<string> mergedMail[n];
+        //we will iterate through the map and we will be storing it in the list at the index
+        //row and values will be the mail
+        //the row index that we will get from the map we have check for its ultimate parent
+        //before adding it to that index for the list of strings
+        for(auto it : mapMailNode){
+            string mail = it.first;
+            int node = findParent(it.second);
+            mergedMail[node].push_back(mail);
+        }
+
+        //now the list has all the mails now we have to arrange it in a string of string
+        //first word will be name that we will take from the list index
+        vector<vector<string>> ans;
+        for(int i = 0 ; i < n ; i++){
+            //if the list doesnot have a entry at an index just continue
+            if(mergedMail[i].size() == 0) continue;
+            //as we have to store the mails in sorted order
+            sort(mergedMail[i].begin() , mergedMail[i].end());
+            vector<string> temp;
+            //push the name for the i index
+            temp.push_back(accounts[i][0]);
+            //then push the mergedMail[i] strings
+            for(auto it : mergedMail[i]){
+                temp.push_back(it);
+            }
+            ans.push_back(temp);
+        } 
+        return ans;
+    }
+};
