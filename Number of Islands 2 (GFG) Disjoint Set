@@ -1,0 +1,148 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+// User function Template for C++
+class DisjointSet{
+    vector<int> parent , size;
+  public:
+    //constructor
+    DisjointSet(int n){
+        parent.resize(n);
+        size.resize(n);
+        for(int i = 0 ; i < n ; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }  
+    
+    int findParent(int node){
+        if(parent[node] == node){
+            return node;
+        }
+        return parent[node] = findParent(parent[node]);
+    }
+    
+    void unionBySize(int u , int v){
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v) return;
+        
+        if(size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+
+class Solution {
+  public:
+    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
+        //to solve this problem we will be usign the disjoint set data structure as here we are dynamically making the islands so it will
+        //be better to use disjoint set algo 
+        //now to use this we have to assign each cell a node number so we will use the formula node = row*m + col here m is number of  columns
+        //we will first go through the operation then mark the node in the visited array the nincrease the count by 1 then after that we will look in
+        //the four direction to connnect so if we get 1 there then we will connect if it is previously connected then ther ultimate parent will be same
+        //so if is not same ultimate parent then we will union by size operation on the node and the adjacent node
+        DisjointSet ds(n*m);
+        
+        vector<vector<int>> visited(n , vector<int>( m , 0));
+        int count = 0;
+        vector<int> ans;
+        vector<pair<int,int>> directions = {{0,-1} , {-1,0} , {0,1} , {1,0}};
+        //traverse the operations
+        for(auto it : operators){
+            int row = it[0];
+            int col = it[1];
+            if(visited[row][col] == 1){
+                ans.push_back(count);
+                continue;
+            }
+            visited[row][col] = 1;
+            //we are increasing the count as we are treating the nodes as a single node
+            count++;
+            //traversing the neighnours for the row and col
+            for(auto dir : directions){
+                int nrow = row + dir.first;
+                int ncol = col + dir.second;
+                //checking for the bound condition and visited to be 1 i.e. there is a land
+                if(nrow < n && nrow >= 0 && ncol < m && ncol >= 0 && visited[nrow][ncol] == 1){
+                    //now we will check if there ultimate parents are same or not
+                    int node = row*m + col;
+                    int adjnode = nrow*m + ncol;
+                    if(ds.findParent(node) != ds.findParent(adjnode)){
+                        //decrese the count
+                        count--;
+                        ds.unionBySize(node , adjnode);
+                    }
+                }
+            }
+            ans.push_back(count);
+        }
+        return ans;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n,m,k; cin>>n>>m>>k;
+        vector<vector<int>> a;
+        
+        for(int i=0; i<k; i++){
+            vector<int> temp;
+            for(int j=0; j<2; j++){
+                int x; cin>>x;
+                temp.push_back(x);
+            }
+            a.push_back(temp);
+        }
+    
+        Solution obj;
+        vector<int> res = obj.numOfIslands(n,m,a);
+        
+        for(auto x : res)cout<<x<<" ";
+        cout<<"\n";
+    }
+}
+
+// } Driver Code Ends
