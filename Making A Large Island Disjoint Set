@@ -1,0 +1,108 @@
+class DisjointSet{
+public:
+    vector<int> size, parent;
+
+    DisjointSet(int n){
+        parent.resize(n);
+        size.resize(n);
+        for(int i = 0 ; i < n ; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findParent(int node){
+        if(parent[node] == node){
+            return node;
+        }
+        return parent[node] = findParent(parent[node]);
+    }
+
+    void unionBySize(int u , int v){
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v) return;
+
+        if(size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class Solution {
+public:
+    int largestIsland(vector<vector<int>>& grid) {
+        //This is a similar type of problem like Number of Islands 2 here we have already the island in the form of matrix not in the form
+        //of operators so we will treat this matrix as operators where it is one and we will make the disjoint set data structure accordingly
+
+        int n = grid.size();
+        DisjointSet ds(n*n);
+        
+        //traverse the grid
+        for(int row = 0 ; row < n ; row++){
+            for(int col = 0 ; col < n ; col++){
+                if(grid[row][col] == 0) continue;
+                vector<pair<int,int>> directions = {{0,-1} , {-1,0} , {0,1} , {1,0}};
+                //traversing the neighbours
+                for(auto dir : directions){
+                    int nrow = row + dir.first;
+                    int ncol = col + dir.second;
+                    //checking the bounding condition
+                    if(nrow < n && nrow >= 0 && ncol < n && ncol >= 0 && grid[nrow][ncol] == 1){
+                        //we will make the node number and the adjnode number using the row, col and nrow,ncol
+                        int nodeno = row*n + col;
+                        int adjnodeno = nrow*n + ncol;
+                        //there ultimate parent should not be same
+                        if(ds.findParent(nodeno) != ds.findParent(adjnodeno)){
+                            //then we will join them 
+                            ds.unionBySize(nodeno , adjnodeno);
+                        }
+                    }
+                }
+            }
+        }
+        //now after traversing we have all the sizes for the ulimate parents and that ultimate parent is the main node for the connected 
+        //component now if we change any zero to 1 and move check the four direction we would check the cell then go to its ulimate parent
+        //we will save that in a set bcz there can be a chance where we can encounter in two or more direction same ultimate parent 
+        //now after doing that we will add the size for the ultimate parent and find the island size
+        //traverse the grid
+        int maxmsize = -1e9;
+        for(int row = 0 ; row < n ; row++){
+            for(int col = 0 ; col < n ; col++){
+                if(grid[row][col] == 1) continue;
+                
+                vector<pair<int,int>> directions = {{0,-1} , {-1,0} , {0,1} , {1,0}};
+                set<int> s;
+                for(auto dir : directions){
+                    int nrow = row + dir.first;
+                    int ncol = col + dir.second;
+                    //checking the bounding condition
+                    if(nrow < n && nrow >= 0 && ncol < n && ncol >= 0 && grid[nrow][ncol] == 1){
+                        int adjnodeno = nrow*n + ncol;
+                        int ulp = ds.findParent(adjnodeno);
+                        s.insert(ulp);
+                    }
+                }
+                //now we will have all the parent in the set 
+                //traverse it and find the size and then add it
+                int count = 1;
+                for(auto it : s){
+                    count += ds.size[it];
+                }
+                //now we will have the size so we just check with the maximum size already have
+                maxmsize = max(count , maxmsize);
+            }
+        }
+        //edge case where all the cell has 1 so it cant be zero or minimum
+        //so we have to find that using the disjoint set
+        for(int i = 0 ; i < n*n ; i++){
+            maxmsize = max(ds.size[i] , maxmsize);
+        }
+        return maxmsize;
+    }
+};
