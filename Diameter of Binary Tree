@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int diameterOfBinaryTree(TreeNode* root) {
+        int diameter = 0;
+        if(root == nullptr) return 0;
+        findDiameter(root , diameter);
+        return diameter;
+    }
+    //logic is simple at any node we will find there left and right height
+    //then we will compare left + right with the existing diameter 
+    //by doing this we can get the diameter between any node with maxm
+    //if you will do the dry run you will see that
+    int findDiameter(TreeNode* node , int& diameter){
+        if(node == nullptr) return 0;
+
+        //now we will go to the left to find the height
+        int left = findDiameter(node -> left , diameter);
+        //now similarly will go the right
+        int right = findDiameter(node -> right , diameter);
+        //now important step
+        diameter = max(diameter , left + right);
+        //at last we will return the height 
+        return 1 + max(left , right);
+    }
+};
