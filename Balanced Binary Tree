@@ -1,0 +1,28 @@
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+        return height(root) != -1;
+    }
+
+
+    //normal recursive code to find the height is
+    /*
+    int height(TreeNOde* node){
+        if(node == nullptr) return 0;
+        int left = height(node -> left);
+        int right = height(node -> right);
+        return max(left , right) + 1;
+    }
+    */
+    int height(TreeNode* root){
+        if( root == nullptr) return 0;
+        int left = height(root -> left);
+        //here we are returning -1 bcz we get that it has a node which diffrecne is greater than one
+        //therefore it cannot be a balanced binary tree so we will reutrn all -1 to end this recursion
+        if( left == -1) return -1;
+        int right = height( root -> right);
+        if(right == -1) return -1;
+        if( abs( left - right) > 1) return -1;
+        return 1 + max( left , right);
+    }
+};
