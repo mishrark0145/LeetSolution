@@ -38,10 +38,10 @@ public:
             //if we get the null that means we have to pop the element push in the answer and move to the right
             else{
                 if( s.empty()) break;
-                TreeNode* temp = s.top();
+                node = s.top();
                 s.pop();
-                node = temp -> right;
-                ans.push_back( temp -> val);
+                ans.push_back( node -> val);
+                node = node -> right;
             }
         }
         return ans;
