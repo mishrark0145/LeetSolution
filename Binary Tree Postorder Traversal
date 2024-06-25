@@ -47,7 +47,14 @@ public:
 };
 
 //iterative approach ( uisng 1 stack )
-
+/*
+        Algorithm
+        1. go left till nullptr
+        2. if curr == nullptr then go right
+        3. if right is null then pop the element and push that in the answer 
+           and if that pop element is equal to top right then we will again pop it
+           else curr = temp 
+*/
 class Solution {
 public:
     vector<int> postorderTraversal(TreeNode* root) {
