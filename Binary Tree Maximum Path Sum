@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int maxPathSum(TreeNode* root) {
+        //similar to the diameter of the binary tree here we have to take the node values as left and right
+        if(root == nullptr) return 0;
+        int sum = -1e9;
+        pathSum(root , sum);
+        return sum;
+    }
+
+    int pathSum(TreeNode* node, int& sum) {
+        if (node == nullptr) return 0;
+
+        // Compute the maximum path sum with the node's left and right children
+        int leftSum = max(0, pathSum(node->left, sum));  // Ignore negative paths
+        int rightSum = max(0, pathSum(node->right, sum));  // Ignore negative paths
+
+        // Update the maximum path sum that can be obtained containg the current node
+        sum = max(sum, leftSum + rightSum + node->val);
+
+        // Return the maximum path sum passing through the current node
+        return node->val + max(leftSum, rightSum);
+        //return the maxm of leftSum and rightSum + node -> val
+        //here we are taking the node value bcz we are going left counting there sum then right
+        //but we have to at last count the node also so it is returning the max that the current node
+        //will give if it takes maximum of the leftSum and the rightSum
+    }
+};
