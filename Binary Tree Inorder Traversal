@@ -28,11 +28,14 @@ public:
         if( root == nullptr) return ans;
         stack<TreeNode*> s;
         TreeNode* node = root;
+        //go left till null then take the stack top element and then print it then move to its right and do this gain and again till the stack get empty
         while( true){
+            //we will go to the left till we get the null
             if(node != nullptr){
                 s.push( node);
                 node = node -> left;
             }
+            //if we get the null that means we have to pop the element push in the answer and move to the right
             else{
                 if( s.empty()) break;
                 TreeNode* temp = s.top();
