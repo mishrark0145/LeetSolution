@@ -1,0 +1,11 @@
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        //we will do this by any traversal technique
+        //we will use preorder traversal recursive
+        if( p == nullptr || q == nullptr){
+            return p == q;
+        }
+        return (p->val == q->val) && isSameTree(p->left , q->left) && isSameTree(q->right , p->right) ;
+    }
+};
