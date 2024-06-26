@@ -25,22 +25,25 @@ public:
 class Solution {
 public:
     vector<int> postorderTraversal(TreeNode* root) {
-        vector<int> ans;
-        if( root == nullptr) return ans;
+        //we will do postorder traversal using two stack
         stack<TreeNode*> s1;
         stack<TreeNode*> s2;
+        if(root == nullptr) return {};
         s1.push(root);
         while(!s1.empty()){
-            TreeNode* node = s1.top();
+            auto node = s1.top();
             s1.pop();
+            //now push this value in the second stack which will store the postorder traversal
             s2.push(node);
-            if( node -> left != nullptr) s1.push( node -> left);
-            if( node -> right != nullptr) s1.push( node -> right);
+            //now we will push the left and right of node if it is present
+            if(node -> left != nullptr) s1.push(node -> left);
+            if(node -> right != nullptr) s1.push(node -> right);
         }
-        while( !s2.empty()){
-            TreeNode* temp = s2.top();
+        //now pop the nodes from second stack and store it in the vector
+        vector<int> ans;
+        while(!s2.empty()){
+            ans.push_back(s2.top() -> val);
             s2.pop();
-            ans.push_back(temp -> val);
         }
         return ans;
     }
