@@ -1,0 +1,59 @@
+class Solution {
+public:
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        // Map to store the nodes by column (x) and then by row (y).
+        // Each (x, y) entry holds a multiset of node values to keep them sorted.
+        map<int, map<int, multiset<int>>> nodes;
+        
+        // Queue to perform level order traversal.
+        // Each entry in the queue is a pair containing the TreeNode* and a pair of coordinates (x, y).
+        queue<pair<TreeNode*, pair<int, int>>> q;
+        
+        // Initialize the queue with the root node at coordinates (0, 0).
+        q.push({root, {0, 0}});
+        
+        // Perform level order traversal using the queue.
+        while (!q.empty()) {
+            auto p = q.front();
+            q.pop();
+            
+            TreeNode* node = p.first;
+            int x = p.second.first; // Column index
+            int y = p.second.second; // Row index
+            
+            // Insert the node's value into the map at coordinates (x, y).
+            nodes[x][y].insert(node->val);
+            
+            // If there is a left child, push it into the queue with updated coordinates (x-1, y+1).
+            if (node->left) q.push({node->left, {x - 1, y + 1}});
+            
+            // If there is a right child, push it into the queue with updated coordinates (x+1, y+1).
+            if (node->right) q.push({node->right, {x + 1, y + 1}});
+        }
+        
+        // Vector to hold the final result of vertical order traversal.
+        vector<vector<int>> ans;
+        
+        // Iterate over the map to construct the result.
+        for (auto p : nodes) {
+            vector<int> col;
+            
+            // Iterate over each row in the current column.
+            for (auto q : p.second) {
+                // Insert all values in the current row (which are already sorted) into the column vector.
+                col.insert(col.end(), q.second.begin(), q.second.end());
+            }
+            
+            // Add the column to the result.
+            ans.push_back(col);
+        }
+        
+        return ans;
+    }
+};
+/*Time Complexity
+Level Order Traversal with Insertion into Map: O(n log n)
+Insertion into Multiset: O(n log n)
+Constructing the Result: O(n)
+Combining these, the overall time complexity is dominated by the O(n log n) parts.
+*/
