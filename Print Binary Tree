@@ -1,0 +1,54 @@
+class Solution {
+public:
+
+    int findHeight(TreeNode* node){
+        if(node == nullptr) return 0;
+        // Go left
+        int left = findHeight(node->left);
+        // Go right
+        int right = findHeight(node->right);
+        // Return the maximum of left and right with plus 1
+        return 1 + max(left, right);
+    }
+
+    vector<vector<string>> printTree(TreeNode* root) {
+        if(root == nullptr) return {{}};
+        // First we will find the height of the tree
+        int height = findHeight(root) - 1;
+        int m = height + 1;
+        int n = pow(2, height + 1) - 1;
+        // Now we will crate the matrix and we will assign "" for every cell
+        vector<vector<string>> matrix(m, vector<string>(n, ""));
+
+        // Now to get the desired matrix we will travere it and accordingly place the
+        // Left and Right child at there places (Level order Traversal)
+        queue<pair<TreeNode*,pair<int,int>>> q;
+        //{node, row, col}
+        // Given root node is at row = 0 and col = (n - 1) / 2
+        q.push({root, {0, (n - 1) / 2}});
+        while(!q.empty()){
+            auto it = q.front();
+            q.pop();
+            TreeNode* node = it.first;
+            int r = it.second.first;
+            int c = it.second.second;
+            int nodeval = node->val;
+            // Mark the matrix at this r and c with the node val
+            matrix[r][c] = to_string(nodeval);
+
+            // Go left
+            if(node->left) q.push({node->left, {r + 1, c - pow(2, height - r - 1)}});
+            // Go right
+            if(node->right) q.push({node->right, {r + 1, c + pow(2, height -r - 1)}});
+        }
+        // Return the matrix
+        return matrix;
+    }
+};
+//Time Complexity
+/**
+ * Overall Time Complexity: O(n log(n))
+ * - Height Calculation: O(n)
+ * - Matrix Creation: O(n log(n))
+ * - Matrix Filling: O(n)
+ */
