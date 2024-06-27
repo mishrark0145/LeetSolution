@@ -1,0 +1,43 @@
+class Solution {
+public:
+    long long maximumScoreAfterOperations(vector<vector<int>>& edges, vector<int>& values) {
+        // First we will create the tree i.e. adjaceney list
+        int n = values.size();
+        vector<vector<int>>tree(n);
+        for(auto&x:edges){
+            tree[x[0]].push_back(x[1]);
+            tree[x[1]].push_back(x[0]);
+        }
+        vector<vector<long long>> dp(n, vector<long long>(2, -1));
+        // We have two options we can take the node to increase the score or skip it
+        // Now the change is here if we have skiped current node then we can take any node
+        // Which is below in the subtree but if we have taken the nodes then we have to skip 
+        // One node till leaf 
+        return maxScore(0, -1, tree, values, 0, dp);
+    }
+    // f will tell we have skipped it or not for f=0 we have not skipped any node and f=1 will tell we have skipped 
+    long long maxScore(int node, int parent, vector<vector<int>>& tree, vector<int>& values, int f, vector<vector<long long>>& dp){
+        // memoization to optimize it
+        if(dp[node][f] != -1) return dp[node][f];
+        long long score1 = values[node], score2 = 0;
+        // It will tell us the count
+        int childCount = 0;
+        // traversing the neightbours
+        for(auto adjnode : tree[node]){
+            if(adjnode == parent) continue;
+            // c will tell the number of neighbours
+            childCount++;
+            // We have not skipped anything so we will skip the current node
+            if(f == 0){
+                score2 += maxScore(adjnode, node, tree, values, 1, dp);
+            }
+            // We have skipped previously so we will skip this node
+            score1 += maxScore(adjnode, node, tree, values, f, dp);
+        }
+        // if c is zero that means it is a leaf node but if f is also zero 
+        // that means we have taken all the nodes above so we have to skip the leaf node
+        if(childCount == 0 && f == 0) return dp[node][f] = 0;
+
+        return dp[node][f] = max(score1, score2);
+    }
+};
