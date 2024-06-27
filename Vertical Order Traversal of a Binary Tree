@@ -42,6 +42,12 @@ public:
             for (auto q : p.second) {
                 // Insert all values in the current row (which are already sorted) into the column vector.
                 col.insert(col.end(), q.second.begin(), q.second.end());
+                // Or we can do this
+                /*
+                for(auto ptr : q.second){
+                    col.push_back(ptr);
+                }
+                */
             }
             
             // Add the column to the result.
