@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        // Now for right view we can use the level order traversal as it is right view we just have to take the value which comes last
+        // in a level order suppose we are on level 0 then if we are at the last element of that level we have to store that value in the array
+        // like if in the queue we have two elements then size is 2 that means index wise 1 i.e. 0 and 1 so when we are at 1 that means that element
+        // would get in the array
+        if(root == nullptr) return {};
+        vector<int> rtview;
+
+        queue<pair<TreeNode*,int>> q;
+        q.push({root, 0});
+
+        while(!q.empty()){
+            int size = q.size();
+            for(int i = 0 ; i < size ; i++){
+                auto it = q.front();
+                q.pop();
+                TreeNode* node = it.first;
+                int col = it.second;
+                // last element on that level that is on the right most size
+                if( i == size - 1){
+                    rtview.push_back(node->val);
+                }
+                if(node->left) q.push({node->left, col - 1});
+                if(node->right) q.push({node->right, col + 1});
+            }
+        }
+        return rtview;
+    }
+};
