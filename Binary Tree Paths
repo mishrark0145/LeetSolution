@@ -1,0 +1,45 @@
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        // We will use recusion to solve this problem 
+        vector<string> path;
+        vector<vector<int>> ans;
+        if(root == nullptr) return path;
+        vector<int> singlepath;
+        rootToLeaf(root, ans, singlepath);
+        // Now we will traverse the array and store it in the string
+        for(int i = 0 ; i < ans.size() ; i++){
+            string singlestr;
+            for(int j = 0 ; j < ans[i].size() ; j++){
+                if( j == 0){
+                    singlestr = to_string(ans[i][j]);
+                }
+                else{
+                    singlestr += "->" + to_string(ans[i][j]);
+                }
+            }
+            path.push_back(singlestr);
+        }
+        return path;
+    }
+
+    void rootToLeaf(TreeNode* node, vector<vector<int>>& ans, vector<int>& singlepath){
+        // If the node visited is root node just push the node in the singlepath vector then push this in the 2D ans vector then 
+        // Pop it so that when it backtracks singlepath will have the correct nodes for the path that it has visited till that
+        // node
+        if(node->left == nullptr && node->right == nullptr){
+            singlepath.push_back(node->val);
+            ans.push_back(singlepath);
+            singlepath.pop_back();
+            return;
+        }
+        // push the data in the singlepath
+        singlepath.push_back(node->val);
+        // Go left
+        if(node->left != nullptr) rootToLeaf(node->left, ans, singlepath);
+        // Go right
+        if(node->right != nullptr) rootToLeaf(node->right, ans, singlepath);
+        // If we have done everything pop the data
+        singlepath.pop_back();
+    }
+};
