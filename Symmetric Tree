@@ -1,0 +1,20 @@
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        // We will apply recusive solution to it and we will go left and right of the root
+        // Then we will do for the left side root left right and right side root right left
+        if(root == nullptr) return true;
+        return findSymmetric(root->left, root->right);
+    }
+
+    bool findSymmetric(TreeNode* left, TreeNode* right){
+        if(left == nullptr || right == nullptr){
+            return left == right;
+        }
+        // Compare the values
+        if(left->val != right->val) return false;
+        bool leftside = findSymmetric(left->left, right->right);
+        bool rightside = findSymmetric(left->right, right->left);
+        return leftside && rightside;
+    }
+};
