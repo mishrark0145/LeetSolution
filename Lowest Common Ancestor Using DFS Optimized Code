@@ -1,0 +1,24 @@
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        // Here we will be using dfs technique to find this 
+        // If we got nullptr or the p node or the q node just return it 
+        // Bcz we can olny get one of them at a time so or condition is taken
+        if( root == nullptr || root == p || root == q) return root;
+        // Now we will go left and right and store that as pointer
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        // Now we will surely get something left can be nullptr right got something
+        // right null and left got something now one case are left one is that if it get values from both 
+        // side then we will reutrn the root that will be our answer 
+        if(right == nullptr){
+            return left;
+        }
+        else if(left == nullptr){
+            return right;
+        }
+        else{
+            return root;
+        }
+    }
+};
