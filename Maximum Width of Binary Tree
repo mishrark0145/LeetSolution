@@ -1,0 +1,46 @@
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {
+        // To solve this question we will be using indexing evry node with 0 based indexing , there is a problem in doing that
+        // Suppose if the tree has large number of nodes and it is a skew tree then we can get overflow as the index get very large
+        // To overcome this we will assign the index by looking at the previous indexex like suppose above indexing has 1 and next 
+        // one has 2 on the same level now we know 1 index will give two nodes and the 2 index will give the 2 nodes but using the formula
+        // 2*i + 1 for left and 2*i + 2 for right will give us large number so we will find the minm index of the level 1 then we will
+        // subtract 1 from 1 index so it will become 0 then left will be 1 and right will be 2 similarly for index 2 subtract 1 then it
+        // It will be 1 so left 3 right 4 so again we are doing for the level 3 indexing we will take the minm of level 2 subtract from
+        // each index and then find left and right and store it in the queue
+        if(root == nullptr) return 0;
+        int ans = 0;
+        // To get the ans we will use the formula rightindex - leftindex + 1 for every level
+        queue<pair<TreeNode*,int>> q;
+        q.push({root,0});
+        while(!q.empty()){
+            int size = q.size();
+            // To make the index starting from zero
+            int minm_ind = q.front().second;
+            int first, last;
+            for(int i = 0 ; i < size ; i++){
+                auto it = q.front();
+                q.pop();
+                TreeNode* node = it.first;
+                // Doing this as mentioned above subtracting the minm so that when next level indexing is assigned it will start from 1
+                long long curr_ind = it.second - minm_ind;
+                // First index of the current level
+                if(i == 0) first = curr_ind;
+                // Last index of the current level
+                if(i == size - 1) last = curr_ind;
+
+                if(node->left){
+                    q.push({node->left, 2*curr_ind + 1});
+                }
+                if(node->right){
+                    q.push({node->right, 2*curr_ind + 2});
+                }
+            }
+            if(ans < last - first + 1){
+                ans = last - first + 1;
+            }
+        }
+        return ans;
+    }
+};
