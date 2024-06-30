@@ -1,0 +1,72 @@
+class Solution {
+public:
+    void findParent(TreeNode* root, unordered_map<TreeNode*, TreeNode*>& parent_track){
+        // We will do the level order traversal
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* current = q.front();
+            q.pop();
+            // Go left
+            if(current->left){
+                parent_track[current->left] = current;// Making the parent
+                q.push(current->left);
+            }
+            // Go right
+            if(current->right){
+                parent_track[current->right] = current;
+                q.push(current->right);
+            }
+        }
+        return;
+    }
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        // To solve this we should know the parent of each node as we have to travel back also but this property is not provided by binary 
+        // Tree. So first we will do this by using map to store the parent 
+        unordered_map<TreeNode*, TreeNode*> parent_track;
+        findParent(root, parent_track);
+        // Now we got the parent 
+        // Now we have to move from the target to every possible directions like left right and parent
+        // We will do level order traversal again this time we have take a visited map to check if that node have been visited
+        unordered_map<TreeNode*, bool> visited;
+        queue<TreeNode*> q;
+        q.push(target);
+        // Mark the target
+        visited[target] = true;
+        int curr_distance = 0;
+        while(!q.empty()){
+            int size = q.size();
+            if(curr_distance == k){
+                break;
+            }
+            curr_distance++;
+            // As we have to get the distance from the node we have to move for every node in the queue for the curr iteration
+            for(int i = 0 ; i < size ; i++){
+                TreeNode* node = q.front();
+                q.pop();
+                // Go left
+                if(node->left && !visited[node->left]){
+                    q.push(node->left);
+                    visited[node->left] = true;
+                }
+                // Go right
+                if(node->right && !visited[node->right]){
+                    q.push(node->right);
+                    visited[node->right] = true;
+                }
+                // Go to parent
+                if(parent_track[node] && !visited[parent_track[node]]){
+                    q.push(parent_track[node]);
+                    visited[parent_track[node]] = true;
+                }
+            }
+        }
+        // Now when curr_distance == k then it will break now the queue content will be our answer
+        vector<int> ans;
+        while(!q.empty()){
+            ans.push_back(q.front()->val);
+            q.pop();
+        }
+        return ans;
+    }
+};
