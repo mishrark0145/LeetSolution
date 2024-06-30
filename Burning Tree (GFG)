@@ -1,0 +1,222 @@
+//{ Driver Code Starts
+//Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+
+
+Node *buildTree(string str) {
+    // Corner Case
+    if (str.length() == 0 || str[0] == 'N')
+        return NULL;
+
+    // Creating vector of strings from input
+    // string after spliting by space
+    vector<string> ip;
+
+    istringstream iss(str);
+    for (string str; iss >> str;)
+        ip.push_back(str);
+
+    // Create the root of the tree
+    Node *root = new Node(stoi(ip[0]));
+
+    // Push the root to the queue
+    queue<Node *> queue;
+    queue.push(root);
+
+    // Starting from the second element
+    int i = 1;
+    while (!queue.empty() && i < ip.size()) {
+
+        // Get and remove the front of the queue
+        Node *currNode = queue.front();
+        queue.pop();
+
+        // Get the current Node's value from the string
+        string currVal = ip[i];
+
+        // If the left child is not null
+        if (currVal != "N") {
+
+            // Create the left child for the current Node
+            currNode->left = new Node(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->left);
+        }
+
+        // For the right child
+        i++;
+        if (i >= ip.size())
+            break;
+        currVal = ip[i];
+
+        // If the right child is not null
+        if (currVal != "N") {
+
+            // Create the right child for the current Node
+            currNode->right = new Node(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->right);
+        }
+        i++;
+    }
+
+    return root;
+}
+
+
+// } Driver Code Ends
+//User function Template for C++
+
+/*
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    Node* findAddr(Node* root, int target){
+        queue<Node*> q;
+        q.push(root);
+        while(!q.empty()){
+            Node* node = q.front();
+            q.pop();
+            if(node->data == target){
+                return node;
+            }
+            if(node->left) q.push(node->left);
+            if(node->right) q.push(node->right);
+        }
+        return nullptr;
+    }
+    
+    void findParent(Node* root, unordered_map<Node*, Node*>& parent_track){
+        // Level order traversal to find the parent of each node
+        queue<Node*> q;
+        q.push(root);
+        while(!q.empty()){
+            Node* node = q.front();
+            q.pop();
+            if(node->left){
+                parent_track[node->left] = node;
+                q.push(node->left);
+            }
+            if(node->right){
+                parent_track[node->right] = node;
+                q.push(node->right);
+            }
+        }
+        return;
+    }
+    int minTime(Node* root, int target) 
+    {
+        // First we wiil find the target address
+        Node* start = findAddr(root, target);
+        // Now find the parent of each node using level order traversal so that we can use that to find the ans
+        unordered_map<Node*, Node*> parent_track;
+        findParent(root, parent_track);
+        // Now we will use the level order traversal and start from the target node and go 1 unit to find the 
+        // Time the tree get fully infeted that means the queue will get empty
+        queue<Node*> q;
+        q.push(start);
+        // Now we will initialize the visited map
+        unordered_map<Node*, bool> visited;
+        visited[start] = true;
+        int timereq = 0;
+        while(!q.empty()){
+            int size = q.size();
+            timereq++;
+            for(int i = 0 ; i < size ; i++){
+                Node* node = q.front();
+                q.pop();
+                // Go left
+                if(node->left && !visited[node->left]){
+                    visited[node->left] = true;
+                    q.push(node->left);
+                }
+                if(node->right && !visited[node->right]){
+                    visited[node->right] = true;
+                    q.push(node->right);
+                }
+                // If the parent exist and not visited
+                if(parent_track[node] && !visited[parent_track[node]]){
+                    visited[parent_track[node]] = true;
+                    q.push(parent_track[node]);
+                }
+            }
+        }
+        // Now we have to subtract 1 from the answer as it will run for the last iteration then in the queue
+        // There will only be leaf nodes and they will not go further and add anything to the queue
+        return timereq - 1;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//{ Driver Code Starts.
+
+int main() 
+{
+    int tc;
+    scanf("%d ", &tc);
+    while (tc--) 
+    {    
+        string treeString;
+        getline(cin, treeString);
+        // cout<<treeString<<"\n";
+        int target;
+        cin>>target;
+        // cout<<target<<"\n";
+
+        Node *root = buildTree(treeString);
+        Solution obj;
+        cout<<obj.minTime(root, target)<<"\n"; 
+
+        cin.ignore();
+
+    }
+
+
+    return 0;
+}
+
+// } Driver Code Ends
