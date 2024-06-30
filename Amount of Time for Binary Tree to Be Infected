@@ -1,0 +1,82 @@
+// Similar to All Nodes Distance K in Binary Tree
+class Solution {
+public:
+    void findParent(TreeNode* root, unordered_map<TreeNode*, TreeNode*>& parent_track){
+        // We will do the level order traversal
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* current = q.front();
+            q.pop();
+            // Go left
+            if(current->left){
+                parent_track[current->left] = current;// Making the parent
+                q.push(current->left);
+            }
+            // Go right
+            if(current->right){
+                parent_track[current->right] = current;
+                q.push(current->right);
+            }
+        }
+        return;
+    }
+    int amountOfTime(TreeNode* root, int start) {
+        // First we will find the node address of the start value
+        TreeNode* begin = findAddr(root, start);
+        // Now as we got our start node address now this question has become nodes which are at a distance of k from begin with slight
+        // change as here we will not break the while loop we will make it run till queue get empty
+        unordered_map<TreeNode*, TreeNode*> parent_track;
+        findParent(root, parent_track);
+        // Similar code we will move radially from the begin node and go till the while loop ends
+        unordered_map<TreeNode*, bool> visited;
+        queue<TreeNode*> q;
+        q.push(begin);
+        // Mark the target
+        visited[begin] = true;
+        int noOfMinutes = 0;
+        while(!q.empty()){
+            int size = q.size();
+            // As we have to get the distance from the node we have to move for every node in the queue for the curr iteration
+            for(int i = 0 ; i < size ; i++){
+                TreeNode* node = q.front();
+                q.pop();
+                // Go left
+                if(node->left && !visited[node->left]){
+                    q.push(node->left);
+                    visited[node->left] = true;
+                }
+                // Go right
+                if(node->right && !visited[node->right]){
+                    q.push(node->right);
+                    visited[node->right] = true;
+                }
+                // Go to parent
+                if(parent_track[node] && !visited[parent_track[node]]){
+                    q.push(parent_track[node]);
+                    visited[parent_track[node]] = true;
+                }
+            }
+            // Now this get infected 1 plus minutes
+            noOfMinutes++;
+        }
+        // Now we have to subtract 1 from the answer as it will run for the last iteration then in the queue
+        // There will only be leaf nodes and they will not go further and add anything to the queue
+        return noOfMinutes - 1;
+    }
+
+    TreeNode* findAddr(TreeNode* root, int start){
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* node = q.front();
+            q.pop();
+            if(node->val == start){
+                return node;
+            }
+            if(node->left) q.push(node->left);
+            if(node->right) q.push(node->right);
+        }
+        return nullptr;
+    }
+};
