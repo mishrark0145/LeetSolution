@@ -1,0 +1,39 @@
+// Similar to BuildTree uisng inorder and preorder look the code from there then come here and then you will be able to understand it completely
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        // Same as BuildTree using inorder and preorder now here the roots will lie from the last in the postorder 
+        map<int, int> inmap;
+        for(int i = 0 ; i < inorder.size() ; i++){
+            inmap[inorder[i]] = i;
+        }
+        TreeNode* root = makeTree(inorder, 0, inorder.size() - 1, postorder, 0, postorder.size() - 1, inmap);
+        return root;
+    }
+
+    TreeNode* makeTree(vector<int>& inorder, int inStart, int inEnd, vector<int>& postorder, int postStart, int postEnd, map<int,int>& inmap){
+        if(postStart > postEnd || inStart > inEnd) return nullptr;
+        TreeNode* root = new TreeNode(postorder[postEnd]);
+        // index of the root
+        int indRoot = inmap[root->val];
+        // Number of element on the right side of the inorder
+        int numsLeft = indRoot - inStart;
+        // Go left
+        root->left = makeTree(inorder, inStart, indRoot - 1, postorder, postStart, postStart + numsLeft - 1, inmap);
+        // Go right
+        root->right = makeTree(inorder, indRoot + 1, inEnd, postorder, postStart + numsLeft, postEnd - 1, inmap);
+        return root;
+    }
+};
