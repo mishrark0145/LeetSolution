@@ -1,0 +1,36 @@
+// Time Complexity 
+/*
+    For a Complete Binary Tree the maxm height at any time cannot be more than log(N) Now we will at
+    max traverse the log(N) nodes and for each node we are finding the left and right height
+    that take around log(N) time therefore TC = O(Log^2(N))
+*/
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        // Now here we will use the property of the complete binary tree if the last level is filled completely that
+        // is right height == left height then totoal number of nodes will be 2^height - 1
+        // But if it is not then we will go to the left subtree and find the same left and right height do this agian
+        // If we did not get that we will agian go to the left and right subtee and do that again 
+        // One thing if the height is not equal then we will have to do 1 plus as we have to count the node from where
+        // We have turned left and right
+        if(root == nullptr) return 0;
+        int lh = leftHeight(root);
+        int rh = rightHeight(root);
+        if(lh != rh){
+            return 1 + countNodes(root->left) + countNodes(root->right);
+        }
+        else{
+            return pow(2, lh) - 1;
+        }
+    }
+
+    int leftHeight(TreeNode* node){
+        if(!node) return 0;
+        return 1 + leftHeight(node->left);
+    }
+
+    int rightHeight(TreeNode* node){
+        if(!node) return 0;
+        return 1 + rightHeight(node->right);
+    }
+};
