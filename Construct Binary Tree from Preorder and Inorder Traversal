@@ -1,0 +1,56 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+// Always remember if you are getting tle in recusive solution then we should pass any vector things by reference
+// Bcz if we dont do this then the funtion will make a copy and then it will take time and memory 
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        // We know in the preorder the first number is root now knowing that if we check in the inorder and find that number now 
+        // Going left will give the root left element not in any order and going right from the number will give right of the root
+        // Now using this we can solve this problem using recursion 
+        map<int,int> inmap;
+        // We will hash the inorder array so that we can find the root index in the inorder that we have to find from the preorder array
+        for(int i = 0 ; i < inorder.size() ; i++){
+            inmap[inorder[i]] = i;
+        }
+        TreeNode* root = buildTree(preorder, 0, preorder.size() - 1, inorder, 0 , inorder.size() - 1, inmap);
+        return root;
+    }
+
+    TreeNode* buildTree(vector<int>& preorder, int preStart, int preEnd, vector<int>& inorder, int inStart, int inEnd, map<int,int>& inmap){
+        // Now we will check for the conditon suppose if the inStart > inEnd or preStart > preEnd that means we are pointing to null
+        if(preStart > preEnd || inStart > inEnd) return nullptr;
+
+        // We will first build the node that is the root node And the root will be at preStart index
+        TreeNode* root = new TreeNode(preorder[preStart]);
+
+        // Now to find the index of the root node in the inorder array
+        int indRoot = inmap[root->val];
+
+        // Now we have to know how many element we have to take in the left side of the root 
+        int numsLeft = indRoot - inStart;
+        // Now we will again build the tree 
+        // Left side
+        // Starting of the preStart will be 1 plus the previous start
+        // End of the preorder will be preStart + number of element on the left side of the root
+        // For inorder instart will be same for left side and inEnd will be index of root - 1
+        root->left = buildTree(preorder, preStart + 1, preStart + numsLeft, inorder, inStart, indRoot - 1, inmap);
+        
+        // Right side
+        // Staring of the prestart will be from preStart + numsLeft(number of element that has been gone to the left side) + 1
+        // End of the preorder will be same preEnd
+        // For inorder of the right side inStart will be indRoot + 1 and inEnd will be same inEnd
+        root->right = buildTree(preorder, preStart + numsLeft + 1, preEnd, inorder, indRoot + 1, inEnd, inmap);
+
+        return root;   
+    }
+};
