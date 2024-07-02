@@ -1,0 +1,94 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        // We will do the level order traversal for serialization 
+        if(root == nullptr) return "";
+        string s = "";
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* curNode = q.front();
+            q.pop();
+            // Now if the node is null then we will append #
+            
+            if(curNode == nullptr){
+                s.append("#,");
+            }
+            // Else we will append the value plus the comma
+            else{
+                s.append(to_string(curNode->val) + ',');
+            }
+            if(curNode != nullptr){
+                // Here we will push the left and right despite if it is null or not 
+                q.push(curNode->left);
+                q.push(curNode->right);
+            }
+        }
+        cout<<s<<endl;
+        return s;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data.size() == 0) return nullptr;
+        // Then data will look like this 1,2,3,#,#,4,5 something like that and we know we wanted only the number of # not commas it just
+        // Used for the separation part
+        // First we will make the string to be readable as objects 
+        stringstream s(data);
+        // Now we have to read the each object before comma for this we will use getline parameters are from whihc string we are looking
+        // Second storing the string and last the delimeter after which input we have to stop reading 
+        string str;
+        getline(s, str, ',');
+        // str will have the first number like for the ex given above it will be 1
+        // We will make this as a root bcz we have done level order traversal
+        TreeNode* root = new TreeNode(stoi(str));
+        // Now will add this in the queu
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            // Now here we have to go till next objects in s before comma
+            // like 1 is there in the s left is just next of 1 i.e. 2 and right is again just go right in s 
+            // Get the front node in the queue
+            TreeNode* node = q.front();
+            q.pop();
+
+            // Read the value of the left
+            // child from the serialized data
+            getline(s, str, ',');
+            // If the value is not "#", create a new
+            // left child and push it to the queue
+            if (str != "#") {
+                TreeNode* leftNode = new TreeNode(stoi(str));
+                node->left = leftNode;
+                q.push(leftNode);
+            }
+
+            // Read the value of the right child
+            // from the serialized data
+            getline(s, str, ',');
+            // If the value is not "#", create a
+            // new right child and push it to the queue
+            if (str != "#") {
+                TreeNode* rightNode = new TreeNode(stoi(str));
+                node->right = rightNode;
+                q.push(rightNode);
+            }
+        }
+        return root;
+    }
+};
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser, deser;
+// TreeNode* ans = deser.deserialize(ser.serialize(root));
