@@ -1,0 +1,36 @@
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        // To make the linkedlist without using extra space i.e. in O(1) space
+        // We will use the property of the pre-order traversal first we have the root then the left subtree then following it we have
+        // left subtree rightmost node to root(curr node) right child then right subtree
+        // So we can see root -> left -> right
+        // So to do it in place we have to change the connection 
+        // Takin the ex1st  given in the description root(1) rightmost in the left subtree(4) so we have
+        // To connect that to root rightchild(5) now after that we have to remove the connection of the root right
+        // root->right == nullptr
+        // now if the left child of the root is not there then no need to do anything move on to the next node i.e. 
+        // root = root->right
+        // Now we will do this till the cur node becomes null
+
+        TreeNode*  cur = root;
+        while(cur){
+            // If current left is not null
+            if(cur->left){
+                // Find the rightmost child in the left subtree
+                TreeNode* prev = cur->left;
+                // Till prev right is not null
+                while(prev->right){
+                    prev = prev->right;
+                }
+                // Now we have to make a conn
+                prev->right = cur->right;
+                cur->right = cur->left;
+                cur->left = nullptr;
+            }
+            // If there is no left child just go right
+            cur = cur->right;
+        }
+        return;
+    }
+};
