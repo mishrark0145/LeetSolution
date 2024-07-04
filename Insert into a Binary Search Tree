@@ -1,0 +1,31 @@
+class Solution {
+public:
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        // Find where the node can be at the leaf node and if you get the null just put the node there 
+        TreeNode* newNode = new TreeNode(val);
+        if(root == nullptr) return newNode;
+        TreeNode* curr = root;
+        TreeNode* prev;
+        while(curr != nullptr){
+            // Make prev = curr
+            prev = curr;
+            if(curr->val < val){
+                // Go right
+                curr = curr->right;
+            }
+            else{
+                curr = curr->left;
+            }
+        }
+        // Now we will get out of the while loop as curr will be pointing to nullptr
+        // Now we have to just make a join to the prev 
+        if(prev->val < val){
+            // join the newNode on the right
+            prev->right = newNode;
+        }
+        else{
+            prev->left = newNode;
+        }
+        return root;
+    }
+};
