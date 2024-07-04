@@ -1,0 +1,21 @@
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        // Time Complexity = O(Log(N)) where N is number of nodes 
+        while(true){
+            if(!root){
+                return nullptr;
+            }
+            if(root->val == val) return root;
+            // go right
+            if(val > root->val){
+                root = root->right;
+            }
+            // go left
+            else{
+                root = root->left;
+            }
+        }
+        return nullptr;
+    }
+};
