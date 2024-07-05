@@ -1,0 +1,29 @@
+// To find the Kth largest just do the right root left in the inorder traversal you will get the answer
+
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        // We will do the inorder traversal till k times
+        // As we know the inorder for bst is in sorted order so if we get the root k times we will
+        // check this through count then we will change the ans to node->val
+        int count = 0;
+        int ans;
+        findKthSmallest(root, k, count, ans);
+        return ans;
+    }
+
+    void findKthSmallest(TreeNode* root, int k, int& count, int& ans){
+        if(count >= k) return;
+        if(root->left) findKthSmallest(root->left, k, count, ans);
+        // since we have done with the left we will get the first node therefore we will increase
+        // The count
+        count++;
+        // Now if the count == k then that means the current root val is the ans
+        if(count == k){
+            ans = root->val;
+            return;
+        } 
+        // Go right
+        if(root->right) findKthSmallest(root->right, k, count, ans);
+    }
+};
