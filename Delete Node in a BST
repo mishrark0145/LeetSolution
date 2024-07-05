@@ -1,0 +1,57 @@
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        // We will use the approach for deleting the node is 
+        // if there node->left->val == key then we will make the node->left = node->left->left if it is not null
+        // and the node->left left subtree last right child will point to node->left->right 
+        // upper is for if key is found on left if on right there will only be slight change rest will be same
+        // There will be edge cases that we will discuss later
+        if(root == nullptr) return nullptr;
+        // suppose we get the root as key then just call the helper function 
+        if(root->val == key){
+            return helper(root);
+        }
+        TreeNode* dummy = root;
+        while(root != nullptr){
+            if(root->val > key){
+                if(root->left != nullptr && root->left->val == key){
+                    root->left = helper(root->left);
+                    break;
+                }
+                else{
+                    root = root->left;
+                }
+            }
+            else{
+                if(root->right != nullptr && root->right->val == key){
+                    root->right = helper(root->right);
+                    break;
+                }
+                else{
+                    root = root->right;
+                }
+            }
+        }
+        return dummy;
+    }
+
+    TreeNode* helper(TreeNode* node){
+        if(node->left == nullptr){
+            return node->right;
+        }
+        else if(node->right == nullptr){
+            return node->left;
+        }
+        TreeNode* rightChild = node->right;
+        TreeNode* lastRight = right(node->left);
+        lastRight->right = rightChild;
+        return node->left;
+    }
+
+    TreeNode* right(TreeNode* node){
+        if(node->right == nullptr){
+            return node;
+        }
+        return right(node->right);
+    }
+};
