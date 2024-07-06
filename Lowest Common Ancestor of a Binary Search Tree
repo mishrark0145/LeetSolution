@@ -1,0 +1,37 @@
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        // We know how to find LCA in BT now in BST it is simple
+        // Node can be i.e. p and q can be at different side then we have to return the current node
+        // also if one of them are equal then we also have to return the current node
+        // Now the two cases when p and q both are at one side i.e. left and right then change the lca to current node
+        // And move accordingly to left or right
+        int pVal = p->val;
+        int qVal = q->val;
+        while(root != nullptr){
+            int curVal = root->val;
+            // We can remove the below two if case bcz suppose the last two if cases were not there then there
+            // only can be these two case and in this case we only have to return the root
+            // if(qVal == curVal || pVal == curVal){
+            //     return root;
+            // }
+            // // p is at right and q is left or p is at left and q is at right
+            // // return root
+            // else if((pVal > curVal && qVal < curVal) || (pVal < curVal && qVal > curVal)){
+            //     return root;
+            // }
+            if(curVal > pVal && curVal > qVal){
+                root = root->left;
+            }
+            else if(curVal < pVal && curVal < qVal){
+                root = root->right;
+            }
+            else{
+                // return the root as there can only be the two if condition and in both we have to return the root
+                return root;
+            }
+        }
+        // If we did not get any solution from the while loop above then return nullptr
+        return nullptr;
+    }
+};
