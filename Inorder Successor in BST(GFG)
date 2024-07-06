@@ -1,0 +1,27 @@
+class Solution{
+  public:
+    // returns the inorder successor of the Node x in BST (rooted at 'root')
+    Node * inOrderSuccessor(Node *root, Node *x)
+    {
+        // Simple code as we need successor so we will take a variable if we get the curr node < less than we will move right
+        // and no change in the variable but if we got greater then we will assign that and move left
+        Node* successor = nullptr;
+        while(root != nullptr){
+            // if the data is equal then we have to go to right bcz left will have small value so we can get less value
+            // so we will go right but there will be no change in the successor
+            if(root->data == x->data){
+                root = root->right;
+            }
+            else if(root->data < x->data){
+                // we will go left and there will be no change in successor as value is less
+                root = root->right;
+            }
+            else{
+                // go left
+                successor = root;
+                root = root->left;
+            }
+        }
+        return successor;
+    }
+};
