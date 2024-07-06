@@ -1,0 +1,116 @@
+// Here the solution has TC = O(NLogN) bcz here we are sorting the prorder array also there is an extra space complexity of O(N)
+
+class Solution {
+public:
+    void getInorder(vector<int>& inorder, vector<int> preorder){
+        sort(preorder.begin(), preorder.end());
+        for(auto it : preorder){
+            inorder.push_back(it);
+        }
+        return;
+    }
+
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        // This question if asked in binary tree then we need the inorder bcz that will give the left and right of the root node
+        // which we will find in the preorder but in BST we can simply sort the preorder and we will get the inorder traversal bcz
+        // In BST inorder is in sorted order
+        vector<int> inorder;
+        getInorder(inorder, preorder);
+        // Now this question is similar to constructing a binary tree from inorder and preorder traversal
+        map<int,int> inmap;
+        for(int i = 0 ; i < inorder.size() ; i++){
+            inmap[inorder[i]] = i;
+        }
+        TreeNode* root = makeTree(inorder, 0, inorder.size() - 1, preorder, 0, preorder.size(), inmap);
+        return root;
+    }
+
+    TreeNode* makeTree(vector<int>& inorder, int inStart, int inEnd, vector<int>& preorder, int preStart, int preEnd, map<int,int>& inmap){
+        if(preStart > preEnd || inStart > inEnd) return nullptr;
+        TreeNode* root = new TreeNode(preorder[preStart]);
+        // find the index of the root in the inorder
+        int rootInd = inmap[root->val];
+
+        // calculate how many are there in the left of the root index in the inorder array
+        int leftnums = rootInd - inStart;
+
+        root->left = makeTree(inorder, inStart, rootInd - 1, preorder, preStart + 1, preStart + leftnums, inmap);
+        root->right = makeTree(inorder, inStart + leftnums + 1, inEnd, preorder, preStart + leftnums + 1, preEnd, inmap);
+        return root;
+    }
+};
+
+// 2nd solution
+// TC = O(N^2) and space complexity = O(1) apart from auxilary stack space
+
+class Solution {
+public:
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        // We will be using this sigle array to make the BST here we can see in BST  preorder root will be at 0th index now to get
+        // where its right and left subtree nodes are just traverse the preordr from rootindex + 1 and first element greater than root-val
+        // return that as right index and then left subtree is from (1,rightindex-1) and right subtree is from(rightindex, end)
+        TreeNode* root = makeBST(preorder, 0, preorder.size() - 1);
+        return root;
+    }
+
+    TreeNode* makeBST(vector<int>& preorder, int start, int end){
+        if(start > end) return nullptr;
+
+        TreeNode* root = new TreeNode(preorder[start]);
+
+        // To get the index of the right subtree stating 
+        int rightInd = end + 1;
+        for(int i = start + 1 ; i <= end ; i++){
+            if(preorder[i] > root->val){
+                rightInd = i;
+                break;
+            }
+        }
+        // Go left
+        root->left = makeBST(preorder, start + 1, rightInd - 1);
+        // Go right
+        root->right = makeBST(preorder, rightInd, end);
+        return root;
+    }
+};
+
+// Optimat solution
+// TC = O(N) and space is O(1) apart from auxilary stack space
+
+class Solution {
+public:
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        // Here we will use the bound property. Initially, the root node should lie between INT_MIN and INT_MAX.
+        // As we process elements, we adjust the bounds. If an element is less than the root, it goes to the left subtree.
+        // For the left subtree, the bound changes to (INT_MIN, root->val). For the right subtree, the lower bound changes.
+        int index = 0;
+        TreeNode* root = makeBST(preorder, index, INT_MAX);
+        return root;
+    }
+
+private:
+    TreeNode* makeBST(const vector<int>& preorder, int& index, int bound) {
+        // Index is passed by reference because if the recursion backtracks, the index should not revert to its previous value.
+        // We are making the tree using the value at each index, so no need to go back.
+        // If the current index value is greater than bound or index is equal to preorder.size(), return nullptr.
+        if (index == preorder.size() || preorder[index] > bound) return nullptr;
+        
+        // Create a new TreeNode with the current element.
+        TreeNode* root = new TreeNode(preorder[index]);
+        
+        // Increment the index to move to the next element.
+        index++;
+        
+        // Now go to the left subtree. The upper bound changes because the left child must be less than the current node.
+        root->left = makeBST(preorder, index, root->val);
+        
+        // Now go to the right subtree. The upper bound remains the same but the lower bound changes.
+        root->right = makeBST(preorder, index, bound);
+        
+        return root;
+    }
+};
+
+
+
+
