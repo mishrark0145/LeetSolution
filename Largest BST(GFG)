@@ -1,0 +1,59 @@
+class Solution{
+public:
+    // Return the size of the largest sub-tree which is also a BST
+    
+    void postorder(Node* root, pair<pair<int,int>, int>& triplet){
+        if(root == nullptr){
+            // We got the null so size = 0, largest is INT_MIN and smallest is INT_MAX
+            triplet.first.first = 0;
+            triplet.first.second = INT_MIN;
+            triplet.second = INT_MAX;
+            return;
+        }
+        
+        pair<pair<int,int>, int> leftTriplet;
+        pair<pair<int,int>, int> rightTriplet;
+        
+        // go left
+        postorder(root->left, leftTriplet);
+        // Now we will take the left size, largest, and smallest
+        int leftSize = leftTriplet.first.first;
+        int leftLargest = leftTriplet.first.second;
+        int leftSmallest = leftTriplet.second;
+        
+        // go right
+        postorder(root->right, rightTriplet);
+        // Now we will take the right size, largest, and smallest
+        int rightSize = rightTriplet.first.first;
+        int rightLargest = rightTriplet.first.second;
+        int rightSmallest = rightTriplet.second;
+        
+        // now we are at the node and we have to compare it the largest from the left and smallest from the right to the current node
+        int nodeValue = root->data;
+        
+        if(leftLargest < nodeValue && rightSmallest > nodeValue){
+            // size would now be leftSize + rightSize + 1
+            triplet.first.first = leftSize + rightSize + 1;
+            // so we have to check the largest from the left, right, and node
+            triplet.first.second = max(nodeValue, rightLargest);
+            // we will check the smallest from the left, right, and node
+            triplet.second = min(nodeValue, leftSmallest);
+        } else {
+            // we did not meet the condition, size would be largest of left and right size and largest would be INT_MAX and smallest INT_MIN
+            triplet.first.first = max(leftSize, rightSize);
+            triplet.first.second = INT_MAX;
+            triplet.second = INT_MIN;
+        }
+    }
+    
+    int largestBst(Node *root) {
+        // We will use the basic algorithm if we have the node its largest in the left subtree and smallest in the right subtree
+        // largest < node < smallest then that node will be a Valid BST thus we will make the size = 1 + left size + right size
+        // if it is not, just take the largest size of the right and left subtree and set largest to INT_MAX and smallest to INT_MIN
+        // so we have to pass three variables with each node {size, largest, smallest}
+        // also we have to do this from leaf so we have to do the postorder traversal
+        pair<pair<int,int>, int> triplet;
+        postorder(root, triplet);
+        return triplet.first.first;
+    }
+};
