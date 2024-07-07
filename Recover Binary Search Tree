@@ -1,0 +1,42 @@
+class Solution {
+private:
+    TreeNode* first;
+    TreeNode* middle;
+    TreeNode* last;
+    TreeNode* prev;
+public:
+    void recoverTree(TreeNode* root) {
+        // We will use the inorder traversal to get the answer there can be two cases 
+        // 1st is that the two nodes are not adjacent then we have to consider first and second violation
+        // store 2 nodes while 1st violation and if we get the 2nd then store violating one and then swap with the 1st violating one
+        // Now if they are adjacent to each other then there will only be one violation so just swap those two
+        first = nullptr ; prev = nullptr ; middle = nullptr ; last = nullptr;
+        inorder(root);
+        // 2 violation, then swap first and last
+        if(first && last) swap(first->val, last->val);
+        // they are adjacent swap first and middle
+        else if(first && middle) swap(first->val, middle->val);
+    }
+
+    void inorder(TreeNode* root){
+        if(root == nullptr) return;
+        // go left
+        inorder(root->left);
+        // Now we are visiting the node
+        if(prev != nullptr && (root->val < prev->val)){
+            // now check if this voilation is the second or first violation
+            if(first == nullptr){
+                // first violation , we have to store the prev and the root
+                first = prev;
+                middle = root;
+            }
+            else{
+                // second violation, then we have to only store the current node i.e root
+                last = root;
+            }
+        }
+        // now before going right we have to change the prev
+        prev = root;
+        inorder(root->right);
+    }
+};
