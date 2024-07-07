@@ -1,0 +1,44 @@
+class BSTIterator {
+public:
+// We will use a stack to do this operation here, when BSTIterator is called it has the root node pointer now we will use the property of the
+// Inorder i.e. left node right , now here we will go to then left end and store it in the stack 
+// Now then if a next call is happened then we have to return the top element and that we will do in O(1) time ,
+// Now if there is a right of the top element we have to push all the left from that right of top node just like we did for the BSTIterator
+// Now as for BST its height is H then time complexity and space to do the stack operation is O(H) and O(H)
+    stack<TreeNode*> st;
+    BSTIterator(TreeNode* root) {
+        while(root != nullptr){
+            st.push(root);
+            root = root->left;
+        }
+    }
+    // the average TC will be O(1) as there can be a scenario i have to call N next calls
+    // and we have to push N elements in the stack so overall N/N = 1 and space complexity O(H)
+    int next() {
+        TreeNode* node = st.top();
+        st.pop();
+        int next = node->val;
+        // check if this has right then push all the elements in the stack that will lie on left
+        if(node->right){
+            node = node->right;
+            while(node != nullptr){
+                st.push(node);
+                node = node->left;
+            }
+        }
+        return next;
+    }
+    
+    bool hasNext() {
+        // if the stack size is not zero then return true
+        if(st.size() > 0) return true;
+        else return false;
+    }
+};
+
+/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator* obj = new BSTIterator(root);
+ * int param_1 = obj->next();
+ * bool param_2 = obj->hasNext();
+ */
