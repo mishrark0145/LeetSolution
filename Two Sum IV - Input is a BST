@@ -1,0 +1,76 @@
+ // Check for Striver solution using one class BSTIterator to solve this clean code
+class Solution {
+    private:
+    stack<TreeNode*> nextSt;
+    stack<TreeNode*> beforeSt;
+public:
+
+    void findNextBefore(TreeNode* root){
+        TreeNode* nextPtr = root;
+        TreeNode* beforePtr = root;
+        while(nextPtr != nullptr || beforePtr != nullptr){
+            if(nextPtr !=nullptr){
+                nextSt.push(nextPtr);
+                nextPtr = nextPtr->left;
+            }
+            if(beforePtr != nullptr){
+                beforeSt.push(beforePtr);
+                beforePtr = beforePtr->right;
+            }
+        }
+    }
+
+    int findNext(){
+        // take the top of the nextSt 
+        TreeNode* node = nextSt.top();
+        nextSt.pop();
+        int next = node->val;
+        // if the node has right then we have to push all the left from taking the right of node till last left
+        if(node->right){
+            node = node->right;
+            while(node != nullptr){
+                nextSt.push(node);
+                node = node->left;
+            }
+        }
+        return next;
+    }
+
+    int findBefore(){
+        TreeNode* node = beforeSt.top();
+        beforeSt.pop();
+        int before = node->val;
+        if(node->left){
+            node = node->left;
+            while(node != nullptr){
+                beforeSt.push(node);
+                node = node->right;
+            }
+        }
+        return before;
+    }
+    bool findTarget(TreeNode* root, int k) {
+        // we can solve this by first finding the inorder traversal then it will become the two
+        // sum question but here we are using O(n) space and that is not a good solution
+        // We will use the next and before property that we have done in BSTITerator question 
+        // as solving for two sum we are using inorder so instead of storing it we will what the pointers next and before to do this
+        // first we should have two stacks that has initial next and before we can make this by using contructor
+        findNextBefore(root);
+        // Now we will check if the next and before sum is greater equal or smaller and on these condition we will do the next iteration
+        int next = findNext();
+        int before = findBefore();
+        // If next becomes greater than before that means no target is found hence we will break the loop
+        while(next < before){
+            if(next + before > k){
+                before = findBefore();
+            }
+            else if ( next + before < k){
+                next = findNext();
+            }
+            else{
+                return true;
+            }
+        }
+        return false;
+    }
+};
