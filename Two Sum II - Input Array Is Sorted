@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        // Simple two pointer question we will have left and right pointer
+        // three case there is sum > target right pointer will get reduced if sum < target left pointer increase
+        // last case would be equal then just push the ans and break
+        int leftPointer = 0;
+        int rightPointer = numbers.size() - 1;
+        vector<int> ans;
+        for(rightPointer, leftPointer ; rightPointer > leftPointer ;  ){
+            if(numbers[rightPointer] + numbers[leftPointer] == target){
+                ans.push_back(leftPointer + 1);
+                ans.push_back(rightPointer + 1);
+                break;
+            }
+            else if(numbers[rightPointer] + numbers[leftPointer] > target){
+                rightPointer--;
+            }
+            else{
+                leftPointer++;
+            }
+        }
+        return ans;
+    }
+};
