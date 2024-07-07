@@ -1,3 +1,4 @@
+// TC = O(N) and Space Complexity = O(1) ignoring the auxilary stack space
 class Solution {
 private:
     TreeNode* first;
@@ -10,7 +11,8 @@ public:
         // 1st is that the two nodes are not adjacent then we have to consider first and second violation
         // store 2 nodes while 1st violation and if we get the 2nd then store violating one and then swap with the 1st violating one
         // Now if they are adjacent to each other then there will only be one violation so just swap those two
-        first = nullptr ; prev = nullptr ; middle = nullptr ; last = nullptr;
+        first = nullptr ; middle = nullptr ; last = nullptr;
+        prev = new TreeNode(INT_MIN);
         inorder(root);
         // 2 violation, then swap first and last
         if(first && last) swap(first->val, last->val);
