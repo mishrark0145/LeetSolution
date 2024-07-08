@@ -1,0 +1,56 @@
+// Best Solution O(N)
+
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+        // we will check how many times it has violated the condition, it is quite simple
+        // if the array is roated and previously it is sorted then there will be only one 
+        // violation between it also we have to check if the last is greater than first as that
+        // will also count as violation bcz we are rotating it by position
+        int count = 0;
+        for(int i = 1 ; i < nums.size() ; i++){
+            if(nums[i - 1] > nums[i]) count++;
+        }
+        // check for the first and the last element
+        if(nums[nums.size() - 1] > nums[0]) count++;
+
+        // now if the count <= 1 then the array is rotated sorted otherwise false
+        if(count <= 1) return true;
+        return false;
+    }
+};
+
+// O(N^2)
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+        // Brute froce is we can have nums.size() - 1 position can be shifted so
+        // we can check it for each x from 1 to nums.size() - 1
+        // edge case if the size is 1 or 0 return true
+        if(nums.size() <= 1) return true;
+        int n = nums.size();
+        for(int x = 0 ; x < n ; x++){
+            // we will make a temp array from formula
+            vector<int> temp;
+            for(int i = 0 ; i < n ; i++){
+                temp.push_back(nums[(i + x) % n]);
+            }
+            // now temp will have an array now if it is sorted then return true otherwise
+            // iterate over x
+            if(sorted(temp)){
+                return true;
+            }
+        }
+        // if we get out of the array then simple return false
+        return false;
+    }
+
+    bool sorted(vector<int>& temp){
+        for(int i = 0 ; i < temp.size() - 1 ; i++){
+            if(temp[i] > temp[i + 1]){
+                return false;
+            }
+        }
+        return true;
+    }
+};
