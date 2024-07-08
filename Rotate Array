@@ -1,0 +1,59 @@
+// TC = O(2N) and Space complexity is O(1)
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        // This is the reversal algorithm
+        // Now without using extra space 
+        // first we have to make it in the left rotate question 
+        int n = nums.size();
+        int x = n - k % n;
+        // so x left rotated
+        // now to solve this we have to reverse first (0 , x) then reverse(x , n)
+        // and lastly reverse the whole array
+        // first x element reversed
+        reverse(nums.begin() , nums.begin() + x);
+        // last n - x element reversed
+        reverse(nums.begin() + x, nums.begin() + n );
+        // now reverse the whole array
+        reverse(nums.begin(), nums.begin() + n);
+        // reverse take range as [First, last) i.e. first index inclusive and last exclusive
+    }
+};
+
+// TLE Brute force TC = O(N^2) space is O(1)
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        // we first have to take the left rotation
+        // for that we will subtract n - k%n to get the left roatation
+        int n = nums.size();
+        int x = n - k % n;
+        // we will do one rotation at a time and do it x times
+        for(int i = 0 ; i < x ; i++){
+            // do the single rotation
+            int lastElement = nums[0];
+            for(int ptr = 1 ; ptr < n ; ptr++){
+                nums[ptr - 1] = nums[ptr];
+            }
+            // at last change the last elmenet with the integer that we have stored
+            nums[n - 1] = lastElement;
+        }
+    }
+};
+
+// Space Complexity O(N) and TC = O(N)
+class Solution {
+public:
+  void rotate(vector<int>& nums, int k){
+      // here we will use the formula , so we have to make the copy of the nums
+      vector<int> copy;
+      for(auto it : nums){
+          copy.push_back(it);
+      }
+      int n = nums.size();
+      int x = n - k % n; // to make the left rotated
+      for(int i = 0 ; i < n ; i++){
+          nums[i] = copy[(i + x) % n];
+      }
+  }  
+};
