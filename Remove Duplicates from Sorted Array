@@ -1,3 +1,33 @@
+// Good solution
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        // Optimal solution 
+        // We know one thing 1st element will be unique now we have to check next element uique
+        // if it is unique than we will put in front of the 1st element and move i and j , right
+        // we will be using two pointers to do this
+        int i = 0;
+        int j = 1;
+        while(j < nums.size()){
+            if(nums[i] != nums[j]){
+                // if two pointer are not equal we have to give the next of index i to nums[j]
+                nums[i + 1] = nums[j];
+                // now move the pointers by plus 1;
+                i++;
+                j++;
+            }
+            else{
+                // if they are equal move the pointer j only and nothing have to be done 
+                j++;
+            }
+        }
+        // now when the loop will end i will point to the last index for unique so therefore total number of unique elements will be i + 1
+        return i + 1;
+    }
+};
+
+
+// okay solution
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
