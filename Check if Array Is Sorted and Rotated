@@ -1,5 +1,6 @@
 // Best Solution O(N)
-
+// Also if the array is sorted we know there is only one violation that is last is greater than first so if the array get rotated then that violation we get in between the array so thats why we are
+// checking for both 
 class Solution {
 public:
     bool check(vector<int>& nums) {
