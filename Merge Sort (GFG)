@@ -1,0 +1,60 @@
+// Have used extra space
+class Solution
+{
+    public:
+    vector<int> mergeArray;
+    void merge(int arr[], int l, int m, int r)
+    {
+        // this will be used to merge the left(0 , m ) and right(m + 1 , r)
+        int i = l;
+        int j = m + 1;
+        // Clear mergeArray and reserve space to avoid repeated reallocations
+        mergeArray.clear();
+        mergeArray.reserve(r - l + 1);
+        while(i <= m && j <= r){
+            if(arr[i] <= arr[j]){
+                // we will push that in the array[j] and increase j
+                mergeArray.push_back(arr[i]);
+                i++;
+            }
+            else{
+                // push the array[i] and increase i
+                mergeArray.push_back(arr[j]);
+                j++;
+            }
+        }
+        // now after completing the while loop there can be a scenerio where i and j has not reached the end
+        // i not reached the m
+        while(i <= m){
+            mergeArray.push_back(arr[i]);
+            i++;
+        }
+        // j not reache the r
+        while(j <= r){
+            mergeArray.push_back(arr[j]);
+            j++;
+        }
+        // now copy this in the main array
+        for(int x = l ; x <= r ; x++){
+            // as the mergeArrya is starting from zero we have to subtract l from it
+            arr[x] = mergeArray[x - l];
+        }
+    }
+    public:
+    void mergeSort(int arr[], int l, int r)
+    {
+        // we are dividing in right and left then doing the merge operation
+        // we will check for the base condtion Time Complexity is NLog(N)
+        if(l >= r){
+            return;
+        }
+        int m = (l + r) / 2;
+        // left side
+        mergeSort(arr, l , m);
+        // right side
+        mergeSort(arr, m + 1 , r);
+        // now we got the l to m in sorted order in arr and m + 1 to r in sorted 
+        // now we will merge it
+        merge(arr, l, m, r);
+    }
+};
