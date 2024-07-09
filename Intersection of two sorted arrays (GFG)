@@ -1,0 +1,32 @@
+class Solution{
+    public:
+    //Function to return a list containing the intersection of two arrays.
+    vector<int> printIntersection(int arr1[], int arr2[], int N, int M) 
+    { 
+        // if we have been ask to get the intersection of the two sorted arrays again a two poitner approach will work if both elements are equal take it and
+        // move both the pointers otherwise the one which is less move that pointer as we will no find the smaller one as arrays are sorted
+        // so when the while loop will end we will get our common elements so no need to do further
+        vector<int> intersection;
+        int i = 0;
+        int j = 0;
+        while(i < N && j < M){
+            if(arr1[i] < arr2[j]){
+                i++;
+            }
+            else if(arr2[j] < arr1[i]){
+                j++;
+            }
+            // both are equal push that in the answer and increase both i and j by 1
+            else{
+                // as here we have to check for the duplicates so we will check if the last element
+                // in the intersection array should not be equal to the arr1[i]
+                if(intersection.size() == 0 || intersection.back() != arr1[i]){
+                    intersection.push_back(arr1[i]);    
+                }
+                i++;
+                j++;
+            }
+        }
+        return intersection;
+    }
+};
