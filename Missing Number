@@ -1,13 +1,40 @@
+// Optimal Solution
 class Solution {
 public:
     int missingNumber(vector<int>& nums) {
+        // Another optimal solution using XOR
+        // now we know we will have 0 to n elements
+        // and in the array we have 0 to n and one missing that can be 0 or n itself or other middle ones
+        // so now if we have XOR1 which have xor of all from 0 to n
+        // and XOR2 have all the xor of elements in nums
+        // now if we make XOR1 with XOR2 then only the missing number will come as answer
         int n = nums.size();
-        int SN = (n*(n + 1))/ 2;
-        int S = 0;
-        for(auto val : nums){
-            S += val;
+        int XOR1 = 0;
+        int XOR2 = 0;
+        for(int i = 0 ; i < n ; i++){
+            XOR2 = XOR2 ^ nums[i];
+            XOR1 = XOR1 ^ i;
         }
-        int ans = SN - S;
-        return ans;
+        // now in XOR1 there is still one number left i.e. n
+        XOR1 ^= n;
+        // return XOR1 ^ XOR2
+        return XOR1 ^ XOR2;
+    }
+};
+
+// Another Optimal Solution
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        // as we know we have n numbers from 0 to n and the size of the array will tell the vlaue of n
+        int n = nums.size();
+        // in the nums we have all the numbers in the range of 0 to n and one is missing
+        // sum = n*(n + 1)/2 and we know the difference of sum - arraySum = missing number
+        int sum = n*(n + 1) / 2;
+        int arraySum = 0;
+        for(int i = 0 ; i < n ; i++){
+            arraySum += nums[i];
+        }
+        return sum - arraySum;
     }
 };
