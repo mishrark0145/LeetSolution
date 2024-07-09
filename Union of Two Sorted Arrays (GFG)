@@ -1,3 +1,6 @@
+// if we have been ask to get the intersection of the two sorted arrays again a two poitner approach will work if both elements are equal take it and
+// move both the pointers otherwise the one which is less move that pointer as we will no find the smaller one as arrays are sorted
+// so when the while loop will end we will get our common elements so no need to do further
 // TC = O(n + m)
 class Solution{
     public:
@@ -44,3 +47,4 @@ class Solution{
         return unionArr;
     }
 };
+
