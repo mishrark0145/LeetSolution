@@ -22,13 +22,11 @@ public:
         for(int i = 0 ; i < nums.size() ; i++){
             mp[nums[i]]++;
         }
-        int ans = -1;
-        for(int i = 0 ; i < nums.size() ; i++){
-            if(mp[nums[i]] == 1){
-                ans = nums[i];
-                break;
-            } 
+        for(auto it : mp){
+            if(it.second == 1){
+                return it.first;
+            }
         }
-        return ans;
+        return -1;
     }
 };
