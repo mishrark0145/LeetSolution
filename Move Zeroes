@@ -1,0 +1,63 @@
+// Optimal solution
+// TC = O(N) and space complexity is O(1)
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        // in this method we will only iterate over the array only once also the array will get all the zeroes in the last in that pass only
+        // Two pointer approach
+        // first we will find where the first zero is
+        int j = -1;
+        int n = nums.size();
+        for(int i = 0 ; i < n ; i++){
+            if(nums[i] == 0){
+                j = i;
+                break;
+            }
+        }
+        // if j is still -1 no zero in the array no need to do anything
+        if(j == -1) return;
+        // now we will take our pointer which will check the current element if it is non zero then we will swap this with j
+        // bcz j is pointing to the zero elements
+        int i = j + 1;
+        while(i < n){
+            if(nums[i] != 0){
+                // now we will swap them with j index
+                swap(nums[i], nums[j]);
+                // now we will move j++ and i increases by 1
+                j++;
+                i++;
+            }
+            else{
+                // if nums is zero then simply increase i by 1
+                i++;
+            }
+        }
+    }
+};
+
+
+// Time complexity is O(2N) 
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        // We will solve this by counting number of zeroes now if the we are at zero we will simply increase the count of zeroes
+        // else we will shift the current index number to the position currindex - countofzerores
+        // So actually we are shifting the values to the left till how many zeroes have been count like i - count index
+        int countOfZeroes = 0;
+        int n = nums.size();
+        for(int i = 0 ; i < n ; i++){
+            if(nums[i] == 0){
+                countOfZeroes++;
+            }
+            else{
+                // Shift the current index value to the index i - countOfZeroes
+                nums[i - countOfZeroes] = nums[i];
+            }
+        }
+        // now the array will have correct numbers till n - countOfZeroes - 1
+        // after that till n - 1 we have to make it zero
+        for(int i = n - countOfZeroes ; i < n ; i++){
+            nums[i] = 0;
+        }
+    }
+};
