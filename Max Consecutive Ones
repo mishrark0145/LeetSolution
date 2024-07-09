@@ -1,6 +1,8 @@
 class Solution {
 public:
     int findMaxConsecutiveOnes(vector<int>& nums) {
+        // We will take the consecutive ones and if it gets break we will again count the consecutive ones but we will store the prev 
+        // consecutive ones count in an ans by checking if maxm = max(maxm, consecutiveOnes) in the same if condition
         int count = 0;
         int maxm = 0;
         for( int i = 0 ; i < nums.size() ; i++){
