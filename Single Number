@@ -1,10 +1,33 @@
+// Optimal Solution
 class Solution {
 public:
     int singleNumber(vector<int>& nums) {
+        // Every number except for one does not have its duplicate in the nums , and the property of XOR is if we XOR two elements
+        // a ^ a = 0 and a ^ 0 = a , if we XOR all the elements then we will have our ans singleNumber
         int n = nums.size();
-        int ans = 0;
-        for( int i = 0 ; i < n ; i++){
-            ans = ans ^ nums[i];
+        int singleNum = 0;
+        for(int i = 0 ; i < n ; i++){
+            singleNum ^= nums[i];
+        }
+        return singleNum;
+    }
+};
+
+
+// Better Solution
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        unordered_map<int,int> mp;
+        for(int i = 0 ; i < nums.size() ; i++){
+            mp[nums[i]]++;
+        }
+        int ans = -1;
+        for(int i = 0 ; i < nums.size() ; i++){
+            if(mp[nums[i]] == 1){
+                ans = nums[i];
+                break;
+            } 
         }
         return ans;
     }
