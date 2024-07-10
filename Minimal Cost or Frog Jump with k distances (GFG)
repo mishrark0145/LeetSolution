@@ -1,0 +1,58 @@
+// Memoization Top Down O(N*k)
+class Solution {
+  public:
+    int findMinmCost(vector<int>& height, int index, int k, vector<int>& dp){
+        // base condtion
+        if(index == 0){
+            dp[index] = 0;
+            return 0;
+        }
+        if(dp[index] != -1) return dp[index];
+        // now we can go to index + 1 , index + 2 up index + k and in all of that we have to return the minm out of that
+        // we will define a minmCost first
+        int minmCost = 1e9;
+        for(int i = 1 ; i <= k ; i++){
+            // we should not jump negative
+            if(index - i >= 0){
+                int jump = abs(height[index] - height[index - i]) + findMinmCost(height, index - i, k, dp);
+                minmCost = min(minmCost, jump);
+            }
+        }
+        dp[index] = minmCost;
+        // now after this we have the minmCost we will return it
+        return dp[index];
+    }
+    int minimizeCost(vector<int>& height, int n, int k) {
+        // Here we can take many steps from 1 to k
+        // now again we will make this problem starts from n - 1 and go to zero in question it is 1 based indexing i am converting
+        // it to zero based
+        vector<int> dp(n, -1);
+        return findMinmCost(height, n - 1, k, dp);
+    }
+};
+
+// Tabulization
+class Solution {
+  public:
+    int minimizeCost(vector<int>& height, int n, int k) {
+        // Here we can take many steps from 1 to k
+        // now again we will make this problem starts from n - 1 and go to zero in question it is 1 based indexing i am converting
+        // it to zero based
+        vector<int> dp(n, -1);
+        // so for the bottom up approach we need the bottom values now dp[0] = 0 and dp[1] = abs(height[1] - height[0])
+        // other than this not needed bcz the inner loop condtion will take care of that 
+        dp[0] = 0;
+        dp[1] = abs(height[1] - height[0]);
+        for(int index = 2 ; index < n ; index++){
+            int minmCost = 1e9;
+            for(int i = 1 ; i <= k ; i++){
+                if(index - i >= 0){
+                    int jump = abs(height[index] - height[index - i]) + dp[index - i];
+                    minmCost = min(minmCost, jump);
+                }
+            }
+            dp[index] = minmCost;
+        }
+        return dp[n - 1];
+    }
+};
