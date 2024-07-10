@@ -1,3 +1,4 @@
+// Optimal Solution for array containing negative solution 
 class Solution{
     public:
     int lenOfLongSubarr(int A[],  int N, int K) 
@@ -40,3 +41,26 @@ class Solution{
 };
 
 // Brute Force
+// Brute Force O(N^3)
+class Solution{
+    public:
+    int lenOfLongSubarr(int A[],  int N, int K) 
+    { 
+        // we have founded all the subarrays and there sum and checked if that is equal to K
+        // if it is then we will check with previous maxm length and the curr subarray lenght j - i + 1
+        int maxLen = 0;
+        for(int i = 0 ; i < N ; i++){
+            for(int  j = i ; j < N ; j++){
+                int sum = 0;
+                for(int k = i ; k <= j ; k++){
+                    sum += A[k];
+                }
+                if(sum == K){
+                    maxLen = max(maxLen, j - i + 1);
+                }
+            }
+        }
+        return maxLen;
+    } 
+
+};
