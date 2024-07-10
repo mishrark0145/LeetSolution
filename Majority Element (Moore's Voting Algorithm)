@@ -1,0 +1,54 @@
+// Optimal Soulution TC = O(N)
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        // We will be uisng Moores Voitng Algorithm
+        // The algo said to take a count and element now if the count is zero take the element of that index and increase the count
+        // now if the next index elements is equal to the element then increase the count otherwise decrease it 
+        // Now if the count becomes zero repeat the process and at last you will have an element, now if there is an number
+        // with count > n / 2 then that number could only be element otherwise there is no number in the array that satisfies the condn
+        int element;
+        int count = 0;
+        int n = nums.size();
+        // TC = O(N)
+        for(int i = 0 ; i < n ; i++){
+            if(count == 0){
+                // Take the current index number as element
+                element = nums[i];
+                count++;
+                continue;
+            }
+            if(nums[i] == element){
+                //increase the count
+                count++;
+            }
+            else{
+                // it is not equal decrease the count
+                count--;
+            }
+        }
+        // As it is given in the question that the element would exit so directly return the element
+        return element;
+    }
+};
+
+// TC = O(2N) in worst cases it can go to N^2 for unordered map and SC = O(N)
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        // We can use a hashmap to store the count of an element then afterwards just check which one has count > n/2 that is the answer
+        int n = nums.size();
+        unordered_map<int,int> mp;
+        for(int i = 0 ; i < n ; i++){
+            mp[nums[i]]++;
+        }
+        int ans;
+        for(auto it : nums){
+            if(mp[it] > n/2){
+                ans = it;
+                break;
+            }
+        }
+        return ans;
+    }
+};
