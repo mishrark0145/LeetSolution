@@ -1,0 +1,71 @@
+// Optmial Solution taking O(N*LogN) and space of O(N)
+// if worst case scenerio we have to take map as finding the number is log(N) as compared to unordered map O(N)
+// Another optimal solution is sort it first then use two pointer left and right and check if left + right > target move right-- else left++
+// this approach is good when we have to tell "Yes" there is pair of elements that satifies target but to find index this approach is not good below one is good
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        // Now we will use HashMaps to get the solution
+        // we will store the number as key and index as second number
+        // now this we can done and get the soltuion but this will require moving the array two time
+        // so what we can do we will always check the map if target - nums[i] is present or not if it is not
+        // then we will put that in the map and move on but if its present then that will be our answer
+        unordered_map<int,int> mp;
+        vector<int> ans;
+        int n = nums.size();
+        for(int i = 0 ; i < n ; i++){
+            int remaining = target - nums[i];
+            if(mp.find(remaining) != mp.end()){
+                ans.push_back(i);
+                int ind2 = mp[remaining];
+                ans.push_back(ind2);
+                break;
+            }
+            else{
+                // just push the nums[i] and i in the map
+                mp[nums[i]] = i;
+            }
+        }
+        return ans;
+
+        // This is doing by travelling the array twice     
+        // unordered_map<int,int> mp;
+        // int n = nums.size();
+        // for(int i = 0 ; i < n ; i++){
+        //     mp[nums[i]] = i;
+        // }
+        // // Now we will check for each number if target - nums[i] is present in map it is present then simply return i and map[target - nums[i]]
+        // vector<int> ans;
+        // for(int i = 0 ; i < n ; i++){
+        //     // we cannot take the same element thats why if the target - nums[i] == nums[i] then we will get the same indexex {i,i} as answer
+        //     // to avoid that we have to check it 
+        //     if(mp.find(target - nums[i]) != mp.end() && mp[target - nums[i]] != i){
+        //         ans.push_back(i);
+        //         // second index
+        //         ans.push_back(mp[target - nums[i]]);
+        //         break;
+        //     }
+        // }
+        // return ans;
+    }
+};
+
+// Brute Force taking O(N^2)
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n = nums.size();
+        int ind1, ind2;
+        for(int i = 0 ; i < n ; i++){
+            for(int j = 0 ; j < n ; j++){
+                if(i == j) continue;
+                if(nums[i] + nums[j] == target){
+                    ind1 = i;
+                    ind2 = j;
+                    break;
+                }
+            }
+        }
+        return {ind1, ind2};
+    }
+};
