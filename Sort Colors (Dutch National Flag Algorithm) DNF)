@@ -1,0 +1,76 @@
+// Optimal Solution
+// Time Complexity is O(N) as in all the three cases wither mid is increasing or the high is decreasing so overall O(N)
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        // We will use the Dutch National Flag Algorithm
+        // it uses three pointer approach low , mid and high
+        // 0 .... low - 1 -> 0 extreme left
+        // low ... mid - 1 -> 1 
+        // high + 1 .... n - 1 -> 2 extreme right
+        // now one section remains that is mid to high that will have 0/1/2 unsorted order 
+        // So this algo will work on the value of nums[mid] = ?
+        // if nums[mid] == 0 swap(nums[mid], nums[low]) then low++ mid++
+        // if nums[mid] == 1 simply mid++
+        // if nums[mid] == 2 swap(nums[mid], nums[high]) then high--
+        // we are doing this to follow the given conditon for low mid and high i.e. unsorted shold lie in mid to high
+        int n = nums.size();
+        // as 0 to low - 1 is not there for the sorted part we can take low at 0
+        int low = 0;
+        int mid = 0;
+        int high = n - 1;
+        while(mid <= high){
+            if(nums[mid] == 0){
+                swap(nums[mid], nums[low]);
+                low++;
+                mid++;
+            }
+            else if(nums[mid] == 1){
+                mid++;
+            }
+            else{
+                swap(nums[mid], nums[high]);
+                high--;
+            }
+        }
+    }
+};
+
+// O(2N) better solution
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int count0 = 0;
+        int count1 = 0;
+        int count2 = 0;
+        // here 
+        //count0 is the count of red colors
+        //count1 is the count of white colors
+        //count2 is the count of blue colors
+        for(int i = 0 ; i < nums.size() ; i++){
+            if(nums[i] == 0){
+                count0++;
+            }
+            else if(nums[i] == 1){
+                count1++;
+            }
+            else if(nums[i] == 2){
+                count2++;
+            }
+        }
+        int j=0;
+        // Now it is simple we will iterate over counts and keep an pointer to iterate throught the array
+        for(int k=0; k < count0 ; k++){
+            nums[j] = 0;
+            j++;
+        }
+        for(int k=0; k < count1 ; k++){
+            nums[j] = 1;
+            j++;
+        }
+        for(int k=0; k < count2 ; k++){
+            nums[j] = 2;
+            j++;
+        }
+    }
+};
