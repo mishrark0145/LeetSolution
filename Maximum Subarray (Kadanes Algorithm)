@@ -1,0 +1,44 @@
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        // we will sove using Kadanes Algorithm
+        // Take and currSum and a maxmSum now at each iteration add currSum and nums[i]
+        // now take the maxm of maxmSum and currSum 
+        // now if the currSum < 0 then we will make the currSum 0 then again start 
+        // as the question has asked for the maximum subrray sum so we are only considering the positive sum bcz negative has been taken
+        // care of during the max(maxmSum, currSum) so defining currSum to zero when it is negative is working for us
+        int n = nums.size();
+        int currSum = 0;
+        int maxmSum = -1e9;
+        for(int i = 0 ; i < n ; i++){
+            currSum += nums[i];
+            maxmSum = max(maxmSum, currSum);
+            if(currSum < 0){
+                currSum = 0;
+            }
+        }
+        return maxmSum;
+    }
+};
+
+// if we wanted to get the indexes of the maxm subarray sum 
+/*
+
+int startInd = -1;
+int endInd = -1;
+int start;
+int currSum = 0;
+int maxmSum = INT_MAX;
+for(int i = 0 ; i < n ; i++){
+  if(currSum == 0 ) start = i;
+  currSum += nums[i];
+  if(currSum > maxmSum){
+    maxmSum = currSum;
+    startInd = start;
+    endInd = i;
+  }
+  if(currSum < 0){
+    currSum = 0;
+  }
+}
+*/
