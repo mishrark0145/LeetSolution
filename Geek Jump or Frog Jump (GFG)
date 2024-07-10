@@ -1,0 +1,50 @@
+// Memoization Approach Top Down TC = O(N)
+class Solution {
+  public:
+  
+    int findMinmEnergy(vector<int>& height, int index, vector<int>& dp){
+        // base condition
+        if(index < 2){
+            // so there is only two condtion either you are at index 1 or index 0
+            if(index == 1){
+                return dp[index] = abs(height[index] - height[index - 1]);
+            }
+            else{
+                return dp[index] = 0;
+            }
+        }
+        if(dp[index] != -1) return dp[index];
+        // if we take one step
+        int oneStep = abs(height[index] - height[index - 1]) + findMinmEnergy(height, index - 1, dp);
+        int twoStep = abs(height[index] - height[index - 2]) + findMinmEnergy(height, index - 2, dp);
+        // we have to return the minimum
+        dp[index] = min(oneStep, twoStep);
+        return dp[index];
+    }
+  
+    int minimumEnergy(vector<int>& height, int n) {
+        // we will go from n - 1 to 0
+        vector<int> dp(n, -1);
+        return findMinmEnergy(height, n - 1, dp);
+    }
+};
+
+// Bottom up Approach Tabulization
+class Solution {
+  public:
+    int minimumEnergy(vector<int>& height, int n) {
+        // we will go from n - 1 to 0
+        vector<int> dp(n, -1);
+        // We will use the bottom up approach
+        dp[0] = 0;
+        dp[1] = abs(height[1] - height[0]);
+        for(int index = 2 ; index < n ; index++){
+            int oneStep = abs(height[index] - height[index - 1]) + dp[index - 1];
+            int twoStep = abs(height[index] - height[index - 2]) + dp[index - 2];
+            // we have to return the minimum
+            dp[index] = min(oneStep, twoStep);
+        }
+        // at last dp[n - 1] will have the answer
+        return dp[n - 1];
+    }    
+};
