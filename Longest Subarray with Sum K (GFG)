@@ -1,0 +1,42 @@
+class Solution{
+    public:
+    int lenOfLongSubarr(int A[],  int N, int K) 
+    { 
+        // In this approach, we are using the concept of the prefix sum to solve this problem. Here, the prefix sum of a subarray 
+        // ending at index i, simply means the sum of all the elements of that subarray.
+        // We will be using the hash maps to find the longest subarray with the sum equal to K
+        // Now we will use maths here now suppose till index j starting from 0 we have sum equal to s
+        // now we know our target is K so to get a subarray with sum K including this element at index j 
+        // some subarray starting of the previous elements must have sum equal to s - K
+        // So what we will be doing we will store every sum as key to its index while traversing the array 
+        // and at each index we will check for the prefix sum that if(hasmap.find(s - K) != hashmap.end()) if we find that
+        // the the length would be j - hashmap.second and if we got a sum from the staring equal to K we will check for its lenght
+        map<int,int> mp;
+        int maxLen = 0;
+        int sum = 0;
+        for(int i = 0 ; i < N ; i++){
+            sum += A[i];
+            if(sum == K){
+                maxLen = max(maxLen, i + 1);
+            }
+            int remaining = sum - K;
+            // we will check is there any one in the map previously has this as there sum
+            if(mp.find(remaining) != mp.end()){
+                // we got the remaining
+                // lenght will be difference of indexes
+                maxLen = max(maxLen, i - mp[remaining]);
+            }
+            // update the map if the sum is not in the map
+            // We are checking the map before insertion because we want the index to be as 
+            // minimum as possible and so we will consider the earliest index where the sum x-k has occurred.
+            // edge case check in the solution to get more understanding
+            if(mp.find(sum) == mp.end()){
+                mp[sum] = i;
+            }
+        }
+        return maxLen;
+    } 
+
+};
+
+// Brute Force
