@@ -1,0 +1,68 @@
+/*
+Narayana Pandita presented the following simple algorithm to solve this problem in the 14th century.
+
+1.Find the largest index k such that nums[k] < nums[k + 1]. If no such index exists, just reverse nums and done.
+2.Find the largest index l  such that nums[k] < nums[l].
+3.Swap nums[k] and nums[l].
+4.Reverse the sub-array nums[k + 1: n - 1].
+*/
+
+// TC = O(3N)
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        // first from the n - 1 find the break point where we get a dip that is nums[i] < nums[i + 1] 
+        // that means till that index form 0 to i - 1 we have the correct numbers for the next permutation now at index i we need someone
+        // from the right which is just greater than nums[i] so as we know from left till i it is in ascending order so we will just iterate
+        // from n - 1 and we will find the number which is greater than nums[i] just after that we will swap that number with nums[i]
+        // now we have to just reverse the nums from i + 1 to n - 1 to get the next permutation we did this bcz as we know it is in ascending 
+        // order just one number we have swapped to put and that to do the next permutation so just reversing will do the thing 
+        int ind = -1;
+        int n = nums.size();
+        for(int i = n - 2 ; i >= 0 ; i--){
+            if(nums[i] < nums[i + 1]){
+                ind = i;
+                break;
+            }
+        }
+        // now if ind is still - 1 that means we have the last permutation so we have to return the 1st one we can do this by just reversing the nums
+        if(ind == -1){
+            reverse(nums.begin() , nums.end());
+            return;
+        }
+        // now we will find the just greater than nums[ind]
+        for(int i = n - 1 ; i > ind ; i--){
+            if(nums[i] > nums[ind]){
+                swap(nums[i], nums[ind]);
+                break;
+            }
+        }
+        // after that we have to just reverse the arr from ind + 1 to n - 1
+        reverse(nums.begin() + ind + 1, nums.end());
+        return;
+    }
+};
+
+// using STL
+/*The next_permutation function from the C++ Standard Template Library (STL) is designed to rearrange the elements of a sequence into the lexicographically next greater permutation. If such a permutation is not possible, it rearranges the sequence into the lexicographically smallest permutation (sorted in ascending order). The time complexity of the next_permutation function is O(n), where n is the number of elements in the input vector.
+
+Here's an explanation of why the time complexity is O(n):
+
+Find the longest non-increasing suffix: This step involves scanning the vector from right to left to find the first pair of consecutive elements where the left element is less than the right element. This step takes O(n) time in the worst case.
+
+Find the rightmost successor to the pivot: Once the pivot is identified, the next step is to find the smallest element in the suffix that is larger than the pivot. This step is also O(n) because, in the worst case, it involves scanning the entire suffix.
+
+Swap the pivot and successor: Swapping two elements is an O(1) operation.
+
+Reverse the suffix: Reversing the elements of the suffix takes O(n) time in the worst case since it involves swapping each element with its counterpart in the suffix.
+
+Overall, the most time-consuming operations (finding the suffix and reversing it) each take O(n) time, resulting in an overall time complexity of O(n).
+*/
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        // Using STL to find the next permutation
+        next_permutation(nums.begin() , nums.end());
+        return;
+    }
+};
