@@ -1,0 +1,21 @@
+// O(N) 
+class Solution {
+    // Function to find the leaders in the array.
+  public:
+    vector<int> leaders(int n, int arr[]) {
+        // We want to know the maxm from the right so just start from the right also take a maxi as intmin then if we ever get 
+        // arr[i] >= maxi then just make maxi = arr[i] and push that arr[i] in the ans and at last reverse the array 
+        int maxi = INT_MIN;
+        vector<int> ans;
+        for(int i = n - 1 ; i >= 0 ; i--){
+            if(arr[i] >= maxi){
+                ans.push_back(arr[i]);
+                maxi = arr[i];
+            }
+        }
+        // reverse the array 
+        // O(N)
+        reverse(ans.begin() , ans.end());
+        return ans;
+    }
+};
