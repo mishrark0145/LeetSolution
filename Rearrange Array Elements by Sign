@@ -1,0 +1,78 @@
+// TC = O(2*N) worst case best case is when pos and neg are equal O(N + N / 2)
+// This solution take care of the two case if pos == neg and also if they are not while the question only asks for equal one
+class Solution {
+public:
+    vector<int> rearrangeArray(vector<int>& nums) {
+        // We will suppose now if negative and positive number are equal and we have to put alternate positive and neagtive now after that
+        // the remaining ones we will puth in there relative order 
+        // first we will store the negative and positive in two arrays
+        int n = nums.size();
+        vector<int> pos;
+        vector<int> neg;
+        for(int i = 0 ; i < n ; i++){
+            if(nums[i] > 0){
+                pos.push_back(nums[i]);
+            }
+            else{
+                neg.push_back(nums[i]);
+            }
+        }
+        // now if pos is greater than negative that means in the ans array alternat positive and negative then after negatives are completed
+        // then all the remaining positives will be there in the relative order
+        if(pos.size() > neg.size()){
+            // first we will put alternates till neg size
+            // at even places put positives and odd negatives
+            for(int i = 0 ; i < neg.size() ; i++){
+                nums[2*i] = pos[i];
+                nums[2*i + 1] = neg[i];
+            }
+            // now there is remaining positives and in the main array it will start from 2*neg.size()
+            int index = 2*neg.size();
+            for(int i = neg.size() ; i < pos.size() ; i++){
+                nums[index] = pos[i];
+                index++;
+            }
+        }
+        else{
+            // this case will take care of the case where neg.size() == pos.size() as the second for loop will not get executed
+            
+            for(int i = 0 ; i < pos.size() ; i++){
+                nums[2*i] = pos[i];
+                nums[2*i + 1] = neg[i];
+            }
+            int index = 2*pos.size();
+            for(int i = pos.size() ; i < neg.size() ; i++){
+                nums[index] = neg[i];
+                index++;
+            }
+        }
+        return nums;
+    }
+};
+
+// Optimal Solution on Pass
+// TC = O(N) ans space complexity = O(N)
+class Solution {
+public:
+    vector<int> rearrangeArray(vector<int>& nums) {
+        // In this question we can see that the postives will be at even places and negative will be at odd places so what we can do
+        // take an array of  size equal to nums and then take a pos pointer and a negative pointer pos = 0 and neg = 1
+        // now if nums[i] > 0 then put that at ans[pos] then make pos = pos + 2 similarly with neagtive if nums[i] < 0 then
+        // ans[neg] = nums[i] and then neg += 2 
+        int n = nums.size();
+        vector<int> ans(n , 0);
+        int pos = 0;
+        int neg = 1;
+        for(int i = 0 ; i < n ; i++){
+            if(nums[i] > 0){
+                ans[pos] = nums[i];
+                pos += 2;
+            }
+            else{
+                ans[neg] = nums[i];
+                neg += 2;
+            }
+        }
+        return ans;
+    }
+};
