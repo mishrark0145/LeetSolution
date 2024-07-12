@@ -1,0 +1,58 @@
+// Optimal Solution
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        // As we know if we buy any stocks we should cell it for a price which is maximum on the right now if we look this problem from 
+        // a different perpective so if we are selling a stock on the ith day then we need to have a minimum from that i to 0th index
+        // to buy it , so now the problem is to find the minimum while staying at i on the left side
+        int n = prices.size();
+        int profit = 0;
+        int minm = prices[0];
+        for(int i = 1 ; i < n ; i++){
+            int cost = prices[i] - minm;
+            profit = max(profit, cost);
+            // change the minimum
+            minm = min(minm, prices[i]);
+        }
+        return profit; 
+    }
+};
+
+//Sliding window technique
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int profit = 0;
+        for(int i = 0 ; i < prices.size()-1 ; i++){
+            if(prices[i] > prices[i+1]){
+                continue;
+            }
+            int j=i+1;
+            while(prices[i] < prices[j]){
+                profit = max(prices[j] - prices[i],profit);
+                j++;
+                if(j >= prices.size()){
+                    break;
+                }
+            }
+            i = j-1;    
+        }
+        return profit;
+    }
+};
+
+// Brute Force
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int profit = 0;
+        for(int i = 0 ; i < prices.size() - 1 ; i++){
+            for(int j = i + 1 ; j < prices.size() ; j++){
+                profit = max(profit , prices[j] - prices[i]);
+            }
+        }
+        return profit;
+    }
+};
