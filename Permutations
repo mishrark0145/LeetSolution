@@ -1,0 +1,29 @@
+// TC = O(N*N!)
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        // We are using the recursive solution where we will go in one side keepig track of the what we have visited using the visited array
+        // now after visting that index we will pop that simply than do the calls 
+        vector<vector<int>> ans;
+        vector<int> temp;
+        vector<int> visited(nums.size() , 0);
+        findPermutation(ans, visited, temp, nums);
+        return ans;
+    }
+
+    void findPermutation(vector<vector<int>>& ans,vector<int>& visited, vector<int>& curr, vector<int>& nums){
+        if(curr.size() >= nums.size()){
+            ans.push_back(curr);
+            return;
+        }
+        for(int i = 0 ; i < nums.size() ; i++){
+            if(visited[i] != 1){
+                visited[i] = 1;
+                curr.push_back(nums[i]);
+                findPermutation(ans, visited , curr, nums);
+                visited[i] = 0;
+                curr.pop_back();
+            }
+        } 
+    }
+};
