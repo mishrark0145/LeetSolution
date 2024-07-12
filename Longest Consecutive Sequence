@@ -1,3 +1,4 @@
+// O(3N) best case in worst case O(N^2)
 class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
@@ -16,6 +17,75 @@ public:
                 }
             }
             longest = max(count , longest);
+        }
+        return longest;
+    }
+};
+
+// TC = O(NLog(N)) and space complexity = O(N)
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        // As in the question it only wants the longest consecutive sequence and as we know sequences are not contiguous so what we can
+        // do here we can store that in a set as we are not counting equal elements as sequence so if there are three 1 then we can
+        // take only 1 as it will only count in the sequence after that store in the set data structure then it will be in the sorted
+        // order now take two poitner one pointing to first and second pointing to second element now if the difference is one
+        // then count++ else make count to 1 bcz the current element would have a size of 1 and now when diff is one change the 
+        // longest to maximum of count and longest 
+
+        set<int> mu;
+        int n = nums.size();
+        // edge case if size is less than or equal to 1 then it can be 0 or 1 depending on the size
+        if(n <= 1) return n;
+        for(int i = 0 ; i < n ; i++){
+            // This takes Log(N) time
+            mu.insert(nums[i]);
+        }
+        set<int>::iterator first;
+        first = mu.begin();
+        set<int>::iterator second;
+        second = mu.begin();
+        second++;
+        int longest = 1;
+        // We are staring from the 1 bcz that element would get a count in the sequence
+        int count = 1;
+        for(first,second;second != mu.end();first++,second++){
+            if(*second - *first == 1){
+                count++;
+                longest = max(longest, count);
+            }
+            else{
+                count = 1;
+            }
+        }
+        return longest;
+    }
+};
+
+// TC = O(NLog(N)) and constant space
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        // First sort the array then we will apply the logic
+        sort(nums.begin() , nums.end());
+        // Now we will take a longest and a count and lastSmaller 
+        int longest = 0;
+        int count = 0;
+        int lastSmallest = INT_MIN;
+        // As here we can have duplicates so we dont need to count that in the sequence so what we will do if the current element
+        // difference with the last smallest is not equal to 1 that means sequence will break so make count = 0 and lastsmallest is 
+        // the current element if differece is equal to 1 then count++ and change the lastSmallest to current element
+        for(int i = 0 ; i < nums.size() ; i++){
+            if(nums[i] - 1 == lastSmallest){
+                count++;
+                lastSmallest = nums[i];
+            }
+            // if not equal to one that means can be zero but for that lastSmallest == nums[i] so if it is not that means
+            else if(lastSmallest != nums[i]){
+                lastSmallest = nums[i];
+                count = 1;
+            }
+            longest = max(longest, count);
         }
         return longest;
     }
