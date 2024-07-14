@@ -1,0 +1,37 @@
+// TC = O(7N^2)
+class Solution {
+public:
+    bool findRotation(vector<vector<int>>& mat, vector<vector<int>>& target) {
+        // What we can do here is do a 90 degree rotation the check with the target if they are equal return it otherwise again do the 
+        // 90 degree rotation we know if we do a 90 degrees 4 time then the matrix become what it was before we would only do that 4 times
+        // and if after that we did not get the result then simply return false
+        int n = mat.size();
+        // O(4 * 7*N^2/4)
+        for(int i  = 0 ; i < 4 ; i++){
+            // O(N/2 * N/2)
+            for(int row = 0 ; row < n - 1 ; row++){
+                for(int col = row + 1 ; col < n ; col++){
+                    swap(mat[row][col], mat[col][row]);
+                }
+            }
+            // reverse the rows
+            // O(N * N/2)
+            for(int row = 0 ; row < n ; row++){
+                reverse(mat[row].begin(), mat[row].end());
+            }
+            // O(N^2)
+            if(checkMatEqualTar(mat,target)) return true;
+        }
+        return false;
+    }
+
+    bool checkMatEqualTar(vector<vector<int>>& mat, vector<vector<int>>& target){
+        int n = mat.size();
+        for(int row = 0 ; row < n ; row++){
+            for(int col = 0 ; col < n ; col++){
+                if(mat[row][col] != target[row][col]) return false;
+            }
+        }
+        return true;
+    }
+};
