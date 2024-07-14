@@ -1,0 +1,26 @@
+// Optimal solution
+// TC = O(N^2)
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        // To solve this in place without using extra space we can do this by taking the tranpose of the matrix  then reverse the each rwo
+        // we can think of this by looking at the 90 degree rotated matrix to build this intution
+        int n = matrix.size();
+        // Transpose of a matrix is simple its diagonal remains same and matrix[row][col] and matrix[col][row] swapped
+        // but we will only traverse the upper or lower triangular matrix
+        // O(N/2 * N/2)
+        for(int row = 0 ; row < n - 1 ; row++){
+            for(int col = row + 1 ; col < n ; col++){
+                swap(matrix[row][col] , matrix[col][row]);
+            }
+        }
+        // Now we have to reverse all the rows
+        // O(N * N/2)
+        for(int row = 0 ; row < n ; row++){
+            reverse(matrix[row].begin() , matrix[row].end());
+        }
+    }
+};
+
+// Brute Force
+// Use a N*N matrix to store the first row to last col then second row 2nd last columsn and so on last row to first column
