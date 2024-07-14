@@ -1,0 +1,86 @@
+// Optimal solution check Majority Element I before going through this solution :)
+// TC =O(2N) ans space complexity O(1)
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        // At max in our answer array there can be 2 elements bcz it is given more than floor value of n/3 times so suppose i take n = 8
+        // then minm is more than 2 i.e. it should appear 3 or more times so 3 + 3 + (8 - 6) that means two is the answer
+        // take n = 9 now minm is more 3 i.e. 4 or more times so 4 + 4 + (9 - 8) so again it two that we can get in our answer
+        // Now we will use the same method that we used in the majortiy element 1 where  > [n/2]
+        // now here we will use two counters count1 and count2 , element 1 and element 2
+        // just one case whenever count1 = 0 then the nums[i] should not be equal to element2 and when count2 = 0 then the nums[i] != element1
+        // bcz then we will make wrong calculation same number would get defined for element1 and element2 
+        int n = nums.size();
+        int count1 = 0 ;
+        int count2 = 0;
+        int element1 = INT_MIN;
+        int element2 = INT_MIN;
+        for(int i = 0 ; i < n ; i++){
+            if(count1 == 0 && nums[i] != element2){
+                count1++;
+                element1 = nums[i];
+            }
+            else if(count2 == 0 && nums[i] != element1){
+                count2++;
+                element2 = nums[i];
+            }
+            else if(element1 == nums[i]){
+                count1++;
+            }
+            else if(element2 == nums[i]){
+                count2++;
+            }
+            else{
+                count1--;
+                count2--;
+            }
+        }
+        // Now at last we have to check for both element1 and element2 if they are actualy more than the minm count [n/3] + 1
+        int eleCount1 = 0;
+        int eleCount2 = 0;
+        for(int i = 0 ; i < n ; i++){
+            if(nums[i] == element1){
+                eleCount1++;
+            }
+            if(nums[i] == element2){
+                eleCount2++;
+            }
+        }
+        vector<int> ans;
+        int minm = n / 3 + 1;
+        if(eleCount1 >= minm){
+            ans.push_back(element1);
+        }
+        if(eleCount2 >= minm){
+            ans.push_back(element2);
+        }
+        return ans;
+    }
+};
+
+// Better solution
+// TC = O(N) in best and average case in worst case O(N^2) bcz of the unordered_set 
+// space complexity is O(N)
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        // At max in our answer array there can be 2 elements bcz it is given more than floor value of n/3 times so suppose i take n = 8
+        // then minm is more than 2 i.e. it should appear 3 or more times so 3 + 3 + (8 - 6) that means two is the answer
+        // take n = 9 now minm is more 3 i.e. 4 or more times so 4 + 4 + (9 - 8) so again it two that we can get in our answer
+        unordered_map<int,int> mpp;
+        // we will keep the count and then we will increase the key vlaues in every iteration now if the value becomes equal to [n/3] + 1
+        // i.e. minm number of occrences to come in our answer so we will push that in the ans array
+        vector<int> ans;
+        int n = nums.size();
+        int minm = n / 3 + 1;
+        for(int i = 0 ; i < n ; i++){
+            mpp[nums[i]]++;
+            if(mpp[nums[i]] == minm){
+                ans.push_back(nums[i]);
+            }
+            // also if the size of the ans array becomes 2 no need to do any more iteration bcz that is maxm what we can get
+            if(ans.size() == 2) break;
+        }
+        return ans;
+    }
+};
