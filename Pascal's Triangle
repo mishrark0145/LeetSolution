@@ -1,0 +1,58 @@
+// TC = O(N*N)
+class Solution {
+public:
+    vector<vector<int>> generate(int numRows) {
+        // now to get the first numRows of the pascal trianlt we have to use the thought process
+        // first element is always one now if we are at 6th row then second element is (numRows - 1) numerator now for denominator it is 1
+        // 3rd element is (numRows - 1) * (numRows - 2) nmr and dmr is 1 * 2 ... last ir (numRows - 1)*(numRows - 2)*(numRows - 3)*...(numRows - (numRows - 1)) nmr
+        // dmr is 1*2*3*..(numRows - 1) so if we take the zero based indexing for the columns then we can generate this by taking
+        // ans = 1 first element always now enter the loop with i = 1 to i < numRows first do the numerator ans = ans*(numRows - i) then 2nd line in the loop
+        // ans = ans/i and lastly push that in a array 
+        // now this is for a single row now just run this for nth row to compute the n rows 2 d array
+        vector<vector<int>> pascalTriangle;
+        for(int i = 1  ; i <= numRows ; i++){
+            vector<int> row;
+            ithRowGeneration(i, row);
+            pascalTriangle.push_back(row);
+        }
+        return pascalTriangle;
+    }
+
+    void ithRowGeneration(int n, vector<int>& row){
+        long long ans = 1;
+        row.push_back(ans);
+        for(int i = 1 ; i < n ; i++){
+            ans = ans * (n - i);
+            ans = ans / i;
+            row.push_back(ans);
+        }
+    }
+};
+
+
+// Intresting Solution using DP we can say that check this once cool solution by me :)
+class Solution {
+public:
+    vector<vector<int>> generate(int numRows) {
+        vector<vector<int>> arr;
+        int i,j;
+        for(i = 0 ; i < numRows ; i++){
+                if(i == 0){
+                    vector<int> row;
+                    row.push_back(1);
+                    arr.push_back(row);
+                }
+                else{
+                    vector<int> row;
+                    row.push_back(1);
+                    int n = arr[i-1].size();
+                    for(int k =0 ; k < n-1 ; k++){
+                        row.push_back( arr[i-1][k] + arr[i-1][k+1] );
+                    }
+                    row.push_back(1);
+                    arr.push_back(row);
+                }
+        }
+        return arr;
+    }
+};
