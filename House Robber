@@ -20,21 +20,30 @@ public:
 class Solution {
 public:
     int rob(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> dp( n + 1 , -1);
-        return rec( nums.size() - 1 , nums , dp);
+        // if we are taking the money from a house then we have to skip the next one
+        // if not then we can take the money from the next house
+        // so we will use the recursion
+        // as there are overlapping subproblems we should introduce memoization
+        // using n based indexing
+        vector<int> dp(nums.size(), -1);
+        return robbingHouses(nums.size() - 1, nums, dp); 
     }
 
-    int rec( int i , vector<int>& nums , vector<int>& dp){
-        if( i == 0) return nums[i];
-        if( i < 0 ) return 0;
-        if(dp[i] != -1) return dp[i];
-        int pick = nums[i] + rec( i - 2 , nums , dp);
-        int not_picked = 0 + rec( i - 1 , nums , dp);
-        dp[i] = max( pick , not_picked);
-        return dp[i];
-    }
+    int robbingHouses(int index, vector<int>& nums, vector<int>& dp){
+        // base case
+        if(index < 0){
+            return 0;
+        }
+            if(dp[index] != -1) return dp[index];
+        // if we are taking the money
+        int take = nums[index] + robbingHouses(index - 2, nums, dp);
+        // if we are not robbing this house
+        int notTake = robbingHouses(index - 1, nums, dp);
+            // now we to return the maximum
+        return dp[index] = max(take, notTake);
+    } 
 };
+
 
 //Tabulation
 
