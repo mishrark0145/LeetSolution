@@ -1,0 +1,52 @@
+// TC = O(N*N)
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        // follow the spiral matrix path to fill this 
+        // take a count as 1 and in the spiral matric question where we are pushing the matrix instead of that make that matrix[..][..] = count++;
+        // so that after count is assigned it will move forward
+        int row = n;
+        int col = n;
+        vector<vector<int>> matrix(n , vector<int>(n));
+        int top = 0;
+        int bottom = row - 1;
+        int left = 0;
+        int right = col - 1;
+        int count = 1;
+        // so here what we have to do is move from left to right then top to bottom then right to left then bottom to top
+        // i.e. four corner of the matrix now we have to repeat this process again for like when top <= bottom and left <= right
+        while(top <= bottom && left <= right){
+            // first traversing the top i.e left to right keeping top constant
+            for(int i = left ; i <= right ; i++){
+                matrix[top][i] = count++;
+            }
+            // after this top should be top++
+            top++;
+            // now move the right side col keeping the right index common top to bottom
+            for(int i = top ; i <= bottom ; i++){
+                matrix[i][right] = count++;
+            }
+            // now do the right--
+            right--;
+            // now here we have to check if the top <= bottom bcz here we have done above a top++
+            if(top <= bottom){
+                // now traverse the bottom from right to left keeping bottom constant
+                for(int i = right ; i >= left ; i--){
+                    matrix[bottom][i] = count++;
+                }
+            }    
+            // now make the bottom--;
+            bottom--;
+            // now here we have to check if the left <= right bcz we have done a right--
+            if(left <= right){
+                // now traverse the left side from bottom to top keeping the left constant
+                for(int i = bottom ; i >= top ; i--){
+                    matrix[i][left] = count++;
+                }
+            }    
+            // make left++
+            left++;
+        }
+        return matrix;
+    }
+};
