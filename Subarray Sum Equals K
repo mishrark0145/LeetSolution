@@ -1,0 +1,34 @@
+// TC = O(N) and space complexity O(N)
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        // This problem is similar to the longest subarray with maximum sum but here we have defined the sum as k 
+        // and here we have to count the total number of subarrays which sum is equal to k
+        // again we will use the concept of prefix sum to get this
+        // prefix sum : if till a index prefix sum is x and i am looking for a subarray whose sum is k and that is ednnig at i then if there
+        // is previously a prefix sum at index j = x - k then we have a subarray which is from the index j + 1 to i
+        unordered_map<int,int> mpp;
+        // prefixSum , count
+        // now we have to push the prefixSum 0 with count 1 bcz if we will not take that then the subarrays which is starting from the 0th
+        // index will not be accounted bcz we are checking with x - k so suppose if the first element is k then x - k is zero but we will
+        // not have anything in map to represent that so thats why we have added 0 , 1
+        mpp[0] = 1;
+        int preSum = 0;
+        int count = 0;
+        for(int i = 0 ; i < nums.size() ; i++){
+            preSum += nums[i];
+            int remaining = preSum - k;
+            // if(mpp.find(remaining) != mpp.end()){
+            //     // we got a subarray 
+            //     count += mpp[remaining];
+            // }
+            // we does not need upper for lop bcz count is increasing on the value of map
+            count += mpp[remaining];
+            // if there is no reamining then mpp[remaining] would be equal to zero
+            // increase the count of preSum in map by 1 it  will do both the things if preSum is not
+            // in the map it will assign a vlaue 1 if it is present it will increase the value by 1
+            mpp[preSum]++;    
+        }
+        return count;
+    }
+};
