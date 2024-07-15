@@ -1,0 +1,75 @@
+// Optimal Solution
+// TC = O(N*N) + O(NLogN) and space is contant
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        // Now to do this we will use the two pointer approach first we will sort the array then we will start with index i fixed
+        // then j = i + 1 and k = last index now we will compute the sum now if the sum > 0 then we have move the max i.e. k 
+        // we will do k-- then again compute the sum nums[i] + nums[j] + nums[k] now if it is zero then it is our triplet
+        // so add that in our answer now what we have to do is move j++ to a different element and k-- to different element
+        // now if j>=k then break of the loop of j and start with new i(again we have to take a different element for i)
+        // now again j will start from i + 1 and k is last do this process
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+        for(int i = 0 ; i < n ; i++){
+            if(i > 0 && nums[i] == nums[i - 1]) continue;
+            int middle = i + 1;
+            int right = n - 1;
+            int left = i;
+            while(middle < right){
+                int sum = nums[left] + nums[middle] + nums[right];
+                if(sum == 0){
+                    vector<int> temp = {nums[left], nums[middle], nums[right]};
+                    ans.push_back(temp);
+                    // now move middle till we find a different element and same with right
+                    middle++;
+                    right--;
+                    while(middle < right && nums[middle] == nums[middle - 1]) middle++;
+                    while(middle < right && nums[right] == nums[right + 1]) right--;
+                }
+                else if(sum > 0){
+                    right--;
+                }
+                else{
+                    middle++;
+                } 
+            }
+        }
+        return ans;
+    }
+};
+
+
+// TLE Better Solution
+// TC = O(N^2*LogM) and space Complexity O(N) + O(no. of unique duplicates)
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        // its brute force can be checking all the triplets then storing(after sorting) in an set of vectors bcz dont want duplicates
+        // TC = O(N^3*Log(M))
+        // Now to optimize it we will use the hashset to store the elements between i and j 
+        // what we are gonna do is find the third element between i and j also store that in the hashset and we will always define it before entring 
+        // the j loop so that we will get the triplets between i and j 
+        int n = nums.size();
+        // set of vectors
+        set<vector<int>> st;
+        for(int i = 0 ; i < n ; i++){
+            set<int> hashset;
+            for(int j = i + 1 ; j < n ; j++){
+                int third = -(nums[i] + nums[j]);
+                // if we find the third element then insert the nums[i], nums[j] and third in the set after sorting it 
+                if(hashset.find(third) != hashset.end()){
+                    vector<int> temp = {nums[i], nums[j], third};
+                    sort(temp.begin(), temp.end());
+                    st.insert(temp);
+                }
+                // put the nums[j] in the hashset
+                hashset.insert(nums[j]);    
+            }
+        }
+        // now just iterate through the set and push that into the ans
+        vector<vector<int>> ans(st.begin(), st.end());
+        return ans;
+    }
+};
