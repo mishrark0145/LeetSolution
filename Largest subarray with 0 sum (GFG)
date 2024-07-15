@@ -1,0 +1,28 @@
+// TC = O(N) in worst case O(N^2)
+class Solution {
+  public:
+    int maxLen(vector<int>& arr, int n) {
+        // We will use prefix sum to solve this
+        // take a prefix sum map
+        unordered_map<int,int> mpp;// {value, index}
+        // now store 0 and index as - 1 so if we got the first index element as zero
+        // then we can get the answer
+        mpp[0] = -1;
+        int sum = 0;
+        int length = 0;
+        for(int  i = 0 ; i < n ; i++){
+            sum += arr[i];
+            int rem = sum - 0;
+            if(mpp.find(rem) != mpp.end()){
+                length = max(length, i - mpp[rem]);
+            }
+            // now we will store the sum with index now if the previously there is a value which is equal to sum
+            // then we will not push that vlaue bcz we wanted the longest subarray so the similar vlaue should come before 
+            // in the index 
+            if(mpp.find(sum) == mpp.end()){
+                mpp[sum] = i;
+            }
+        }
+        return length;
+    }
+};
