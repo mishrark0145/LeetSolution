@@ -1,0 +1,82 @@
+// Optimal Solution
+// TC = O(N^3) and a constant space
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        // Similar to 3Sum optimal soultion of two pointer approach there we have take constant i only and move j and k now here as 
+        // we required 4 elements we have to take 2 constants i and j = i + 1 then move r as j + 1 and l as last
+        // if sum == target store in the ans now if sum > target l-- and if sum < target r++
+        // remember in each step we have to consider the cases for duplication like in three sum
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+        for(int i = 0 ; i < n ; i++){
+            if(i > 0 && nums[i] == nums[i - 1]) continue;
+            for(int j = i + 1 ; j < n ; j++){
+                // first j should be considered thats why j > i + 1
+                if(j > i + 1 && nums[j] == nums[j - 1]) continue;
+                int l = j + 1;
+                int r = n - 1;
+                // till they cross each other
+                while(l < r){
+                    // make sure no integer overflow happens
+                    long long sum = nums[i];
+                    sum += nums[j];
+                    sum += nums[l];
+                    sum += nums[r];
+                    if(sum > target){
+                        r--;
+                    }
+                    else if(sum < target){
+                        l++;
+                    }
+                    else{
+                        // now here we have to push that as answer
+                        vector<int> temp = {nums[i], nums[j], nums[l], nums[r]};
+                        ans.push_back(temp);
+                        // now do l++ and r--
+                        l++;
+                        r--;
+                        // now check is the left and right are at same value as previously and also l < r for out of bound
+                        while(l < r && nums[l] == nums[l - 1]) l++;
+                        while(l < r && nums[r] == nums[r + 1]) r--;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
+// Better Solution
+// TC = O(N^3*LogM) + O(4) and space = O(N) for hashset + O(quadruples) for set
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        // Similar to 3Sum better approach
+        // check the 3Sum Solution before this for better understanding
+        int n = nums.size();
+        set<vector<int>> st;
+        for(int i = 0 ; i < n ; i++){
+            for(int j = i + 1 ; j < n ; j++){
+                // to avoid integer overflow:
+                set<long long> hashset;
+                for(int k = j + 1 ;  k < n ; k++){
+                    // to avoid integer overflow:
+                    long long fourth = target - nums[i];
+                    fourth -= nums[j];
+                    fourth -= nums[k];
+                    if(hashset.find(fourth) != hashset.end()){
+                        vector<int> temp = {nums[i], nums[j], nums[k], (int)fourth};
+                        sort(temp.begin() , temp.end());
+                        st.insert(temp);
+                    }
+                    hashset.insert(nums[k]);
+                }
+            }
+        }
+        vector<vector<int>> ans(st.begin(), st.end());
+        return ans;
+    }
+};
