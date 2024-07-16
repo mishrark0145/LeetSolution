@@ -1,0 +1,21 @@
+// TC = O(NLogN + N) and in constant space
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        // we will sort the array then we will check for each interval if its intervals[i][0] is greater then ans.back()[1] then we have to take
+        // that interval in our ans otherwise we have to merge that interval with our existing one by doing ans.back()[1] = max(ans.back()[1], intervals[i][1])
+        int n = intervals.size();
+        sort(intervals.begin(), intervals.end());
+        vector<vector<int>> ans;
+        for(int i = 0 ; i < n ; i++){
+            // if we get a new interval two scenario if the ans is empty or intervals[i][0] is greater than the ans.back()[1]
+            if(ans.empty() || intervals[i][0] > ans.back()[1]){
+                ans.push_back(intervals[i]);
+            }
+            else{
+                ans.back()[1] = max(ans.back()[1], intervals[i][1]);
+            }
+        }
+        return ans;
+    }
+};
