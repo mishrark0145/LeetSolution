@@ -1,0 +1,52 @@
+// Optimal Solution
+#include <bits/stdc++.h>
+// TC = O(N) in worst case O(N^2) space is O(N)
+int subarraysXor(vector<int> &arr, int x)
+{
+    // here we will again use the concept of the prefix sum 
+    // here just a minor change here we are looking for the x which is xor of elements in the array
+    // prefix xor will give the xor from the starting of the array and that is ending at index i suppose
+    // now to get a subarray which has xor of its element equal to x that is ending at i 
+    // we need to have someone from the starting to have suppose k
+    // k ^ x = prefixXor , take both side xor of x
+    // k = prefixXor ^ x , now what we have to look if someone from the starting has a xor of its element
+    // equal to prefixXor ^ x
+    unordered_map<int,int> mpp;
+    // we are storing the prefixXor and count
+    int n = arr.size();
+    int prefixXor = 0;
+    // inserting 0 suppose if we got the first element as subarray then we should have 0 as count 1
+    mpp[0] = 1;
+    int count = 0;
+    for(int i = 0 ; i < n ; i++){
+        prefixXor ^= arr[i];
+        int k = prefixXor ^ x;
+        // there is no need to check if the k is in map or not bcz if it is not then mpp[k] would be zero
+        count += mpp[k];
+        // also just increase the count of the prefixXor by 1 bcz if there are similar present in the map
+        // its count would just increase
+        // also we are adding in the count the count of that prefixXor in the map bcz there can be two subarrays
+        // that can be one or more subarrays ending at index i that has its k from the starting edning at
+        // different index thus one or more count
+        mpp[prefixXor]++;
+    }
+    return count;
+}
+
+
+// Better Solution
+#include <bits/stdc++.h>
+// TC = O(N^2)
+int subarraysXor(vector<int> &arr, int x)
+{
+    int n = arr.size();
+    int count = 0;
+    for(int i = 0 ; i < n ; i++){
+        int sum = 0;
+        for(int j = i ; j < n ; j++){
+            sum = sum^arr[j];
+            if(sum == x) count++;
+        }
+    }
+    return count;
+}
