@@ -1,0 +1,148 @@
+// TC = O(N + 2*H) and space complexity = O(2*H) 
+class Solution {
+public:
+    string rootToStartPath;
+    string rootToDestPath;
+    string getDirections(TreeNode* root, int startValue, int destValue) {
+        // We will use the hint given in the probelm 
+        // The shortest path between any two nodes in a tree must pass through their Lowest Common Ancestor (LCA). The path will travel upwards from node s to the LCA and then downwards from the LCA to node t.
+        // Find the path strings from root → s, and root → t. Can you use these two strings to prepare the final answer?
+        // Remove the longest common prefix of the two path strings to get the path LCA → s, and LCA → t. Each step in the path of LCA → s should be reversed as 'U'.
+        string strpath = "";
+        path(root, startValue, destValue, strpath);
+        //cout<<rootToDestPath<<"Hit"<<rootToStartPath<<endl;
+        // now the find the longest common prefix
+        int longCommonPre = 0;
+        int i = 0 ;
+        while(i < rootToStartPath.size() && i < rootToDestPath.size()){
+            if(rootToStartPath[i] != rootToDestPath[i]) break;
+            i++;
+            longCommonPre++;
+        }
+        // now we will earse this length from the begining to this index in the rootToStartPath
+        rootToStartPath.erase(rootToStartPath.begin() , rootToStartPath.begin() + longCommonPre);
+        // ans same in the rootToDestPath
+        rootToDestPath.erase(rootToDestPath.begin() , rootToDestPath.begin() + longCommonPre);
+        // now we have to just change all the character in this string to 'U'
+        for(int i = 0 ; i < rootToStartPath.size() ; i++){
+            rootToStartPath[i] = 'U';
+        }
+        // now we have to just append the rootToDestPath in this string
+        // or we can have a new string in which we will append these strings
+        string directionStr = "";
+        directionStr.append(rootToStartPath);
+        directionStr.append(rootToDestPath);
+        return directionStr; 
+    }
+
+    void path(TreeNode* root, int startValue, int destValue, string& strpath){
+        // Now use any traversal to get the both the rootToStartPath and rootToDestPath
+        if(root == nullptr) return;
+        if(root->val == startValue){
+            // this is our start path globally store it
+            rootToStartPath = strpath;
+        }
+
+        if(root->val == destValue){
+            // this is our destination path globally store i
+            rootToDestPath = strpath;
+        }
+        // go left
+        string str = "L";
+        strpath.append(str);
+        path(root->left, startValue, destValue, strpath);
+        strpath.pop_back();
+        
+        // go right
+        str = "R";
+        strpath.append(str);
+        path(root->right, startValue, destValue, strpath);
+        strpath.pop_back();
+    }
+};
+
+
+// TC = O(2*N) and Space Complexity = O(3*N)
+class Solution {
+public:
+    TreeNode* startNode;
+    TreeNode* destNode;
+    void parentTrack(TreeNode* root, int st, int dt, unordered_map<TreeNode*, TreeNode*>& parent){
+        // Level Order Traversal
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* node = q.front();
+            q.pop();
+            // now if the current node is start node then make that
+            if(node->val == st){
+                startNode = node;
+            }
+            if(node->val == dt){
+                destNode = node;
+            }
+            // go left and make its parent the current node
+            if(node->left){
+                parent[node->left] = node;
+                q.push(node->left);
+            }
+            if(node->right){
+                parent[node->right] = node;
+                q.push(node->right);
+            }
+        }
+    }
+
+    string getDirections(TreeNode* root, int startValue, int destValue) {
+        unordered_map<TreeNode*, TreeNode*> parent;// space = O(N)
+        // take the parent of root as nullptr
+        parent[root] = nullptr;
+        parentTrack(root, startValue, destValue, parent);// O(N) and space O(N)
+        // Now you have the startNode, destNode, and parent map to track parent
+        // now we will do recursive solution start from the startNode go to destNode and also we have to take the minm path length
+        string direction = "";
+        bool flag = false;
+        // O(N) and auxilary stack space O(N)
+        minmPathDirection(startNode, destNode, parent, direction, nullptr, flag);
+        return direction;
+    }
+
+    void minmPathDirection(TreeNode* node, TreeNode* destNode, unordered_map<TreeNode*, TreeNode*>& parent, string& direction, TreeNode* prev, bool& flag){
+        // base case
+        if(node == nullptr){
+            return;
+        }
+        if(node == destNode){
+            flag = true;
+            return;
+        }
+        // first we will go left
+        if(node->left != prev && flag == false){
+            string str = "L";
+            direction.append(str);
+            minmPathDirection(node->left, destNode, parent, direction, node, flag);
+            if(!flag){
+                direction.pop_back();
+            } 
+        }
+        // we will go right
+        if(node->right != prev && flag == false){
+            string str = "R";
+            direction.append(str);
+            minmPathDirection(node->right, destNode, parent, direction, node, flag);
+            if(!flag){
+                direction.pop_back();
+            }
+        }
+        // now we will go to the parent
+        if(parent[node] != prev && flag == false){
+            string str = "U";
+            direction.append(str);
+            minmPathDirection(parent[node], destNode, parent, direction, node, flag);
+            if(!flag){
+                direction.pop_back();
+            }
+        }
+        return;
+    }
+};
