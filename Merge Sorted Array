@@ -1,0 +1,150 @@
+// Most Optimal Solution 1st Method
+// TC = O(Log(m + n) * (m + n)) + O(n)
+class Solution {
+public:
+    // we will swap the values if they are greater 
+    void swapIfGreater(vector<int>& nums1, int m, vector<int>& nums2, int n){
+        if(nums1[m] > nums2[n]){
+            swap(nums1[m], nums2[n]);
+        }
+    }
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        // now we will use the gap method to solve the problem 
+        // we will iterate through both of them gap times and the gap will change every time
+        // initially gap = (m + n) / 2 ceiling value then it is gap / 2 ceiling value till gap > 0 and also if gap has become 1 then break it
+        // bcz after that gap will only be 1 as we are taking ceiling value
+        // we will take two pointer left which is always zero and right which is left + gap now we will compare and swap it
+        // we will iterate over the gap and at each gap we will iterate through both the arrays keeping left and right
+        int gap = (m + n) / 2 + (m + n) % 2; // ceiling value
+        // as it is diving by two so its TC = O(Log(m + n))
+        while(gap > 0){
+            int left = 0;
+            int right = left + gap;
+            // till right did not go out of bound
+            // O(m + n)
+            while(right < m + n){
+                // now there are three cases 
+                // first left is in nums1 and right is in nums2
+                if(left < m && right >= m){
+                    // we will use a single function to check for greater element we will just pass the correct index and the two
+                    // arrays that we are going to check
+                    swapIfGreater(nums1, left, nums2, right - m);
+                }
+                // left -> nums2 and right nums2
+                else if(left >= m){
+                    swapIfGreater(nums2, left - m, nums2, right - m);
+                }
+                else{
+                    // both in nums1
+                    swapIfGreater(nums1, left, nums1, right);
+                }
+                // every time we have to increase the left and right
+                left++; right++;
+            }
+            // now when this finishes we have to check if the gap is when then we have to break out of the loop
+            if(gap == 1) break;
+            // if not then change the gap
+            gap = gap / 2 + gap % 2; // ceiling vlaue
+        }
+        // now we will have the correct order in nums1 and nums2 now we have to return the answer in nums1 so we will add the contents
+        // of nums2 in nums1 from the index m to m + n - 1
+        int start = m;
+        int end = m + n - 1;
+        // O(n)
+        for(int i = start ; i <= end ; i++){
+            int index2 = i - m;
+            nums1[i] = nums2[index2];
+        }  
+    }
+};
+
+
+// 2nd method
+// TC = O(n) + O(min(n,m)) + mLogm + nLogn
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        // in this method we will try to get the elements which should be in the arrays nums1 and nums2 till only the size no need to use 
+        // the extra size 
+        int left = m - 1;
+        int right = 0;
+        // O(min(n,m))
+        while(left >= 0 && right < n){
+            if(nums1[left] > nums2[right]){
+                // swap it
+                swap(nums1[left], nums2[right]);
+                // now since nums1[left] is the largest in the nums1 array so we will decrease the left and increase the right now
+                right++;
+                left--;
+            }
+            else{
+                // if largest of the left array is smaller then the smalles of the right array that means all the elments are in the
+                // right place so just break it
+                break;
+            }
+        }
+        // now we have to sort them 
+        sort(nums1.begin(), nums1.begin() + m);// mLogm
+        sort(nums2.begin(), nums2.end());// nLogn
+        // now since we have to return the answer in then nums1 array so we will put the values of nums2 in the nums1 array from the 
+        // index m
+        // O(n)
+        for(int i = m ; i < m + n ; i++){
+            int index2 = i - m;
+            nums1[i] = nums2[index2];
+        }
+    }
+};
+
+
+
+3rd method
+// TC = O(m*n) and constant space
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int ptrNums1 = 0;
+        int ptrNums2 = 0;
+        // we have to take the size of nums1 for our consideration bcz its size is m now but when we will insert the elements
+        // in it then its size of our matter will increase
+        int sizeOfNums1 = m;
+        // In worst time for O(n)
+        while(ptrNums2 < n && ptrNums1 < sizeOfNums1){
+            // if nums1 has element less than nums2 so just move the pointer ptrNums1
+            if(nums1[ptrNums1] < nums2[ptrNums2]){
+                ptrNums1++;
+            }
+            else{
+                int elementToInserted = nums2[ptrNums2];
+                // swap from the sizeOfNums1 till the index ptrNums1
+                swapTillIndex(nums1, ptrNums1, sizeOfNums1);// Run for O(m)
+                // now at index ptrNums1 in nums1 is zero so we will just put the elementToInserted there
+                nums1[ptrNums1] = elementToInserted;
+                // no move both ptrNums1 and ptrNums2
+                ptrNums1++;
+                ptrNums2++;
+                // now the size of nums1 for our intrest has increased
+                sizeOfNums1++;
+            }
+        }
+        // Now if the ptrNums2 is less than n that means the elements in the nums2 from the index ptrNums2 to its end will get in the
+        // nums1 from sizeOfNums1 or ptrNums1 till m + n - 1 
+        if(ptrNums2 < n){
+            while(ptrNums1 < m + n){
+                nums1[ptrNums1] = nums2[ptrNums2];
+                ptrNums1++;
+                ptrNums2++;
+            }
+        }
+    }
+
+    void swapTillIndex(vector<int>& nums1, int end, int start){
+        for(int i = start ; i > end ; i--){
+            // swap
+            swap(nums1[i], nums1[i - 1]);
+        }
+    }
+};
+
+
+// for 4th method that will be our brute force we will use extra space so the time complexity would be 2*(m + n) and space would be O(m + n)
