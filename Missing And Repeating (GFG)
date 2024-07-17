@@ -1,0 +1,89 @@
+// Optimal Solution Using Bit Manipulation XOR Method
+
+
+
+// One of the Optimal Solution uisng Maths
+//  TC = O(N) and constant Space
+class Solution{
+public:
+    vector<int> findTwoElement(vector<int> arr, int n) {
+        // We will use the maths here
+        // x is duplicate number and y is missing
+        // difference of sum of numbers in the array - sum 1 to n will give x - y
+        // sum of squares in the array - sum of squares from 1 to n will give x^2 - y^2
+        // two eqn two variable we can simply solve
+        long long SN = ((long long)n * (n + 1)) / 2;
+        long long S2N = ((long long)n * (n + 1) * (2*n + 1)) / 6;
+        long long S = 0; long long S2 = 0;
+        for(int i = 0 ; i < n ; i++){
+            S += arr[i];
+            S2 += (long long)arr[i] * (long long)arr[i];
+        }
+        long long eqn1 = S - SN;// x - y
+        long long eqn2 = S2 - S2N;
+        eqn2 = eqn2 / eqn1; // x + y
+        long long x = (eqn1 + eqn2) / 2;
+        long long y = x - eqn1;
+        // type cast before returning
+        return {(int)x, (int)y};
+    }
+};
+
+// Space Optimized but TC is not linear
+// O(N + NLogN) and constant space
+class Solution{
+public:
+    vector<int> findTwoElement(vector<int> arr, int n) {
+        // we will find the duplicate number we can use the hasmaps but that will take extra space so to not take extra space
+        // we will sort the array then find the duplicate
+        sort(arr.begin(), arr.end());
+        int duplicate = 0;
+        for(int i = 1 ; i < n ; i++){
+            if(arr[i] == arr[i - 1]){
+                duplicate = arr[i];
+                break;
+            }
+        }
+
+        // now we will do the xor operation in the given array and if the array would be corrected array
+        // XOR all elements of the array and all numbers from 1 to n
+        int xor1 = 0;
+        int xor2 = 0;
+        for(int i = 0 ; i < n ; i++){
+            xor1 = xor1 ^ arr[i];
+            xor2 = xor2 ^ (i + 1);
+        }
+        // xor both of them would result in the duplicate ^ missing and if we do again the duplicate xor then we will get our answer
+        int missing = xor1 ^ xor2 ^ duplicate;
+        return {duplicate, missing};
+    }
+};
+
+// Brute Force
+// TC = O(2*N) and space of O(N) 
+class Solution{
+public:
+    vector<int> findTwoElement(vector<int> arr, int n) {
+        // we will find the duplicate number so we will use the hasmaps
+        unordered_map<int,int> mpp;
+        int duplicate = 0;
+        for(int i = 0 ; i < n ; i++){
+            mpp[arr[i]]++;
+            if(mpp[arr[i]] > 1){
+                duplicate = arr[i];
+                break;
+            }
+        }
+
+        // now we will do the xor operation in the given array and if the array would be corrected array
+        int xor1 = 0;
+        int xor2 = 0;
+        for(int i = 0 ; i < n ; i++){
+            xor1 = xor1 ^ arr[i];
+            xor2 = xor2 ^ (i + 1);
+        }
+        // xor both of them would result in the duplicate ^ missing and if we do again the duplicate xor then we will get our answer
+        int missing = xor1 ^ xor2 ^ duplicate;
+        return {duplicate, missing};
+    }
+};
