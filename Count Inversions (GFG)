@@ -1,0 +1,85 @@
+// Optimal Solution
+// TC = O(NLogN) and space complexity is O(N)
+class Solution{
+  public:
+	long long count = 0;
+	void merge(long long arr[], int start, int mid, int end){
+		vector<long long> temp;
+		int left = start;
+		int right = mid + 1;
+		while(left <= mid && right <= end){
+			// if left is less than or equal to right right 
+			if(arr[left] <= arr[right]){
+				temp.push_back(arr[left]);
+				left++;
+			}
+			// in this case the inversion count will increase 
+			else{
+				temp.push_back(arr[right]);
+				// now we will increase the count by left - mid + 1 as the left is greater than 				// right and we know arrays are sorted so all the left array elements are 					// greater than the right one
+				count += mid - left + 1;
+				// we will move the right
+				right++;
+			}
+		}
+		// Now after the while loop finished due to the break in the condition so now we have to 			// push the rest of the elements in the temp array
+		while(left <= mid){
+			temp.push_back(arr[left++]);
+		}
+		while(right <= end){
+			temp.push_back(arr[right++]);
+		}
+		// now at last we have to put the temp in the original array
+		for(int i = start;  i <= end ; i++){
+			int index = i - start;
+			arr[i] = temp[index];
+		}
+	}
+	
+	void mergeSort(long long arr[], int start, int end){
+		if(start >= end) return;
+		int mid = (start + end) / 2;
+		// call for left side 
+		mergeSort(arr, start, mid);
+		// right side
+		mergeSort(arr, mid + 1, end);
+		// now do the merge
+		merge(arr, start, mid, end);
+    }
+    
+	long long int inversionCount(long long arr[], int n){
+		// Here we will use the technique like when we do merge sort we divide the arrays and when and 
+		// we merge the left and right part as they will get sorted and then we will merge it so when they
+		// are divided in the left and right side and they are sorted so if we take left and right pointers
+		// and started doing comparisons then we can find the inversion count like if the left side element 
+		// is greater than the right element that means the element in the range of left to mid will all be
+		// greater than right so they will count as inversion so this is the technique we will be using to 
+		// find the solution
+		mergeSort(arr, 0, n - 1);
+		// now we have the count in the global variable 
+		return count;
+	} 	
+
+};
+
+
+// Naive Solution or Brute Force
+// TC = O(N^2) will give TLE
+class Solution {
+  public:
+    // arr[]: Input Array
+    // N : Size of the Array arr[]
+    // Function to count inversions in the array.
+    long long int inversionCount(long long arr[], int n) {
+        // Simple logic is that we can compare each i while moving the j from i + 1 to n - 1 and if the arr[i] > arr[j] just count+
+        long long inversionCount = 0;
+        for(int i = 0 ; i < n ; i++){
+            for(int j = i + 1 ; j < n ; j++){
+                if(arr[i] > arr[j]){
+                    inversionCount++;
+                }
+            }
+        }
+        return inversionCount;
+    }
+};
