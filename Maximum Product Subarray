@@ -1,0 +1,23 @@
+// TC = O(N)
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        // we are using the prefix and suffix to find the answer of the maximum product subarray 
+        // if array has odd negatives and zeroes
+        // odd negatives so we have to only find the prefix multiplication and suffix multiplication
+        // if zero is three then if we encounter zero then make the prefix as 1 then do the same thing
+        int n = nums.size();
+        double prefix = 1;
+        double suffix = 1;
+        double maxi = INT_MIN;
+        for(int i = 0 ; i < n ; i++){
+            if(prefix == 0) prefix = 1;
+            if(suffix == 0) suffix = 1;
+
+            prefix = prefix * nums[i];
+            suffix = suffix * nums[n - 1 - i];
+            maxi = (int) max(maxi, max(prefix,suffix));
+        }
+        return maxi;
+    }
+};
