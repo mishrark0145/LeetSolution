@@ -1,3 +1,36 @@
+// Coding Ninjas
+// TC = O(LogN) when the array is sorted we can use the Binary Search to find that
+pair<int, int> getFloorAndCeil(vector<int> &arr, int n, int x) {
+	pair<int, int> ans = {-1, -1};
+	int floor = ans.first;
+	int ceil = ans.second;
+	int low = 0;
+	int high = n - 1;
+	while(low <= high){
+		int mid = (low + high) / 2;
+		if(arr[mid] == x){
+			floor = arr[mid];
+			ceil = arr[mid];
+			break;
+		}
+		else if(arr[mid] < x){
+			// it can be the floor
+			floor = arr[mid];
+			low = mid + 1;
+		}
+		else{
+			// it can be ceiling
+			ceil = arr[mid];
+			high = mid - 1;
+		}
+	}
+	ans.first = floor;
+	ans.second = ceil;
+	return ans;
+}	
+
+// GFG
+// If the array is not sorted TC = O(N)
 class Solution {
   public:
     vector<int> getFloorAndCeil(int x, vector<int> arr) {
