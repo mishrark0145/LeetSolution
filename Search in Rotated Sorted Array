@@ -1,0 +1,49 @@
+// TC = O(LogN)
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        // To solve this in O(LogN) we will be using the concept of BS 
+        // now here the array is not sorted but it is rotated so we know when we will be on a certain index between them there will
+        // be one half which will be sorted and one will be not so in the plain BS algo we have to first check for the sorted half
+        // then we will check if the element is there if not then we will eliminate that half accordingly
+        int n = nums.size();
+        int low = 0;
+        int high = n - 1;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // if the mid is target just return it
+            if(nums[mid] == target){
+                return mid;
+            }
+            // check for the sorted half
+            // left is sorted
+            if(nums[mid] >= nums[low]){
+                // now we will check in the left half if the target is present or not
+                // element is on the left side only if the lowest in the range is less than target and mid is greater than target 
+                // then eleminate the right half
+                if(nums[low] <= target && nums[mid] >= target){
+                    high = mid - 1;
+                }
+                else{
+                    // eliminate the left half
+                    low = mid + 1;
+                }
+            }
+            // else right half will be sorted
+            else{
+                // now we will check in the right half if the target is present or not
+                // element is on the right side only if the greates in the range is greater than target and mid is less than target 
+                // then eleminate the left half
+                if(nums[high] >= target && nums[mid] <= target){
+                    low = mid + 1;
+                }
+                else{
+                    // eliminate the right half
+                    high = mid - 1;
+                }
+            }
+        }
+        // if we did not find the index then return -1
+        return -1;
+    }
+};
