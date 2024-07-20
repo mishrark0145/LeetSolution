@@ -1,0 +1,110 @@
+// TC = O(2*LogN) and we uses plain binary search technique
+class Solution {
+public:
+    int firstOccurrence(vector<int>& nums, int target){
+        int n = nums.size();
+        int low = 0;
+        int high = n - 1;
+        int ans = -1;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // if nums of mid is target
+            if(nums[mid] == target){
+                // now we know the first will be on the left so make high = mid - 1
+                ans = mid;
+                high = mid - 1;
+            }
+            else if(nums[mid] < target){
+                low = mid + 1;
+            }
+            else{
+                high = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+    int secondOccurrence(vector<int>& nums, int target){
+        int n = nums.size();
+        int low = 0;
+        int high = n - 1;
+        int ans = -1;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // if nums of mid is target
+            if(nums[mid] == target){
+                // now we know the second will be on the right so make low = mid + 1
+                ans = mid;
+                low = mid + 1;
+            }
+            else if(nums[mid] < target){
+                low = mid + 1;
+            }
+            else{
+                high = mid - 1;
+            }
+        }
+        return ans;
+    }
+    vector<int> searchRange(vector<int>& nums, int target) {
+        // We can do this by separately writing the binary search for frist and last occurrences 
+        int first = firstOccurrence(nums, target);
+        int second = secondOccurrence(nums, target);
+        return {first, second};
+    }
+};
+
+
+// TC = O(2*LogN) and use of lower and upper bound concept
+class Solution {
+public:
+    int lowerBound(vector<int>& nums, int target){
+        int n = nums.size();
+        int low = 0;
+        int high = n - 1;
+        int ans = n;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            if(nums[mid] >= target){
+                // may be lower bound
+                ans = mid;
+                high = mid - 1;
+            }
+            else{
+                low = mid + 1;
+            }
+        }
+        return ans;
+    }
+
+    int upperBound(vector<int>& nums, int target){
+        int n = nums.size();
+        int low = 0;
+        int high = n - 1;
+        int ans = n;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            if(nums[mid] > target){
+                // can be upper bound
+                ans = mid;
+                high = mid - 1;
+            }
+            else{
+                low = mid + 1;
+            }
+        }
+        return ans;
+    }
+    vector<int> searchRange(vector<int>& nums, int target) {
+        // we can use the upper and lower bound to find the answer as the lower bound will give us the first occurrence and the upper
+        // bound - 1 will give us the last occurence also we have to check for if it is present in the array or not target 
+        int firstOccurrence = lowerBound(nums, target);
+        int secondOccurrence = upperBound(nums, target);
+        // now checking for the edge cases when there is not taget in the array
+        if(firstOccurrence == nums.size() || nums[firstOccurrence] != target){
+            return {-1, -1};
+        }
+        // now simply return 
+        return {firstOccurrence, secondOccurrence - 1};
+    }
+};
