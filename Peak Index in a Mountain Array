@@ -1,0 +1,32 @@
+// TC = O(LogN)
+class Solution {
+public:
+    int peakIndexInMountainArray(vector<int>& arr) {
+        // Similar to the finding the peak element in an array
+        // three cases(there will always be one maxima)
+        // 1: mid is lying on the increasing curve from left to right eliminate the left half
+        // 2: mid is lying on the decreasing curve from left to right eliminate the right half
+        // 3: mid is the peak return the index
+        int n = arr.size();
+        // maxima cannot be at first and last index
+        // therefore low = 1 and high = n - 2
+        int low = 1;
+        int high = n - 2;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // if mid is peak
+            if(arr[mid] > arr[mid - 1] && arr[mid] > arr[mid + 1]){
+                return mid;
+            }
+            // rising edge left to right
+            else if(arr[mid] > arr[mid - 1] && arr[mid] < arr[mid + 1]){
+                // eliminate the left half
+                low = mid + 1;
+            }
+            else{
+                high = mid - 1;
+            }
+        }
+        return -1;
+    }
+};
