@@ -1,0 +1,34 @@
+// TC = O(LogN)
+class Solution {
+  public:
+    int findKRotation(vector<int> &nums) {
+        // we can see that if we got the minimum number in this array then we can find how many times it has been rotated
+        // so it becomes finding the minium number in the rotated sorted array but here we have to return the index
+        pair<int,int> ans = {INT_MAX, 0};
+        int n = nums.size();
+        int low = 0;
+        int high = n - 1;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // now the left half is sorted
+            if(nums[mid] >= nums[low]){
+                // just take the minm and that index
+                if(nums[low] < ans.first){
+                    ans.first = nums[low];
+                    ans.second = low;
+                }
+                // eliminate this half
+                low = mid + 1;
+            }
+            else{
+                // right half is sorted and we will find the minm in this half then we will eliminate this half
+                if(nums[mid] < ans.first){
+                    ans.first = nums[mid];
+                    ans.second = mid;
+                }
+                high = mid - 1;
+            }
+        }
+        return ans.second;
+    }
+};
