@@ -1,0 +1,38 @@
+// TC = O(LogN)
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& arr) {
+        // In this problem we have to make an observation as there are all duplicates elements except for one then so if we take that
+        // we have even then odd elements equal now suppose in there between a sigle element occurs so therefore we will get changed
+        // the order now the order will become odd even so to eliminate one half we would check for these condtion
+        //first we will eliminate the base cases 
+        int n = arr.size();
+        if(n == 1) return arr[0];
+        if(arr[0] != arr[1]) return arr[0];
+        if(arr[n - 1] != arr[n - 2]) return arr[n - 1];
+        // trim the search space
+        int low = 1;
+        int high = n - 2;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // now check for the current element is the answer
+            if(arr[mid] != arr[mid - 1] && arr[mid] != arr[mid + 1]){
+                return arr[mid];
+            }
+            // now check for the left half two cases we are one the odd index then the left index should be equal if the element is
+            // not in the left half
+            // second one is when it is on the even index then check for the right index if it is equal then again eliminate the left side
+            if((mid % 2 == 0 && arr[mid] == arr[mid + 1]) || (mid % 2 == 1 && arr[mid] == arr[mid - 1])){
+                // then we should eliminate the left half
+                low = mid + 1;
+            }
+            else{
+                // eliminate the right half
+                high = mid - 1;
+            }
+        }
+        // as the single element is present therefore while loop return statement will execute so we are returning -1 so the code
+        // will not show erro
+        return -1;
+    }
+};
