@@ -1,0 +1,37 @@
+// TC = O(n / 2 + n)
+class Solution {
+public:
+    int maxOperations(string s) {
+        // Now here from observation to get the maximum number of operation we have to take from the last so we will reverse the string
+        // now the initial set of ones are of no use bcz they are at the end now when the next set of ones come they are shifted by 1
+        // so the operation will 1 * count of one now when we move forward then the next set of ones will give us 2 * count of 1s
+        // soo on we can get the operations
+        int n = s.size();
+        reverse(s.begin(), s.end());
+        int start = n;
+        for(int i = 0 ; i < n ; i++){
+            if(s[i] == '0'){
+                start = i;
+                break;
+            }
+        }
+        int ans = 0;
+        // impact will tell us the ones int the set of ones have to move by this number of operation
+        int impact = 1;
+        int j = -1;
+        for(int i = start ; i < n ; i++){
+            if(s[i] == '0') continue;
+            int cnt = 0;
+            for(j = i ; j < n ; j++){
+                if(s[j] == '0') break;
+                // count of set of ones
+                cnt++;
+            }
+            ans += impact*cnt;
+            impact++;
+            // now the i should start from the zero 
+            i = j - 1;
+        }
+        return ans;
+    }
+};
