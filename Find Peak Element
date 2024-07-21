@@ -1,0 +1,45 @@
+// TC = O(LogN)
+class Solution {
+public:
+    int findPeakElement(vector<int>& arr) {
+        // Now the naive solution is simple we can apply the linear search to find the peak here peak is like the maxima
+        // now in the question it is given we will not have adjacent elements equal
+        // Now if we imagine the numbers as graphs then we know it will be increasing and decreasing so it will have peaks(maxima) and
+        // minima
+        // Now think about the binary search as we have to do this in LogN time, we would have the low and high so if we are at the mid
+        // then 4 possibilites are there
+        // 1: it is the maxima so just return that
+        // 2: the mid is lying on the increasing curve left to right then eliminate the left half
+        // 3: the mid is lying on the decreasing curve left to right eliminate the right half
+        // 4: mid is one the minima then we can go either right or left if we didnt cosider this case and combine this within the last 3rd
+        // case as else case that could also make our answer
+        // now just there are 3 edge cases we should handle first so our code will look redable
+        int n = arr.size();
+        if(n == 1) return 0;// bcz it is stated outside the array we have -infinity
+        // check for the last and first element to be the peak as we can return any peak index we wanted
+        if(arr[0] > arr[1]) return 0;
+        if(arr[n - 1] > arr[n - 2]) return n - 1;
+
+        int low = 1;
+        int high = n - 2;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // 1st case
+            if(arr[mid] > arr[mid -1] && arr[mid] > arr[mid + 1]){
+                return mid;
+            }
+            // 2nd case increasing curve
+            else if(arr[mid] > arr[mid - 1] && arr[mid] < arr[mid + 1]){
+                // eliminate the left half
+                low = mid + 1;
+            }
+            // combine the 3rd and 4th case 
+            else{
+                // simply eliminate the right half
+                high = mid - 1;
+            }
+        }
+        // return -1 so that we will not get erro bcz in the while loop the return will always work
+        return -1;
+    }
+};
