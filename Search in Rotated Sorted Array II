@@ -1,0 +1,46 @@
+// On an average case it will take O(LogN) but in the worst case where there are too many duplicates then o(N / 2)
+class Solution {
+public:
+    bool search(vector<int>& nums, int target) {
+        // This question is somewhat similar to the search in the sorted array but here there are duplicates that can give us a wrong
+        // answer in one scenerion when the mid high and low all are equal and not equal to target then we will not be albe
+        // to tell which one is sorted side left or right 
+        // so to get rid of this case we will check if they all are equal then what we can do is simply just move the low by and decrease the high
+        // and the rest will be the same
+        int n = nums.size();
+        int low = 0;
+        int high = n - 1;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // check if the mid is equal to the target
+            if(nums[mid] == target) return true;
+            // check for the edge case when mid high and low are equal
+            if(nums[mid] == nums[low] && nums[mid] == nums[high]){
+                low = low + 1;
+                high = high - 1;
+            }
+            // now the two case if the left side is sorted
+            else if(nums[mid] >= nums[low]){
+                // now we will check if the target is on the left side or the right side
+                if(nums[mid] >= target && nums[low] <= target){
+                    // eliminate the right side
+                    high = mid - 1;
+                }
+                else{
+                    low = mid + 1;
+                }
+            }
+            else{
+                // now we will again check if that is on the right half or not
+                if(nums[mid] <= target && nums[high] >= target){
+                    // eliminate the left half
+                    low = mid + 1;
+                }
+                else{
+                    high = high - 1;
+                }
+            }
+        }
+        return false;
+    }
+};
