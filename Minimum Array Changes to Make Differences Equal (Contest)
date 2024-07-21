@@ -1,0 +1,63 @@
+// TC = O(n / 2 + 2*k) and space is O(n + k)
+class Solution {
+public:
+    int minChanges(vector<int>& nums, int k) {
+        // Here we cannot go with greedy as it will fail now as the nums[i] is between 0 to k so the difference can only lie between
+        // 0 to k, this is the observation, we can have 3 cases
+        // 1st case : 0 operation that is the differece is what we wanted already
+        // 2nd case: 1 operation that is the differece that we can get by changing one element between the pair
+        // 3rd case: 2 operation that is the diff is achievable by change the two elements
+        // now 0 operation is simple we only have to check the diff between the pairs
+        // 2 operation is simple total no of pair(n / 2) - 1 operation - 0 operation
+        // now we have to calculate the 1 operation to make a particular differece
+        // so we have to check for all the differeces from 0 to k
+        // here we will be using the maximum achievable differece by two pairs by changing one element 
+        // a , b now we can have maxAchievalbelDiff = max(max(a,b) - 0, k - min(a,b))
+        // now if we can achieve this maxdiff then we can also achieve all the diff from 0 to maxachieve
+        // so what we will do is first call for all the diff in the array then we will do the suffix sum to get the remaining 1 operation
+        // differences that we can achieve from 0 to k
+        int n = nums.size();
+        unordered_map<int,int> currDiff;
+        vector<int> oneOperation(k + 1, 0);
+        for(int i = 0 ; i < n / 2 ; i++){
+            currDiff[abs(nums[i] - nums[n - 1- i])]++;
+
+            int a = nums[i];
+            int b = nums[n - 1 - i];
+            // max achievable difference formula using one operation
+            int maxDiff = max(max(a, b) - 0, k - min(a, b));
+            // now we have to store this in the oneOperation array
+            oneOperation[maxDiff]++;
+        }
+        // we have the zero operation diff count
+        // now in the oneOperation array we got from the given array max achivable difference count but we know we can also get the 
+        // diff below the maxDiff so we will be using the suffix sum and we will add the vlaues from last till start
+        // tarverse the oneOpeartion array
+        for(int i = k - 1 ; i >= 0 ; i--){
+            oneOperation[i] += oneOperation[i + 1];
+        }
+        // now in the oneOpeartion array we have got for all diff from 0 to k what is the count of 1 operation diff we can get for pairs
+
+        // now we have to go to the each difference we have in our map and also the count
+        int ans = INT_MAX;
+        for(auto it : currDiff){
+            int diff = it.first;
+            int count = it.second;
+            // now we want for each diff to get the all array to the diff how much will be the cost like 0 operation will cost
+            // 0 1 will cost 1 and 2 operation will cost 2
+            // zero operation has zero cost 
+            // now for one operation , the array contains all the changes i.e. maxm changes that we have one operation so that 
+            // we can get the diff , but here we are counting for the total array so suppose a pair previously giving the diff by
+            // zero opern so why we need to do the one operation which is stored in the oneOperation array so while 
+            // counting we have to subtract that from the ans i.e. count (it is the zero operation count for that diff)
+            // two operation is simple (n / 2 - 1 opertion - zero operation) * 2
+            int oneOpern = oneOperation[diff] - count;
+            // same with twoOperation we have to subtract the count as we can also generate the diff for a pair which they are 
+            // already giving
+            int twoOpern = 2*(n / 2 - oneOpern - count);
+            // now the sum of these two will give us the cost for making this array have difference of diff
+            ans = min(ans, oneOpern + twoOpern);
+        }
+        return ans;
+    }
+};
