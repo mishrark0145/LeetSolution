@@ -1,0 +1,20 @@
+// TC = O(N)
+class Solution {
+public:
+    bool doesAliceWin(string s) {
+        // From observation if the number of vowels are zero initially then there is no chance for alice to win the game
+        // now supppose there are vowels in the string 
+        // now if the vowels count is odd then alice can remove the whole string so she will win the game
+        // now suppose the vowels count is even then she will try to remove the maxm that is by removing the substring with
+        // vowel count odd then there will be only one vowel remaning in the string suppose if the string just remians one character
+        // that is ofc vowel the alice wins but if there are consonents than bob can remove that as it has even vowels (0) but
+        // when chance comes to alice she remove the whole string as it will contain odd vowels (1) therefore bob will loose
+        int count = 0;
+        int n = s.size();
+        for(int i = 0 ; i < n ; i++){
+            if(s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u') count++;
+        }
+        if(count == 0) return false;
+        else return true;
+    }
+};
