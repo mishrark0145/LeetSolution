@@ -1,0 +1,22 @@
+// TC = O(Logn + LogK)
+// Initial Check: If ( n ) contains bits that ( k ) doesn't have, it is impossible to make ( n ) equal to ( k ). This can be checked using bitwise operations.
+// Check Validity: Use bitwise AND to ensure that ( n ) can be turned into ( k ) by checking if ( (n & k) == k ). If not, return -1.
+class Solution {
+public:
+    int minChanges(int n, int k) {
+        // if the and of the n and k gives us k then we can change the n to k otherwise not
+        if((n & k) != k) return -1;
+        int ncount = 0;
+        // now we have to just count the number of 1s in n and k then the diff will give us the count
+        while(n > 0){
+            if(n % 2 == 1) ncount++;
+            n = n / 2;
+        }
+        int kcount = 0;
+        while(k > 0){
+            if(k % 2 == 1) kcount++;
+            k = k / 2;
+        }
+        return ncount - kcount;
+    }
+};
