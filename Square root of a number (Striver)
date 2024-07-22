@@ -1,0 +1,28 @@
+// TC + O(LogN)
+class Solution{
+  public:
+    long long int floorSqrt(long long int x) 
+    {
+        // To find the square root of the number x we can apply the binary search by taking the low as 1 and high as x
+        // then simply do the techniques of binary search to eliminate which half then we can find the ans
+        // we will use here that if the mid*mid <= x that means the square root is on the right side but we
+        // consider this as our floor value
+        long long floorVal;
+        long long low = 1;
+        long long high = x;
+        while(low <= high){
+            long long mid = (low + high) / 2;
+            // if mid * mid is <= x then we can consider this as our value
+            if(mid * mid <= x){
+                floorVal = mid;
+                // eliminate the left half
+                low = mid + 1;
+            }
+            else{
+                // eliminate the right half
+                high = mid - 1;
+            }
+        }
+        return floorVal;
+    }
+};
