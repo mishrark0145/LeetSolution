@@ -1,0 +1,24 @@
+// TC = O(2*N) and space complexity is O(N)
+class Solution {
+public:
+    vector<string> sortPeople(vector<string>& names, vector<int>& heights) {
+        // as the height are distincts we can use map or priority queue to find the order of names in descending order
+        map<int,string> mpp;
+        int n = heights.size();
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            mpp[heights[i]] = names[i];
+        }
+        // now the map will be in sorted order in according to the key values which is here heights 
+        // we wanted the in descending order
+        vector<string> ans;
+        // this it will point to the last which is the greates in height
+        auto it = --mpp.end();
+        // TC = O(n)
+        for(int i = 1 ; i <= n ; i++){
+            ans.push_back(it->second);
+            it--;
+        }
+        return ans;
+    }
+};
