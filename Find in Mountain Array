@@ -1,0 +1,93 @@
+// TC = O(LogN + LogN)
+/**
+ * // This is the MountainArray's API interface.
+ * // You should not implement it, or speculate about its implementation
+ * class MountainArray {
+ *   public:
+ *     int get(int index);
+ *     int length();
+ * };
+ */
+class Solution {
+public:
+    int findInMountainArray(int target, MountainArray &mountainArr) {
+        // Here they wanted us to use the binary search algo nothing else
+        int n = mountainArr.length();
+        // similar to peakIndexMountainArray problem just we have to here call the MountainArray(mountainArr) class to get the element through
+        // index and length
+        // again 3 cases and there will only be one maxima and the maxima cannot be at 1st and the last index
+    
+        // Now to find the target we can get the target on any side of the peak element so first we will find the peak element then
+        // we will go acroos each to find the target 
+        int low = 1;
+        int high = n - 2;
+        int peak;
+        // 3 calls to mountainArr.get() * LogN ~ 40 calls
+        while(low <= high){
+            int mid = (low + high) / 2;
+            int midVal = mountainArr.get(mid);
+            int midLeft = mountainArr.get(mid - 1);
+            int midRight = mountainArr.get(mid + 1);
+            // mid is the maxima
+            if(midVal > midLeft && midVal > midRight){
+                peak = mid;
+                break;
+            }
+            // rising edge left to right
+            else if(midVal > midLeft && midVal < midRight){
+                // left eliminate
+                low = mid + 1;
+            }
+            // dcreasing edge from left to right
+            else{
+                high = mid - 1;
+            }
+        }
+        // now we have the peak
+        // check for if peak is the target
+        // 1 call ~ 41 calls worst case
+        if(mountainArr.get(peak) == target) return peak;
+        // first we will check the left side(Bcz we wanted the smallest index) for the target and it will be ascending from left to right
+        int targetIndex;
+        targetIndex = getTarget(0, peak - 1, true, target, mountainArr);
+        // if we got the on the left side just return it
+        // 14 calls
+        if(targetIndex != -1) return targetIndex;
+        // if we dont then check for the right side 
+        // 14 calls
+        targetIndex = getTarget(peak + 1, n - 1, false, target, mountainArr);
+        // Total = 69 calls worst case
+        return targetIndex;
+    }
+    // 1 call for suppose length is n 
+    // worst case calls will be ~ 14
+    int getTarget(int low, int high, bool ascending, int target, MountainArray &mountainArr){
+        while(low <= high){
+            int mid = (low + high) / 2;
+            int midVal = mountainArr.get(mid);
+            if(midVal == target){
+                return mid;
+            }
+            else if(midVal > target){
+                // for the ascending case normal eliminate the right side
+                if(ascending){
+                    high = mid - 1;
+                }
+                // now for the desceding case if we have target greater than mid element then we have to eliminate the left side
+                else{
+                    low = mid + 1;
+                } 
+            }
+            else{
+                // again two cases
+                if(ascending){
+                    low = mid + 1;
+                }
+                else{
+                    high = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+};
