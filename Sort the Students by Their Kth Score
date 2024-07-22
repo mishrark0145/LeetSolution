@@ -1,0 +1,34 @@
+// TC = O(m + m*n) and space complexity is O(m)
+class Solution {
+public:
+    vector<vector<int>> sortTheStudents(vector<vector<int>>& score, int k) {
+        // here k will give the column and in each column we will have numbers which will be distinct now we have to sort the numbers
+        // and corresponding whole row should be shfited to that position
+        // we can store the column with their row number so we will take the elements with highest value and take its correspoding
+        // row number then fill ans array with that row first and so on
+        int m = score.size();
+        int n = score[0].size();
+        map<int,int> mpp;
+        // O(m)
+        for(int i = 0 ; i < m ; i++){
+            // element with there row number
+            mpp[score[i][k]] = i;
+        }
+        // now in the map the score which is lowest will be first and we have to store that in the ans array at the bottom
+        // and in the next iteration we have to put that in the second last row and so on
+        vector<vector<int>> ans(m, vector<int>(n));
+        // row pointer pointing to the last row to be filled in the ans array
+        int row = m - 1;
+        // O(m*n)
+        for(auto it : mpp){
+            int rowIndex = it.second;
+            // now put the rowIndex row from the original score array to the row
+            for(int i = 0 ; i < n ; i++){
+                ans[row][i] = score[rowIndex][i];
+            }
+            // now decrease the row pointer to point to the above rows
+            row--;
+        }
+        return ans;
+    }
+};
