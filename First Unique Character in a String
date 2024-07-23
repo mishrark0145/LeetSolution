@@ -1,0 +1,65 @@
+// TC = O(2*n and space is O(26) which is constant)
+class Solution {
+public:
+    int firstUniqChar(string s) {
+        // Using map we can store the count of each character
+        int n = s.size();
+        unordered_map<char,int> mpp;
+        for(int i = 0 ; i < n ; i ++){
+            mpp[s[i]]++;
+        }
+        // now we can iterate over the string again and if we got any count one then just store that index in the ans and break out of the loop
+        // or simply return
+        for(int i = 0 ; i < n ; i++){
+            if(mpp[s[i]] == 1){
+                return i;
+            }
+        }
+        // if return statement does not works return -1
+        return -1;
+    }
+};
+
+
+// Array based approach
+// TC = (n + 26n + 26) and space is O(2*26) which is constant 
+class Solution {
+public:
+    int firstUniqChar(string s) {
+        // we will store the count in a array of size 26 representing arr[0] = count of a and so on arr[25] = z
+        vector<int> arr(26, 0);
+        int n = s.size();
+        for(int i = 0 ; i < n ; i++){
+            arr[s[i] - 'a']++;
+        }
+        // now we have the count now what we need is the char whose count is one
+        // so we get the character whose count is one  we have to check in the s what is its index
+        // we will store the index in an array for the character whose count is one we know the maxm size cannot exceed 26
+        vector<int> count;
+        for(int i = 0 ; i < 26 ; i++){
+            if(arr[i] == 1){
+                int index = findIndex(s, char(i + 'a'));
+                count.push_back(index);
+            }
+        }
+        // suppose if we did not get any freq as 1 then the size of arr would be zero
+        if(count.size() == 0) return -1;
+        // now we have the indexes in our array we need to find the minm in the array
+        int minIndex = INT_MAX;
+        for(auto it : count){
+            minIndex = min(minIndex, it);
+        }
+        return minIndex;
+    }
+
+    int findIndex(string& s, char c){
+        int index;
+        for(int i = 0 ; i < s.size() ; i++){
+            if(s[i] == c){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+};
