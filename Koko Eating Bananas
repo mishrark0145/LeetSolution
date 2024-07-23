@@ -1,0 +1,61 @@
+// TC = O(n + nLog(maxi))
+class Solution {
+public:
+    int minEatingSpeed(vector<int>& piles, int h) {
+        // Here we can get the range of value of k starting from 1 we can check if it is possibe or not by claculating the req time
+        // then increment to 2 and so on now we know when the k becomes max of the array then yes koko can eat all the bananas for sure
+        // so after that increasing would not cause any thing it will just increase the total required time
+        // Thus the range of answer is 1 to max of piles
+        int n = piles.size();
+        int maxi = piles[0];
+        // O(n)
+        for(int i = 1 ; i < n ; i++){
+            maxi = max(maxi, piles[i]);
+        }
+        // now we have our range 
+        // so what we know the range will be from 1 to maxi we have to find the k which is the req time to eat all the bananas under h hours
+        // so what we can do is apply binary search on range of answers and for the condition part we can calculate for each mid the required
+        // time and accordingly we will move to the left or right side
+        int low = 1;
+        int high = maxi;
+        // O(Log(maxi))
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // O(n)
+            long long reqTime = func(piles, mid);
+            // now if the reqTime is more than the hours given that means we have to increase the rate therefore eliminate the left side
+            if(reqTime > h){
+                low = mid + 1;
+            }
+            else{
+                // reqTime <= h that is it is a valid k , but we wanted the minm so we should eliminate the right part which will give more
+                // large rate i.e. k
+                high = mid - 1;
+            }
+        }
+        // now at last the low will point to the answer also we can do this by taking an ans integer and every time reqTime becomes >= h
+        // make the ans = mid and at last return the ans
+        return low;
+    }
+
+    long long func(vector<int>& piles, int rate){
+        long long  totalTime = 0;
+        for(int i = 0 ; i < piles.size(); i++){
+            // we should add the ceil value of the piles per rate 
+            totalTime += ceil((double)piles[i] / (double)rate);
+        }
+        return totalTime;
+    }
+    // we can write this to compute the ceil 
+    // int findCeil(int a, int b){
+    //     if(a <= b) return 1;
+    //     else{
+    //         if(a % b != 0){
+    //             return a/b + 1;
+    //         }
+    //         else{
+    //             return a/b;
+    //         }
+    //     }
+    // }
+};
