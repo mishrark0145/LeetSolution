@@ -1,0 +1,18 @@
+// TC = O(nLogn) and space O(n)
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        // we want the kth largest element in the array so we will store the nums value in the priority queue using min heap
+        // and when this size of pq exceeds the k then pop the top element so when all the nums will be in the priority queue then
+        // the top element will be our kth largest element in sorted order
+        priority_queue<int, vector<int>, greater<int> > pq;
+        int n = nums.size();
+        for(int i = 0 ; i < n ; i++){
+            pq.push(nums[i]);
+            if(pq.size() > k){
+                pq.pop();
+            }
+        }
+        return pq.top();
+    }
+};
