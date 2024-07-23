@@ -16,14 +16,14 @@ public:
         // iterate over the mpp
         // O(nLogk)
         for(auto it : mpp){
-            // size >= k
-            if(pq.size() >= k){
-                pq.pop();
-            }
             // now we will push the freq and nu in the pq
             int nu = it.first;
             int freq = it.second;
             pq.push({freq, nu});
+            // size > k
+            if(pq.size() > k){
+                pq.pop();
+            }
         }
         // now when the iteration stops we will have k elements in the priority queue
         // which is our top k frequent elements 
