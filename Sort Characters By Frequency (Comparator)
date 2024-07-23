@@ -1,0 +1,75 @@
+// Using comparator
+// TC = O(3n + Logn) and space complexity O(2n)
+class Solution {
+public:
+    static bool cmp(pair<int,char> x, pair<int,char> y){
+        // if the freq is greatest then return it
+        return x.first > y.first;
+    }
+    string frequencySort(string s) {
+        // first store the freq in map
+        map<char,int> mpp;
+        int n = s.size();
+        for(int i = 0 ; i < n ; i++){
+            mpp[s[i]]++;
+        }
+        // now store the char and its count in a vecotr pair of int
+        vector<pair<int,char>> v;
+        for(auto it : mpp){
+            int character = it.first;
+            int freq = it.second;
+            v.push_back({freq, character});
+        }
+        // now sort on the basis of freq only
+        sort(v.begin(), v.end(), cmp);
+        string ans = "";
+        for(auto it : v){
+            int size = it.first;
+            char str = it.second;
+            for(int i = 0 ; i < size ; i++){
+                ans += str;
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+// Using Priority Queue
+// TC = O(n + 2nLogn) and space complexity O(2n)
+class Solution {
+public:
+    string frequencySort(string s) {
+        map<char,int> mpp;
+        int n = s.size();
+        // O(n)
+        for(int i = 0 ; i < n ; i ++){
+            mpp[s[i]]++;
+        }
+        // store the char and its count in the in heap as pair {freq, character}
+        priority_queue<pair<int,char>> pq;
+        // iterate over the map
+        // O(nLogn)
+        for(auto it : mpp){
+            int freq = it.second;
+            char c = it.first;
+            pq.push({freq, c});
+        }
+        // now take the top element which have the highest count and then pop it repeat the steps to get the decreasign order
+        // in terms of frequency
+        string ans = "";
+        // O(nLogn)
+        while(!pq.empty()){
+            auto pairs = pq.top();
+            pq.pop();
+            int freq = pairs.first;
+            char c = pairs.second;
+            // now we have the highest freq count and we know that character will be in our ans for count time
+            for(int i = 0 ; i < freq ; i++){
+                ans += c;
+            }
+        }
+        return ans;
+    }
+};
