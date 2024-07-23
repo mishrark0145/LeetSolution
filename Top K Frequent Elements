@@ -1,0 +1,90 @@
+// Optimal Solution TC = O(nLogk)(average case) if k == n(Worst Case) then TC = O(nLogn) and space is O(n)
+// TC = O(n + nLogk + kLogk) ans space is O(2n)
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        // first store the count of numbers
+        int n = nums.size();
+        unordered_map<int,int> mpp;
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            mpp[nums[i]]++;
+        }
+        // now we will use a min heap priority queue in which we will push the {freq, nu} and if the size of the pq is > k then we have
+        // to pop top(i.e. minimun frq count) thus we will maintain the size of the queue <= k always 
+        priority_queue<pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>> > pq;
+        // iterate over the mpp
+        // O(nLogk)
+        for(auto it : mpp){
+            // size >= k
+            if(pq.size() >= k){
+                pq.pop();
+            }
+            // now we will push the freq and nu in the pq
+            int nu = it.first;
+            int freq = it.second;
+            pq.push({freq, nu});
+        }
+        // now when the iteration stops we will have k elements in the priority queue
+        // which is our top k frequent elements 
+        vector<int> ans;
+        // O(kLogk)
+        while(!pq.empty()){
+            auto pairs = pq.top();
+            pq.pop();
+            int nu = pairs.second;
+            ans.push_back(nu);
+        }
+        // as we can return the numbers in any order just return the ans array
+        return ans;
+    }
+};
+
+
+// This solution is better not the optimal one bcz TC = O(nLogn)
+// TC =O(2n + k + nLogn) ans space is O(2*n)
+class Solution {
+public:
+    static bool cmp(pair<int,int> x, pair<int,int> y){
+        // sorting on the basis of greatest
+        return x.first > y.first;
+    }
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        // first store the count of numbers
+        int n = nums.size();
+        unordered_map<int,int> mpp;
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            mpp[nums[i]]++;
+        }
+        
+        vector<pair<int,int>> v;
+        // O(n)
+        for(auto it : mpp){
+            // we will store the count and number
+            int freq = it.second;
+            int nu = it.first;
+            v.push_back({freq, nu});
+        }
+        // now we have the freq and nu 
+        // now we will sort the freq and nu in the increasing order 
+        // O(nLogn)
+        sort(v.begin(), v.end(), cmp);
+        /* or we can do this
+            sort(v.rbegin(), v.rend());
+        */
+
+        // now we have to run any loops k times to get the top k elements
+        vector<int> ans;
+        auto it = v.begin();
+        // O(k)
+        while(k > 0){
+            int nu = it->second;
+            ans.push_back(nu);
+            // increment the iterator
+            it++;
+            k--;
+        }
+        return ans;
+    }
+};
