@@ -1,0 +1,19 @@
+// TC = O(n) and space O(n)
+class Solution {
+public:
+    char repeatedCharacter(string s) {
+        // store the count of characters in a map
+        // now if just after storing the count the count becomes equal to 2 then break and return the character
+        unordered_map<char,int> mpp;
+        char c;
+        int n = s.size();
+        for(int i = 0 ; i < n ; i++){
+            mpp[s[i]]++;
+            if(mpp[s[i]] == 2){
+                c = s[i];
+                break;
+            }
+        }
+        return c;
+    }
+};
