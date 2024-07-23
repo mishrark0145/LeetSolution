@@ -1,0 +1,61 @@
+// TC = O(nLogk + kLogk + n + k) and space complexity = O(n + k)
+class Solution {
+public:
+    class cmp{
+    public:
+        /*
+            When true is returned, it means the order is NOT correct and swapping of elements takes place.
+            When false is returned, it means the order is correct and NO swapping of elements takes place.
+        */
+        // the comparator should return true if the first element(x) should come after the second element(y). 
+        bool operator()(pair<int,string>& x, pair<int,string>& y){
+            // if the freq is equal
+            if(x.first == y.first){
+                // return with smallest true lexicographically  bcz we want the string which is greatest to be on top
+                return x.second < y.second;
+            }
+            // with minimum frq on top therefore we will make x.first > y.first that is x is greater than y so we need to swap them
+            // to maintain the minimum frq on top
+            return x.first > y.first;
+        }
+    };
+    
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        // same as top k frquent elements 
+        unordered_map<string,int> mpp;
+        int n = words.size();
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            mpp[words[i]]++;
+        }
+        // now we will use the priority queue and we will use custom made compare bcz we need first with highest freq then we have to
+        // follow the lexicographical order for equal freq
+        //              Datatype         Container(optional)   Comparator(optional)            
+        priority_queue<pair<int,string>, vector<pair<int,string>>, cmp> pq;
+        // iterate over the map to push the {freq,string}
+        // if the size increases by k just pop the minm freq from the pq
+        // O(nLogk)
+        for(auto it : mpp){
+            string str = it.first;
+            int freq = it.second;
+            pq.push({freq, str});
+            // if the size is greater than k pop the top
+            if(pq.size() > k){
+                pq.pop();
+            }
+        }
+        // now we will store this in the ans 
+        vector<string> ans;
+        // the answer should be sorted on the basis of frequency from the highest to lowest if the freq is same then sort the lexographically
+        // O(kLogk)
+        while(!pq.empty()){
+            string str = pq.top().second;
+            ans.push_back(str);
+            pq.pop();
+        }
+        // since pq is has lowest on the top therefore the ans would have in ascedning order on frquency so just reverse the ans
+        // O(k)
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
