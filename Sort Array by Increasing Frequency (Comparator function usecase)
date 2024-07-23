@@ -1,0 +1,35 @@
+// TC = O(3n + nLogn) and space is O(2n)
+class Solution {
+public:
+    static bool cmp(pair<int,int> x, pair<int,int> y){
+        // this is for if the freq is same the descending order
+        if(x.first == y.first){
+            return x.second > y.second;
+        }
+        // if not same then the number with lowest freq
+        return x.first < y.first;
+    }
+    vector<int> frequencySort(vector<int>& nums) {
+        map<int,int> mpp;
+        for(auto it : nums){
+            mpp[it]++;
+        }
+        vector<pair<int,int>> v;
+        for(auto it : mpp){
+            // {frq , numbers}
+            v.push_back({it.second, it.first});
+        }
+        // use the cmp to sort according to first freq then if freq is same then on the number
+        sort(v.begin(), v.end(), cmp);
+        vector<int> ans;
+        for(auto it : v){
+            // now according to its frequency count push the number in the ans array
+            int size = it.first; // freq count
+            int nu = it.second; // number
+            for(int i = 0 ; i < size ; i++){
+                ans.push_back(nu);
+            }
+        }
+        return ans;
+    }
+};
