@@ -1,0 +1,30 @@
+// TC = O(nLogn)
+class Solution {
+public:
+    vector<int> sortJumbled(vector<int>& mapping, vector<int>& nums) {
+        // we will be using the multimap to store the mappedvalue and index i so we will get the non decresing orderign on the basis
+        // of mapped value and if they are same then follow the relative orderin in the nums thats why we are using i 
+        multimap<int,int> mpp;
+        int n = nums.size();
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            string str = to_string(nums[i]);
+            string map = "";
+            for(auto ch : str){
+                map += to_string(mapping[ch - '0']);
+            }
+            // now map has the correct ineger but instring format
+            int mappedValue = stoi(map);
+            // also we will put the index so that we can maintain the relative ordering when the mapped values are same
+            // this is how we insert elements into multimap
+            // O(Logn)
+            mpp.insert(pair<int, int>(mappedValue, i));
+        }
+        vector<int> ans;
+        for(auto it : mpp){
+            int index = it.second;
+            ans.push_back(nums[index]);
+        }
+        return ans;
+    }
+};
