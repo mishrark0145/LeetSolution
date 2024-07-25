@@ -1,0 +1,37 @@
+// TC =  O(m log m + n * m)
+class Solution {
+public:
+    vector<vector<string>> suggestedProducts(vector<string>& products, string searchWord) {
+        // we can first sort the products then we will start with the first string from the searchWord[i] then we will add the the next
+        // searchWord[i + 1] and at last we will have the whole str as searchWord 
+        // now what we will do we will check if the prefix which is here the str if that matches with any string in the prodcuts
+        // vector<strings> then push that into the res 
+        int lenth = products.size();
+        int n = searchWord.size();
+        // O(mLogm)
+        sort(products.begin() , products.end());
+        vector<vector<string>> ans;
+        // making the prefixes using searchWord
+        string str = "";
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            str += searchWord[i];
+            // now iterate over the products and if we foudn the prefix push into the answer
+            // also if the count becomes greater than three break of the loop
+            int cnt = 1;
+            vector<string> res;
+            //O(m)
+            for(auto p : products){
+                //In this case, p.find(str) == 0 checks if the substring str starts at index 0 of the string p.
+                // This means that str is a prefix of p.
+                if(p.find(str) == 0){
+                    res.push_back(p);
+                    cnt++;
+                    if(cnt > 3) break;
+                }
+            }
+            ans.push_back(res);
+        }
+        return ans;
+    }
+};
