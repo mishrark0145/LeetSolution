@@ -1,0 +1,64 @@
+class Solution {
+public:
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        // here we have to know how many cells would be impacted by the ops 
+        // so what we can do is take an initial row = m and col = n and we will check with each operation x and y 
+        // row = min(row, x) and col = min(col, y) and at last we will have row` and col` and if we multiply that we will get our answer
+        int row = m;
+        int col = n;
+        // O(n)
+        for(auto it : ops){
+            int x = it[0];
+            int y = it[1];
+            row = min(row, x);
+            col = min(col, y);
+        }
+        return row*col;
+    }
+};
+
+// If i have to return the matrix
+class Solution {
+public:
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        vector<vector<int>> mat(m, vector<int>(n, 0));
+
+        // now we will use the concept of range addition here like we will put mat[i][j] += val and at some index mat[i`][j`] -=val
+        // we will mat[i][0] += val put for every x in ops to the 1st colm untill the index x - 1
+        // and mat[i][y] -= val in that range also here we have to check the condtion that y < n
+        // O(m*n)
+        for(auto it : ops){
+            int x = it[0];
+            int y = it[1];
+            for(int i = 0 ; i < x ; i++){
+                mat[i][0] += 1;
+                if(y < n)
+                mat[i][y] -= 1;
+            }
+        }
+        // now just add the whole rows one by one using prefix sum
+        int maxi = INT_MIN;
+        // O(m*n)
+        for(int i = 0 ; i < m ; i++){
+            for(int j = 0 ; j < n ; j++){
+                if(j == 0){
+                    maxi = max(maxi, mat[i][j]);
+                    continue;
+                }
+                mat[i][j] += mat[i][j - 1];
+                maxi = max(maxi, mat[i][j]);
+            }
+        }
+        // now we have the maxi now we have to return the count of it
+        int cnt = 0;
+        // O(m*n)
+        for(int i = 0 ; i < m ; i++){
+            for(int j = 0 ; j < n ; j++){
+                if(mat[i][j] == maxi){
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
+    }
+};
