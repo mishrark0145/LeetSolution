@@ -1,0 +1,60 @@
+// TC = O(nLogn)
+// segement tree is build
+void buildSGtree(int indx, int low, int high, int st[], int arr[]){
+    // base case
+    if(low == high){
+        st[indx] = arr[low];
+        return;
+    }
+    // find the mid
+    int mid = (low + high) / 2;
+    // left call to make the segment tree
+    buildSGtree(2*indx + 1, low, mid, st, arr);
+    // right
+    buildSGtree(2*indx + 2, mid + 1, high, st, arr);
+    // now just change the st array indx to value minm of both the left and right index
+    st[indx] = min(st[2*indx + 1], st[2*indx + 2]);
+}
+
+
+/* The functions which 
+builds the segment tree */
+int *constructST(int arr[],int n){
+    // we will gonna build the segment tree 
+    // first we have the nodes which will be having low and high and each node will be represented by an indx and when we go to the
+    // left side i.e low to mid then indx = 2 * indx + 1 and for right mid + 1 to high indx = 2*indx + 2
+    int *st = new int[4*n + 1];
+    // O(n) as we have to visit every node of the segment tree
+    buildSGtree(0, 0, n - 1, st, arr); // indx, low , high
+    return st;    
+}
+
+
+// O(logn) as it will ony be visiting the depth of the tree at max to max
+int findMin(int indx, int low, int high, int l, int r, int st[]){
+    // if there is no overlap
+    // [low, high] [l, r] or [l, r][low, high]
+    if(low > r || high < l){
+        return INT_MAX;
+    }
+    // complete overlap then return the segment arr at indx
+    // [l, low , high, r]
+    else if(low >= l && high <= r){
+        return st[indx];
+    }
+    // now the last case is partial overlap then we will go to the left and right node and at last return the minm of both of them
+    else{
+        int mid = (low + high) / 2;
+        int left = findMin(2*indx + 1, low, mid, l, r, st);
+        int right = findMin(2*indx + 2, mid + 1, high, l, r, st);
+        return min(left, right);
+    }
+}
+
+/* The functions returns the
+ min element in the range
+ from a and b */
+int RMQ(int st[] , int n, int a, int b){
+    // now we have to write the query 
+    return findMin(0, 0, n - 1, a, b, st); // indx, low, high, a, b , st
+}
