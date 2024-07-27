@@ -1,0 +1,61 @@
+class NumArray {
+public:
+    vector<int> seg;
+
+    void sizeSeg(int n){
+        seg.resize(4*n + 1);
+    }
+    // O(n)
+    void buildTree(int indx, int low, int high, vector<int>& nums){
+        if(low == high){
+            seg[indx] = nums[low];
+            return;
+        }
+        int mid = (low + high) / 2;
+        buildTree(2*indx + 1, low, mid, nums);
+        buildTree(2*indx + 2, mid + 1, high, nums);
+        // now simply add the left and right index seg
+        seg[indx] = seg[2*indx + 1] + seg[2*indx + 2];
+    }
+
+    // TC = O(Logn)
+    int query(int indx, int low, int high, int l, int r){
+        // if the range is non overlapping
+        // [low, high][l ,r] or [l, r][low , high] range query(curr) is low to high and overall l to r is the main range 
+        if(low > r || high < l){
+            return 0;
+        }
+        // if they are completely inside
+        // [l, low, high, r]
+        else if(low >= l && high <= r){
+            // return the seg with the indx
+            return seg[indx];
+        }
+        else{
+            // partial overlap then go left and right then return the sum
+            int mid = (low + high) / 2;
+            int left = query(2*indx + 1, low, mid, l, r);
+            int right = query(2*indx + 2, mid + 1, high, l, r);
+            return left + right;
+        }
+    }
+
+    NumArray(vector<int>& nums) {
+        // for this we have to make the segment tree
+        int n = nums.size();
+        sizeSeg(n);
+        buildTree(0, 0, n - 1, nums);
+    }
+    
+    int sumRange(int left, int right) {
+        // here we will pass this to query
+        int n = (seg.size() - 1) / 4;
+        return query(0, 0, n - 1, left, right);
+    }
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * int param_1 = obj->sumRange(left,right);
+ */
