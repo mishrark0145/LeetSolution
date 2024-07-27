@@ -1,0 +1,50 @@
+// TC = O(n + m + 26*26*26)
+class Solution {
+public:
+    long long minimumCost(string source, string target, vector<char>& original, vector<char>& changed, vector<int>& cost) {
+        // we are going to solve this using the graph 
+        int m = original.size();
+        // now we can take each character one by one from the source and target and try to find the minm cost to change that
+        // but that might take very much time bcz we have to do that for the  every character in the original and target array combined
+        // what we will find the cost matrix minimum to go from s to d using floyd warshall algorithm 
+        // to do that we will first make the cost matrix 26*26 size each cell will have a maxm value
+        vector<vector<int>> costConvert(26, vector<int>(26, 1e9));
+        // here 0 will represent a and 1 will b and so on 25 will z
+        // O(m)
+        for(int i = 0 ; i < m ; i++){
+            char u = original[i];
+            char v = changed[i];
+            int wt = cost[i];
+            // Ensured the smallest cost is used bcz there can be repeating character in original and target so the minimum of them shoud be taken 
+            costConvert[u - 'a'][v - 'a'] = min(costConvert[u - 'a'][v - 'a'], wt);
+        }
+
+        // cost[i][i] will be zero
+        for(int i = 0 ; i < 26 ; i++){
+            costConvert[i][i] = 0;
+        }
+
+        // now we will use the basic formula cost[i][j] = min(cost[i][j], cost[i][via] + cost[via][j])
+        // O(26*26*26)
+        for(int via = 0 ; via < 26 ; via++){
+            for(int i = 0 ; i < 26 ; i++){
+                for(int j = 0 ; j < 26 ; j++){
+                    costConvert[i][j] = min(costConvert[i][j], costConvert[i][via] + costConvert[via][j]);
+                }
+            }
+        }
+        // now we will have the cost for each s to d
+        long long miniCost = 0;
+        int n = source.size();
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            char s = source[i];
+            char d = target[i];
+            if(s == d) continue;
+            // if we cannot reach the destination then simply return -1
+            if(costConvert[s - 'a'][d - 'a'] >= 1e9) return -1;
+            miniCost += costConvert[s - 'a'][d - 'a'];
+        }
+        return miniCost;
+    }
+};
