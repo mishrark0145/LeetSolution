@@ -1,0 +1,93 @@
+// TC = O(2^n + q*Log2^n)
+#include<bits/stdc++.h>
+using namespace std;
+
+void buildTree(int indx, int low, int high, int seg[], int arr[], int orr){
+    // base case
+    if(low == high){
+        seg[indx] = arr[low];
+        return;
+    }
+    int mid = (low + high) / 2;
+    // go left
+    buildTree(2*indx + 1, low, mid, seg, arr, !orr);
+    buildTree(2*indx + 2, mid + 1, high, seg, arr, !orr);
+    // now we have to store the answer at the current indx according to 'OR' or 'XOR'
+    if(orr){
+        // do bitwise OR
+        seg[indx] = seg[2*indx + 1] | seg[2*indx + 2];
+    }
+    else{
+        // do bitwise XOR
+        seg[indx] = seg[2*indx + 1] ^ seg[2*indx + 2];
+    }
+}
+
+void update(int indx, int low, int high, int seg[], int arr[], int i , int val, int orr){
+    if(low == high){
+        seg[indx] = val;
+        return;
+    }
+    int mid = (low + high) / 2;
+    if(i <= mid){
+        update(2*indx + 1, low, mid, seg, arr, i, val, !orr);
+    }
+    else{
+        update(2*indx + 2, mid + 1, high, seg, arr, i, val, !orr);
+    }
+    // at last update 
+    if(orr){
+        // do bitwise OR
+        seg[indx] = seg[2*indx + 1] | seg[2*indx + 2];
+    }
+    else{
+        // do bitwise XOR
+        seg[indx] = seg[2*indx + 1] ^ seg[2*indx + 2];
+    }
+}
+void solve(){
+    int n;
+    cin>>n;
+    int el = pow(2,n);
+    int arr[el];
+    for(int i = 0 ; i < el ; i++) cin>> arr[i];
+    // now we will build the tree
+    // if n is odd then we will be starting from the node of segment tree using or 
+    // and if n is even then by xor
+    int seg[4*n + 1];
+    if(n % 2 != 0){
+        // 1 means or(bitwise)
+        buildTree(0, 0, el - 1, seg, arr, 1);
+    }
+    else{
+        // start with (0)XOR
+        buildTree(0, 0, el - 1, seg, arr, 0);
+    }
+    int q;
+    cin>>q;
+    // here each query will tell to change the number at indx to val
+    while(q--){
+        int i, val;
+        cin>>i>>val;
+        // subtract 1 to make 0 based
+        i--;
+        if(n % 2 != 0){
+            // or first
+            update(0, 0, el - 1, seg, arr, i, val, 1);
+        }
+        else{
+            update(0, 0, el - 1, seg, arr, i, val, 0);
+        }
+        // now the answer will be at the root of the tree
+        cout<< seg[0]<<endl;
+    }
+}
+
+signed main(){
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif 
+    solve();
+    return 0;
+}
