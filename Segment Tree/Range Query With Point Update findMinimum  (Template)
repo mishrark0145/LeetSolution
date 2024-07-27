@@ -1,0 +1,108 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class SGTree{
+    vector<int> seg;
+public:
+    SGTree(int n){
+        seg.resize(4*n + 1);
+    }        
+    // TC = O(n)
+    void buildSegTree(int indx, int low, int high, int arr[]){
+        if(low == high){
+            seg[indx] = arr[low];
+            return;
+        }
+        int mid = (low + high) / 2;
+        // left
+        buildSegTree(2*indx + 1, low, mid, arr);
+        // right
+        buildSegTree(2*indx + 2, mid + 1, high, arr);
+        // return the minm as we are looking for the minimum
+        seg[indx] = min(seg[2*indx + 1], seg[2*indx + 2]);
+        return;
+    }
+    // TC = O(Logn)
+    int query(int indx, int low, int high, int l, int r){
+        // if the range is non overlapping
+        // [low, high][l ,r] or [l, r][low , high] range query(curr) is low to high and overall l to r is the main range 
+        if(low > r || high < l){
+            return INT_MAX;
+        }
+        // if they are completely inside
+        // [l, low, high, r]
+        else if(low >= l && high <= r){
+            // return the seg with the indx
+            return seg[indx];
+        }
+        else{
+            // partial overlap then go left and right then return the minm
+            int mid = (low + high) / 2;
+            int left = query(2*indx + 1, low, mid, l, r);
+            int right = query(2*indx + 2, mid + 1, high, l, r);
+            return min(left, right);
+        }
+    }
+    // for the update we will go according to where the index will be
+    // TC = O(Logn)
+    void update(int indx, int low, int high, int i, int val){
+        // base case is when we are at the right index
+        if(low == high){
+            // we will update the segment tree
+            seg[indx] = val;
+            return;
+        }
+        int mid = (low + high) / 2;
+        // now on the basis where the index i is
+        if(i <= mid){
+            // go left
+            update(2*indx + 1, low, mid, i, val);
+        }
+        else{
+            // go right
+            update(2*indx + 2, mid + 1, high, i, val);
+        }
+        // now after all this update the indx of seg according to which one is minm as we are updating it
+        seg[indx] = min(seg[2*indx + 1], seg[2*indx + 2]);
+    }
+
+};
+
+void solve(){
+    int n;
+    cin >> n;
+    int arr[n];
+    for(int i = 0 ; i < n ; i++) cin>>arr[i];
+    int q;
+    cin>>q;
+    // q is number of queries for which we have to find the minm
+    // queires are of type {type1 or type 2 , l, r}
+    // type1 = 1 and for this we have to find the minm in the ragne l to r
+    // type2 = 2 and for this we have to change the value at the index arr[l] = r
+    SGTree s1(n);
+    s1.buildSegTree(0, 0, n - 1, arr);
+    while(q--){
+        int type;
+        cin>>type;
+        if(type == 1){
+            int l,r;
+            cin>>l>>r;
+            cout<< s1.query(0, 0, n - 1, l, r) <<endl;
+        }
+        else{
+            int ind, val;
+            cin>>ind>>val;
+            s1.update(0, 0, n - 1, ind, val);
+            // update the arr
+            arr[ind] = val;
+        }
+    }
+}
+signed main(){
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif 
+    solve();
+    return 0;
+}
