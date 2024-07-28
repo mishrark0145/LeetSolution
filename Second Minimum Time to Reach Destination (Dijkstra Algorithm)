@@ -1,0 +1,71 @@
+// TC = (n + m)Logn where n is nodes nad m is total number of edges
+class Solution {
+public:
+    int secondMinimum(int n, vector<vector<int>>& edges, int time, int change) {
+        // We will solve this using the dijkstra algorithm with mini heap
+        // Here we can travel the nodes any number of time we want so no need to take the visited array
+        // Here we have to find the 2nd minm shortest path between source = 1 to dest = n
+        // Now here we will maintain two array one is d1 which will give the minm and the d2 will give the 2nd minm to reach that node
+        int st = 1;
+        int dt = n;
+        vector<int> d1(n + 1, 1e9); // 1st minm array
+        d1[st] = 0; // Source node would be zero
+        vector<int> d2(n + 1, 1e9); // 2nd minm array
+        // Also we have to change the edges into adjaceny list to visit the neighbours
+        vector<int> adj[n + 1]; // 1 based indexing thats why we have taken n + 1
+        for(int i = 0 ; i < edges.size() ; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);// Bcz graph is Bi-directional
+        }
+        // Here all the values will be 1e9 as we did not have the 2nd minm right for each node min heap based priority queue
+        priority_queue<pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>> > pq;
+        
+        pq.push({0, 1}); // { time Elpased, node} : Push the source node with minm(0)
+        // O(2*E*Logn) , and E is edges
+        while(!pq.empty()){
+            // Take the top node and get the time elapsed and node
+            auto it = pq.top();
+            pq.pop();
+            int ver = it.second;
+            int timeElapsed = it.first;
+            // Now check the condition if the node is final node and the d2[node] != 1e9
+            if(ver == dt && d2[ver] != 1e9){
+                // Return this value bcz this is the 2nd minm time
+                return d2[ver];
+            }
+            // Now first we will get the time elapsed on this node based on whether signal is green or not
+            int signal = timeElapsed / change;
+            // If signal is odd that means we it is red and if it is even then we are good to go
+            if(signal % 2 != 0){
+                // We have to first wait on the current node then we can move to our neigbours
+                // Signal + 1 bcz after 1 we will be at the next of change then the signal would be green so we do that
+                timeElapsed = (signal + 1) * change;
+            }
+            // Tarverse the nieghbours
+            for(auto node : adj[ver]){
+                // first we will check for the current node adjacent i.e is the value in the d2[node] != 1e9 then we dont have
+                // to do anything we can continue bcz we got our 2nd minm and no need to push this further
+                if(d2[node] != 1e9) continue;
+                // now if there is 1e9 in d2 that means we may or may not have something in d1[node] 
+                // To reach the node from the ver we riquire the time
+                if(d1[node] > timeElapsed + time){
+                    // that means we got a minm time, also we have to change the minm of d1[node] and tranfer it to d2[node]
+                    d2[node] = d1[node];
+                    d1[node] = timeElapsed + time;
+                    // push this into the pq
+                    pq.push({d1[node], node});
+                }
+                // suppose we did not get the minm above for timeElpased + time so we will check for the d2[node]
+                // also check for the conditon if the d1[node] should not be equal to this timeElapsed + time
+                else if(d2[node] > timeElapsed + time && d1[node] != timeElapsed + time){
+                    d2[node] = timeElapsed + time;
+                    // push that into the pq
+                    pq.push({d2[node], node});
+                }
+            }
+        }
+        return -1;
+    }
+};
