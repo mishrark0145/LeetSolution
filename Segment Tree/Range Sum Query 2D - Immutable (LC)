@@ -1,0 +1,42 @@
+// TC = O(m*n) and space O(m*n)
+class NumMatrix {
+    vector<vector<int>> prefSum;
+public:
+    NumMatrix(vector<vector<int>>& matrix) {
+        // m * n
+        int m = matrix.size();
+        int n = matrix[0].size();
+        // now we will make the prefSum 2d arrays size as size m + 1 and n + 1 bcz we dont want to write for the base condition
+        // when i and j goes outside of the prefSum array
+        prefSum.resize(m + 1, vector<int>(n + 1, 0));
+        // now we will make the preSum array by using the formula
+        // also we will use the 1 based indexing to get rid of the boundary condition
+        // preSum[i][j] = prefSum[i - 1][j] + prefSum[i][j - 1] + prefSum[i - 1][j - 1] + matrix[i - 1][j - 1](bcz we are using the 1 based indexing that why i - 1 and j - 1)
+        // O(m*n)
+        for(int i = 1 ; i <= m ; i++){
+            for(int j = 1 ; j <= n ; j++){
+                prefSum[i][j] = prefSum[i - 1][j] + prefSum[i][j - 1] - prefSum[i - 1][j - 1] + matrix[i - 1][j - 1];
+            }
+            cout<<endl;
+        }
+        // here prefSum[i][j] will represent the sum for all the cells in the rectange region top corener {0 , 0} to {i - 1, j - 1}
+    }
+    // constant time
+    int sumRegion(int row1, int col1, int row2, int col2) {
+        // now to find the sum for the rectangle row1,col1 and row2,col2
+        // we will find the strip which will give the sum that we have taken extra as preSum takes from the 0,0 to i,j in one based indexing
+        // top corner index do minus 1 and then make two pair with each other as {row1 - 1, col2} and {row2, col1 - 1}
+        // these are the two strips that we have to subtract from the prefSum[row2][col2] but we will subtract the cell of the 
+        // prefSUm[row1 - 1][col1 - 1] two time so we have to add it one time get the answer
+        // also keep in mind that we have to converth the given rows and cols in 1 based indexing first then we can do the rest thing simply
+        row1++, row2++, col1++, col2++;
+        int sum = prefSum[row2][col2] - prefSum[row1 - 1][col2] - prefSum[row2][col1 - 1] + prefSum[row1 - 1][col1 - 1];
+        return sum;
+    }
+};
+
+/**
+ * Your NumMatrix object will be instantiated and called as such:
+ * NumMatrix* obj = new NumMatrix(matrix);
+ * int param_1 = obj->sumRegion(row1,col1,row2,col2);
+ */
