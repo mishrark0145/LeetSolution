@@ -1,0 +1,29 @@
+// TC = O(nLogn + n)
+class Solution {
+public:
+    static bool cmp(vector<int>& x, vector<int> y){
+        // we wanted the 2nd val to be minimum
+        // i.e. if the value x[1] comes and it is minimum we will want it to lie in arrya before so we have to swap it
+        // and we know if we got true from the comparator then we will return true
+        return x[1] < y[1];
+    }
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        // We can do this greedy way it is somewhat similar to the N meetings in one room problem
+        // what we will do we will sort the intervals in order of there 2nd value bcz we wanted the next >= first vlaue of the interval
+        // so if we can count how many are valids to be non overlapping then we can minus that from the total number
+        int n = intervals.size();
+        if(n == 1) return 0;
+        sort(intervals.begin(), intervals.end(), cmp);
+        int cnt = 1;
+        // valid intervals count
+        int endingValue = intervals[0][1];
+        for(int i = 1 ; i < n ; i++){
+            if(intervals[i][0] >= endingValue){
+                cnt++;
+                // and now change the value of ending
+                endingValue = intervals[i][1];
+            }
+        }
+        return n - cnt;
+    }
+};
