@@ -1,0 +1,74 @@
+// Greedy Approach
+// TC = O(n)
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        // we will apply the greedy approach to solve this problem bcz here we dont
+        // have to find the minm or maxm jumps taken we just wanted to know wheteher it can reach the end or not
+        // We will start from the start keeping the farthest point as 0 then if we get the i > farthest then return false
+        // now farthest = max(farthest, i + nums[i]) i.e. from that index how much distance we can make
+        // also if the farthest >= n - 1 on any point simplt return true bcz that is what we wanted
+        int n = nums.size();
+        int farthest = 0;
+        for(int i = 0 ; i < n ; i++){
+            if(i > farthest) return false;
+            farthest = max(farthest, i + nums[i]);
+            if(farthest >= n - 1) return true;
+        }
+        return farthest >= n - 1;
+    }
+};
+
+
+
+// Recusive TLE
+// TC = O(2^n)
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int n = nums.size();
+        return fnc(0, nums);
+    }
+
+    bool fnc(int index, vector<int> nums){
+        if(index == nums.size() - 1){
+            return true;
+        }
+        int maxJump = nums[index];
+        for(int i = 1 ; i <= maxJump ; i++){
+            // if we reach the final index then return true and after that all returns will be true
+            if(index + i < nums.size() && fnc(index + i, nums)){
+                return true;
+            }
+        }
+        // and if we come out of this then return false then it will check the rest of the calls
+        return false;
+    }
+};
+
+// Memoization TLE
+// TC = O(n^2) 
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        return fnc(0, nums, dp);
+    }
+
+    bool fnc(int index, vector<int> nums, vector<int>& dp){
+        if(index == nums.size() - 1){
+            return true;
+        }
+        if(dp[index] != - 1) return dp[index];
+        int maxJump = nums[index];
+        for(int i = 1 ; i <= maxJump && index + i < nums.size() ; i++){
+            // if we reach the final index then return true and after that all returns will be true
+            if(fnc(index + i, nums, dp)){
+                return dp[index] = 1;
+            }
+        }
+        // and if we come out of this then return false then it will check the rest of the calls
+        return dp[index] = 0;
+    }
+};
