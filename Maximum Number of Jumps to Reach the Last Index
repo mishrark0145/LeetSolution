@@ -1,0 +1,90 @@
+// Memoization
+// TC = O(n^2)
+class Solution {
+public:
+    int maximumJumps(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        int maxi = fnc(n - 1, target, nums, n - 2, dp);
+        if(maxi <= 0){
+            return -1;
+        }
+        return maxi;
+    }
+
+    long long fnc(int prev, int target, vector<int>& nums, int nextIndex, vector<vector<int>>& dp){
+        if(nextIndex == 0){
+            long long cmp = nums[prev] - nums[nextIndex];
+            if(cmp + target >= 0 && cmp <= target) return 1;
+            else return INT_MIN;
+        }
+        if(dp[prev][nextIndex] != -1) return dp[prev][nextIndex];
+        long long cmp = nums[prev] - nums[nextIndex];
+        long long jump = INT_MIN;
+        long long notJump = INT_MIN;
+        if(cmp + target >= 0 && cmp <= target){
+            jump = 1 + fnc(nextIndex, target, nums, nextIndex - 1, dp);
+        }
+        notJump = fnc(prev, target, nums, nextIndex - 1, dp);
+        return dp[prev][nextIndex] = max(jump, notJump);
+    }
+};
+
+// single dp memoization
+class Solution {
+public:
+    int maximumJumps(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<int> dp(n , -1);
+        int maxi = fnc(0, target, nums, 1, dp);
+        if(maxi <= 0){
+            return -1;
+        }
+        return maxi;
+    }
+
+    long long fnc(int index, int target, vector<int>& nums, int nextIndex, vector<int>& dp){
+        if(nextIndex == nums.size()){
+            if(index == nums.size() -  1){
+                return 0;
+            }
+            else return INT_MIN;
+        }
+        if(dp[index] != -1) return dp[index];
+        long long cmp = nums[nextIndex] - nums[index];
+        long long jump = INT_MIN;
+        long long notJump = INT_MIN;
+        if(cmp + target >= 0 && cmp <= target){
+            jump = 1 + fnc(nextIndex, target, nums, nextIndex + 1, dp);
+        }
+        notJump = fnc(index, target, nums, nextIndex + 1, dp);
+        return dp[index] = max(jump, notJump);
+    }
+};
+
+
+// Tabulation
+class Solution {
+public:
+    int maximumJumps(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<int> dp(n, INT_MIN);
+        // if index == n - 1 dp[n - 1] = 0;
+        dp[n - 1] = 0;
+        for(int i = n - 2 ; i >= 0 ; i--){
+            for(int j = i + 1; j < n ; j++){
+                int nextIndex = j;
+                int index = i;
+                int cmp = nums[nextIndex] - nums[index];
+                int jump = INT_MIN;
+                if(cmp >= -target && cmp <= target){
+                    jump = 1 + dp[nextIndex];
+                }
+                int notJump = dp[index];
+                dp[index] = max(jump, notJump);
+            }
+        }
+        if(dp[0] < 0) return -1;
+        else return dp[0];
+    }
+};
