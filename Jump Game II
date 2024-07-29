@@ -1,0 +1,51 @@
+// Memoization 
+// TC = O(n^2) and space is O(n) and O(n) auxilary space
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        return fnc(0, nums, dp);
+    }
+
+    int fnc(int index, vector<int>& nums, vector<int>& dp){
+        if(index == nums.size() - 1){
+            return 0;
+        }
+        if(dp[index] != -1) return dp[index];
+        int mini = INT_MAX;
+        int jmp = 0;
+        for(int j = 1 ; j <= nums[index] && index + j < nums.size() ; j++){
+            jmp = fnc(j + index, nums, dp);
+            if(jmp != INT_MAX){
+                mini = min(mini, jmp + 1);
+            }  
+        }
+        return dp[index] = mini;
+    }
+};
+
+// Tabulation
+// TC = O(n^2) and space is O(n)
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        // we will be doing bottom up approach bcz in memoization we are reaching from 0 to n - 1 so here we have to start
+        // form n - 1 and then go to 0
+        // dp[n - 1] = 0 bcz for the fist index jmp would be zero
+        dp[n - 1] = 0;
+        for(int i = n - 2 ; i >= 0 ; i--){
+            int mini = INT_MAX;
+            for(int j = 1 ; j <= nums[i] && i + j < n ; j++){
+                int jmp = dp[i + j];
+                if(jmp != INT_MAX){
+                    mini = min(mini, 1 + jmp);
+                }
+            }
+            dp[i] = mini;
+        }
+        return dp[0];
+    }
+};
