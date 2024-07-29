@@ -1,0 +1,33 @@
+// TC = O(nLogn + n)
+class Solution {
+public:
+    // we can also use a cmp function
+    // static bool cmp(const vector<int>& x, const vector<int>& y){
+    //     return x[1] < y[1];
+    // }
+    int findMinArrowShots(vector<vector<int>>& points) {
+        // we can solve this problem using greedy approach like the mergin intervals problem or n meeting in a room
+        // we will first sort the intervals on the basis of 2nd number in ascending order 
+        
+        //sort(points.begin(), points.end(), cmp);
+        
+        // Sort intervals by their ending points using a lambda function
+        sort(points.begin(), points.end(), [](const vector<int>& x, const vector<int>& y) {
+            return x[1] < y[1];
+        });
+        // now we have got sorted order so now we will look for the end of prev interval with the first of the current
+        // Iterate through each interval and check if the start of the current interval is greater than the current end.
+        int end = points[0][1];
+        // bcz the minm is required we have to use one arrow for the first one
+        int arrow = 1;
+        int n = points.size();
+        for(int i = 1 ; i < n ; i++){
+            // If the current interval starts after the end of the last interval we shot an arrow for
+            if(points[i][0] > end){
+                arrow++;
+                end = points[i][1];
+            }
+        }
+        return arrow;
+    }
+};
