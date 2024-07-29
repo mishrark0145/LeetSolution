@@ -1,0 +1,49 @@
+// TC = O(E + NLogN)
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // change the times to adjacency list
+        vector<pair<int,int>> adj[n + 1]; // 1 base indexing
+        // O(E)
+        for(int i = 0 ; i < times.size(); i++){
+            int u = times[i][0];
+            int v = times[i][1];
+            int wt = times[i][2];
+            adj[u].push_back({v, wt}); // bcz directed graph
+        }
+        // we will use the dijkstra bcz we wanted the minm time
+        // Initialize distance array and priority queue
+        vector<int> dist(n + 1, INT_MAX); // time array
+        // min heap priority queue
+        priority_queue<pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>> > pq;
+        pq.push({0, k}); // {time, node}
+        dist[k] = 0; // source node
+        // O(E + NLogN)
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+            int ver = it.second;
+            int passTime = it.first;
+            // go to all the neightbours
+            for(auto it : adj[ver]){
+                int node = it.first;
+                int wt = it.second;
+                if(passTime + wt < dist[node]){
+                    dist[node] = passTime +wt;
+                    // then we will push that into the queue
+                    pq.push({dist[node], node});
+                }
+            }  
+        }
+        // now we will check in the dist array if there is a single entry which is INT_MAX
+        // Get the maximum distance from the source to any node
+        int maxDist = 0;
+        for(int i = 1 ; i <= n ; i++){
+            if(dist[i] == INT_MAX){
+                return -1;
+            }
+            maxDist = max(maxDist, dist[i]);
+        }
+        return maxDist;
+    }
+};
