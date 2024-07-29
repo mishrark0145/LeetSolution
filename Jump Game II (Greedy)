@@ -1,4 +1,37 @@
-// Memoization 
+// Greedy Soultion Optimal
+// TC = O(n) and constant space complexity 
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        // We will solve this using greedy, the problem is saying we wanted to take minm jums to reach the n - 1 index
+        // so instead of trying out all possibilities we can simple jump from the current index to set of range betwenn l to r 
+        // and say that we got the first jump between them so it is like we can reach for the second jump from the range l to r
+        // so now we will be finding the range l and r for the jmps we will take
+        int n = nums.size();
+        // initially l and r = 0
+        int l = 0;
+        int r = 0;
+        // now after taking the jmp l just 1 ahead of r
+        // and the r will be how farthest we can reach from the range l to r so what we will have to do is find the farthest point
+        // going through the l to r
+        int jmps = 0;
+        // if the r have reached the n - 1 then we have reached our last index so no need to go further
+        while(r < n - 1){
+            int farthest = 0;
+            for(int ind = l ; ind <= r ; ind++){
+                farthest = max(farthest, ind + nums[ind]);
+            }
+            // this will be the 1st jmp to the ranges l to r
+            jmps++;
+            l = r + 1;
+            r = farthest;
+        }
+        return jmps;
+    }
+};
+
+
+// Memoization better soultion 
 // TC = O(n^2) and space is O(n) and O(n) auxilary space
 class Solution {
 public:
@@ -25,7 +58,7 @@ public:
     }
 };
 
-// Tabulation
+// Tabulation better solution
 // TC = O(n^2) and space is O(n)
 class Solution {
 public:
