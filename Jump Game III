@@ -1,0 +1,35 @@
+// TC = O(n) and space compelxity = O(2*n)
+class Solution {
+public:
+    bool canReach(vector<int>& arr, int start) {
+        // We can solve this using BFS , like if we can reach the indexes i + arr[i] or i - arr[i] so we will store the values and 
+        // the indexes and then we will visited every node one by one like that till the queue get empty
+        int n = arr.size();
+        queue<int> q;
+        q.push(start); // {index}
+        // also we should make a visited array bcz if we will not then it might get into infinite loop
+        vector<int> visited(n, 0);
+        visited[start] = 1;
+        while(!q.empty()){
+            auto ind = q.front();
+            q.pop();
+            int num = arr[ind];
+            if(num == 0) return true;
+            // push the indexs that we can visit from the curren ind
+            int left = ind - arr[ind];
+            int right = ind + arr[ind];
+            if(left >= 0 && visited[left] == 0){
+                q.push(left);
+                // mark this node as visited
+                visited[left] = 1;
+            }
+            if(right < n && visited[right] == 0){
+                q.push(right);
+                // mark the visited node
+                visited[right] = 1;
+            }
+        }
+        // if we did not get the 0 value then we will return the false bcz we got our queue empty
+        return false; 
+    }
+};
