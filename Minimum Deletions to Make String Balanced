@@ -1,0 +1,61 @@
+// Optimal Soulution
+// TC = O(n)
+class Solution {
+public:
+    int minimumDeletions(string s) {
+        // to find the minm number of deletions , a string will be balanced if a comes before b 
+        int cntb = 0; // cnt of b
+        int deletion = 0; // minm number of deletion
+        for(const auto& c : s){
+            // if b then increase the cnt of b
+            if(c == 'b') cntb++;
+            // now if it is a then 
+            // Increment deletion by 1 because we consider deleting this 'a' to maintain the balance.
+            // Alternatively, we can keep this 'a' and consider it as a valid character, 
+            // but we need to account for the previous 'b's that should be deleted to keep 'a's before 'b's.
+            else{
+                deletion = min(deletion + 1, cntb);
+            }
+        }
+        return deletion;
+    }
+};
+
+
+// Better Solution
+// TC = O(3*n) and space complexity = O(2*n)
+class Solution {
+public:
+    int minimumDeletions(string s) {
+        // we will take the count a in a suffCount
+        // and prefix count of b in a prefCount 
+        int n = s.size();
+        vector<int> suffCount(n + 1, 0); // count of a
+        vector<int> prefCount(n + 1, 0); // count of b
+        for(int i = n - 1 ; i >= 0 ; i--){
+            if(s[i] == 'a'){
+                suffCount[i] = suffCount[i + 1] + 1;
+            }
+            else{
+                suffCount[i] = suffCount[i + 1];
+            }
+        }
+        for(int i = 1 ; i <= n ; i++){
+            if(s[i - 1] == 'b'){
+                prefCount[i] = prefCount[i - 1] + 1;
+            }
+            else{
+                prefCount[i] = prefCount[i - 1];
+            }
+        }
+        int mini = INT_MAX;
+        // to find the minm number of deletions , a string will be balanced if a comes before b 
+        // therefore we will check for each index how many a are coming after that index and how many b is coming befroe that index
+        // and that can be the number of deletions required
+        for(int i = 0 ; i < n ; i++){
+            int deletion = prefCount[i] + suffCount[i + 1]; // pref is one based indexing
+            mini = min(mini, deletion);
+        }
+        return mini;
+    }
+};
