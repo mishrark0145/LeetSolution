@@ -1,0 +1,52 @@
+// O(n*m) and space is O(n*m)
+class Solution {
+public:
+    vector<vector<string>> findDuplicate(vector<string>& paths) {
+        // first we will get the directory and then we will store the directory path for each content 
+        // in a vector of string
+        int n = paths.size();
+        unordered_map<string, vector<string>> mpp;
+        for(int i = 0 ; i < n ; i++){
+            string directory_path = "";
+            int spaceCnt = 0;
+            for(int j = 0 ; j < paths[i].size() ; j++){
+                // if the space count is zero that means we are on the directory path
+                if(spaceCnt == 0){
+                    directory_path += paths[i][j];
+                }
+                else if(paths[i][j] == ' ') {
+                    spaceCnt++;
+                }
+                // if spaceCnt > 0 then we have filename.txt(content) format
+                else{
+                    string filePaths = directory_path;
+                    filePaths += '/';
+                    while(paths[i][j] != '('){
+                        filePaths += paths[i][j];
+                        j++;
+                    }
+                    // as we have encountered '(' that means we will get the content so we should copy that
+                    j++;
+                    string content = "";
+                    while(paths[i][j] != ')'){
+                        content += paths[i][j];
+                        j++;
+                    }
+                    // now we will store the directory path 
+                    mpp[content].push_back(filePaths);
+                }
+            }
+        }
+        // now we have all the contents and they have all the file paths for the content 
+        // now we have to only take value(filePath) for a content if that have size >= 2 that means we have duplicates i.e. two or more
+        // file path have same content
+        // just iterate over the mpp and if the file path size >= 2 then store that in the ans
+        vector<vector<string>> ans;
+        for(auto it : mpp){
+            if(it.second.size() >= 2){
+                ans.push_back(it.second);
+            }
+        }
+        return ans;
+    }
+};
