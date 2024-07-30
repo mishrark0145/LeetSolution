@@ -1,0 +1,18 @@
+class Solution {
+public:
+    bool checkString(string s) {
+        // we can check for the a`s and if we encounter first b then after that if we get a then we will return false
+        bool flaga = false;
+        bool flagb = false;
+        for(int i = 0 ; i < s.size() ; i++){
+            if(s[i] == 'a'){
+                // we got an b previously then reutrn false
+                if(flagb == true) return false;
+                flaga = true;
+            }
+            else flagb = true;
+        }
+        // if we get out of this without getting false then simply return true
+        return true;
+    }
+};
