@@ -1,0 +1,90 @@
+// Recursive Solution TLE
+// TC = O(2^n)
+class Solution {
+public:
+    int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
+        return fnc(0, 0, 0, books, shelfWidth);
+    }
+
+    int fnc(int index, int currentWidth, int currentHeight, vector<vector<int>>& books, int shelfWidth) {
+        if (index == books.size()) {
+            return currentHeight;
+        }
+
+        int nextBookWidth = books[index][0];
+        int nextBookHeight = books[index][1];
+
+        // Place the current book on the current shelf
+        int placeOnCurrentShelf = INT_MAX;
+        if (currentWidth + nextBookWidth <= shelfWidth) {
+            placeOnCurrentShelf = fnc(index + 1, currentWidth + nextBookWidth, max(currentHeight, nextBookHeight), books, shelfWidth);
+        }
+
+        // Place the current book on a new shelf
+        int placeOnNewShelf = currentHeight + fnc(index + 1, nextBookWidth, nextBookHeight, books, shelfWidth);
+
+        // Return the minimum height
+        return min(placeOnCurrentShelf, placeOnNewShelf);
+    }
+};
+
+// Memoization 
+// TC = O(n^2) and space is O(n^2) + O(n)
+class Solution {
+public:
+    int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
+        // we can memoize the soution on the basis of index and width
+        // maxm index can be 1000
+        // maxm width = 1000
+        vector<vector<int>> dp(1000 + 1, vector<int>(1000 + 1, -1));
+        return fnc(0, 0, 0, books, shelfWidth, dp);
+    }
+
+    int fnc(int index, int currentWidth, int currentHeight, vector<vector<int>>& books, int shelfWidth, vector<vector<int>>& dp) {
+        if (index == books.size()) {
+            return currentHeight;
+        }
+        if(dp[index][currentWidth] != -1) return dp[index][currentWidth];
+        int nextBookWidth = books[index][0];
+        int nextBookHeight = books[index][1];
+
+        // Place the current book on the current shelf
+        int placeOnCurrentShelf = INT_MAX;
+        if (currentWidth + nextBookWidth <= shelfWidth) {
+            placeOnCurrentShelf = fnc(index + 1, currentWidth + nextBookWidth, max(currentHeight, nextBookHeight), books, shelfWidth, dp);
+        }
+
+        // Place the current book on a new shelf
+        int placeOnNewShelf = currentHeight + fnc(index + 1, nextBookWidth, nextBookHeight, books, shelfWidth, dp);
+
+        // Return the minimum height
+        return dp[index][currentWidth] = min(placeOnCurrentShelf, placeOnNewShelf);
+    }
+};
+
+// i didnt uderstood the problem
+// TC = O(n^2) and sapce = O(n)
+class Solution {
+public:
+    int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
+        int n = books.size();
+        // Initialize dp array where dp[i] is the minimum height to place the first i books
+        vector<int> dp(n + 1, INT_MAX);
+        dp[0] = 0; // Base case: no books require 0 height
+
+        // Iterate over all books
+        for (int i = 1; i <= n; ++i) {
+            int width = 0, height = 0;
+            // Try to place books from i-1 to j on the current shelf if possible
+            for (int j = i; j > 0; --j) {
+                width += books[j - 1][0];
+                if (width > shelfWidth) break;
+                height = max(height, books[j - 1][1]);
+                dp[i] = min(dp[i], dp[j - 1] + height);
+            }
+        }
+
+        return dp[n];
+    }
+};
+
