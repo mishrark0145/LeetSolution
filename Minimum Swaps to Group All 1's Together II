@@ -1,0 +1,96 @@
+// Not Optimal
+// space complexity is O(4*n) and TC = O(n)
+class Solution {
+public:
+    void makeCircular(vector<int>& arr, vector<int>& nums){
+        int i = 2;
+        while(i--){
+            for(auto num : nums){
+                arr.push_back(num);
+            }
+        }
+    }
+
+    int minSwaps(vector<int>& nums) {
+        // we will count the number of ones as that will be the of the groups 1 together
+        int total = 0;
+        int n = nums.size();
+        // O(n)
+        for(const auto& num : nums){
+            if(num == 1) total++;
+        }
+        cout<<total<<endl;
+        // from the hints we will now try to find the subarray of size total and in that we will need to find the swaps so that it will
+        // become all ones , the reuired swaps will be the number of zeroes
+        // now we have to find the no of zeroes in the suarray
+        // now here to remove the circular array we will append the nums at the end of nums
+        vector<int> arr;
+        // O(2*n)
+        makeCircular(arr, nums);
+        // now to remove the recurrence claculation of finding zeros between ranges that the lenght of the subarray i.e. total
+        // we can use the prefix sum
+        vector<int> prefCnt(2*n + 1, 0);// we will make this as 1 based indexing to avoid the edge cases
+        // O(2*n)
+        for(int i = 1 ; i <= 2*n ; i++){
+            if(arr[i - 1] == 0){
+                prefCnt[i] = prefCnt[i - 1] + 1;
+            }
+            else{
+                prefCnt[i] = prefCnt[i - 1];
+            }
+        }
+        // now to find the subarrays count with zero we have to take the cosideration when the left of the subarray becomes equal
+        // to the array size then we will break
+        int l = 0;
+        int r = total - 1;
+        int cnt = INT_MAX;
+        // O(n)
+        while(l < n){
+            // now we have to count the zeroes in this range l to r
+            // as prefCnt is one based indexing we will find that in r + 1 to l
+            int cntZeroes = prefCnt[r + 1] - prefCnt[l];
+            cnt = min(cntZeroes, cnt);
+            // now after this just increase the subarray by one
+            l++;
+            r++;
+        }
+        return cnt;
+    }
+};
+
+
+// TC = O(n) and contant space
+class Solution {
+public:
+    int minSwaps(vector<int>& nums) {
+        int total = 0;
+        int n = nums.size();
+
+        // Count the number of ones
+        for (const auto& num : nums) {
+            if (num == 1) total++;
+        }
+
+        // Find the initial count of zeroes in the first window of size 'total'
+        int zeroCount = 0;
+        for (int i = 0; i < total; i++) {
+            if (nums[i] == 0) zeroCount++;
+        }
+
+        int minSwaps = zeroCount;
+
+        // Use sliding window technique to find the minimum number of zeroes in any window of size 'total'
+        for (int i = 1; i < n; i++) {
+            // Remove the element going out of the window
+            if (nums[i - 1] == 0) zeroCount--;
+
+            // Add the new element coming into the window
+            if (nums[(i + total - 1) % n] == 0) zeroCount++;
+
+            // Update the minimum swaps needed
+            minSwaps = min(minSwaps, zeroCount);
+        }
+
+        return minSwaps;
+    }
+};
