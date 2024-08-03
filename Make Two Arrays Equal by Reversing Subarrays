@@ -1,0 +1,39 @@
+// TC = O(n^2)
+class Solution {
+public:
+    bool canBeEqual(vector<int>& target, vector<int>& arr) {
+        // convert arr to target 
+        int n = target.size();
+        for(int i = 0 ; i < n ; i++){
+            // i is pointing to target
+            int l = i;
+            int r = i;
+            // now we will move the r till it becomes arr[r] eqaul to target[i]
+            while(r < n && arr[r] != target[i]){
+                r++;
+            }
+            // if we did not find the element in the arr then return false
+            if(r == n) return false;
+            // now if we find it then we have to reverse the arr from l to r
+            reverse(arr.begin() + l, arr.begin() + r + 1); // did the plus one bcz reverse fnc taken 2nd pointer as exlucsive nnot inclusive
+            //for(int i = 0 ; i < n ; i++) cout<<arr[i]<<" ";
+        }
+        return true;
+    }
+};
+
+// TC = O(nLogn)
+class Solution {
+public:
+    bool canBeEqual(vector<int>& target, vector<int>& arr) {
+        // as its written we are allowed to reverse any number of times so we can sort the arr and then check if they are equal or not
+        // both target and arr
+        int n = arr.size();
+        sort(arr.begin(), arr.end());
+        sort(target.begin(), target.end());
+        for(int i = 0 ; i < n ; i++){
+            if(arr[i] != target[i]) return false;
+        }
+        return true;
+    }
+};
