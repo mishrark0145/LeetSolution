@@ -1,0 +1,19 @@
+// TC = O(2n) ans space is O(n)
+class Solution {
+public:
+    int duplicateNumbersXOR(vector<int>& nums) {
+        int ans = 0;
+        unordered_map<int,int> mpp;
+        for(auto num : nums){
+            mpp[num]++;
+        }
+        //now we will iterate through the mpp and if the count of any num is 2 then we will xor that with answer
+        for(auto it : mpp){
+            if(it.second == 2){
+                int num = it.first;
+                ans = ans ^ num;
+            }
+        }
+        return ans;
+    }
+};
