@@ -1,0 +1,36 @@
+// TC = O(nLogn) and Space is O(n) for map
+class Solution {
+public:
+    int count1Bit(int n){
+        int cnt = 0;
+        while(n){
+            // do the & operation with 1 and after that right shift it so we are checking for 1 bit by checking 
+            // always the rightmost bit
+            cnt += n & 1;
+            n = n >> 1; // right shift
+        }
+        return cnt;
+    }
+
+    vector<int> sortByBits(vector<int>& arr) {
+        int n = arr.size();
+        map<int,vector<int>> mpp;
+        // so we will store the count of 1 in the binary represetation of each number
+        for(int i = 0 ; i < n ; i++){
+            mpp[count1Bit(arr[i])].push_back(arr[i]);
+        }
+        // the map will be sorted on the basis of 1s and now if multiple number have same number of ones
+        // we have to sort them on the basis of numbers in ascending order
+        vector<int> ans;
+        for(auto it : mpp){
+            // the value i.e. the it.second will be a vector so we will first sort it then push it in our answer
+            vector<int> temp;
+            temp = it.second;
+            sort(temp.begin(), temp.end());
+            for(auto num : temp){
+                ans.push_back(num);
+            }
+        }
+        return ans;
+    }
+};
