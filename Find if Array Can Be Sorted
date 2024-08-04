@@ -1,0 +1,53 @@
+// TC = O(nLogm + n) and space is O(n)
+// where m is maxm value of nums[i]
+class Solution {
+public:
+    int bit(int n){
+        // using bit manipulation 
+        // we will use the right shift 
+        int cnt = 0;
+        while(n){
+            // do the and with 1 of n this will give 1 if the most right bit is 1 otherwise zero
+            cnt += n & 1;
+            // now right shift the n
+            n = n >> 1;
+        }
+        return cnt;
+    }
+    bool canSortArray(vector<int>& nums) {
+        // store the number of 1s bit of every number in an array
+        int n = nums.size();
+        vector<int> oneBits(n, 0);
+        for(int i = 0 ; i < n ; i++){
+            oneBits[i] = bit(nums[i]);
+            // we can also use the in built function
+            // oneBits[i] = __builtin_popcount(nums[i]);
+        }
+        int currMax = nums[0];
+        // initialized as INT_MIN bcz we right now do not have previous segment
+        int prevMax = INT_MIN;
+        int prevMin = INT_MAX;
+        int currMin = nums[0];
+        for(int i = 1; i < n ; i++){
+            if(oneBits[i] == oneBits[i - 1]){
+                // Update current segment max and min
+                currMax = max(currMax, nums[i]);
+                currMin = min(currMin, nums[i]);
+            } else {
+                // Check the transition between different bit counts
+                if(prevMax > currMin) return false;
+                // Update previous segment max and min
+                prevMax = currMax;
+                prevMin = currMin;
+                // Reset current segment max and min
+                currMax = nums[i];
+                currMin = nums[i];
+            }
+        }
+        // now when we are out of the loop we have to compare the PrevMax with the  currMin for the last case
+        // Final check for the last segment
+        if(prevMax > currMin) return false;        
+        return true;
+    }
+
+};
