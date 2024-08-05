@@ -1,0 +1,23 @@
+// TTC = O(n) ans space is O(n)
+class Solution {
+public:
+    string kthDistinct(vector<string>& arr, int k) {
+        unordered_map<string,int> mpp;
+        int n = arr.size();
+        // store the cnt of strings in map
+        for(int i = 0 ; i < n ; i++){
+            mpp[arr[i]]++;
+        }
+        int distinctStr = 0;
+        for(int i = 0 ; i < n ; i++){
+            // if string count in the arr is one then we will increase the distinct string count
+            if(mpp[arr[i]] == 1){
+                distinctStr++;
+                // if it is equal to k then return arr[i]
+                if(k == distinctStr) return arr[i];
+            }
+        }
+        // finally if not return empty string
+        return "";
+    }
+};
