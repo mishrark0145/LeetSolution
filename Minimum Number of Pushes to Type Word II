@@ -1,0 +1,69 @@
+// Better Solution
+// O(n + 2*26Log(26))
+class Solution {
+public:
+    int minimumPushes(string word) {
+        unordered_map<char,int> mpp;
+        int n = word.size();
+        for(int i = 0 ; i < n ; i++){
+            mpp[word[i]]++;
+        }
+        // now we will use the priority queue to store the pair as number of times the char is in the word
+        // and the char {cnt, character} in a max-heap
+        priority_queue<pair<int,char>> pq;
+        for(auto it : mpp){
+            int cnt = it.second;
+            char c = it.first;
+            pq.push({cnt,c});
+        }
+        // now we will take the count till 8 as there are total 8 keys we will assign the maxm cnt keys coming first
+        // to the single key so they require only on push after the 8 iteration on the pq we have to assign it to the
+        // 2nd charater element to the key so they require two pushes , now so on for 8 iteration
+        int iteration = 0;
+        int push = 0;
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+            // number of occurrence of the character
+            int occurrence = it.first;
+            // how many times we have to push the button for this character
+            int pushTimes = iteration / 8 + 1;
+            push += occurrence*pushTimes;
+            iteration++;
+        }
+        return push;
+    }
+};
+
+// Optimal 
+// TC = O(n + 26 + 26Log26) and space is O(26)
+class Solution {
+public:
+    static bool cmp(int x, int y){
+        // if the second num i.e x is greate than the previous element y then swap it so return true
+        return x > y;
+    }
+
+    int minimumPushes(string word) {
+        vector<int> vec(26, 0);
+        // here the index zero represents the count of a , 1 index b and so on
+        int n = word.size();
+        // O(n)
+        for(int i = 0 ; i < n ; i++){
+            vec[word[i] - 97]++;
+        }
+        // now just sort them in decresing order
+        // O(26Log26)
+        sort(vec.begin(), vec.end(), cmp);
+        // now after each 8 iteration on the vec we have to push the button one time more
+        int push = 0;
+        // O(26)
+        for(int i = 0 ; i < 26 ; i++){
+            if(vec[i] == 0) break;
+            int pushTimes = i / 8 + 1;
+            int occur = vec[i];
+            push += occur * pushTimes;
+        }
+        return push;
+    }
+};
