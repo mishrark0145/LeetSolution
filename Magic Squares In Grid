@@ -1,0 +1,50 @@
+// TC = O(n * m) and constant space
+class Solution {
+public:
+    int magicSquare(int row, int col,vector<vector<int>>& grid){
+        // like it is sure that the each row , each col and diagonal sum would be 15
+        // also the elements should be unique
+        set<int> st;
+        // row col and diagonal checks
+        int diagonalSum = 0;
+        for(int i = 0 ; i < 3 ; i++){
+            int rowSum = 0;
+            int colSum = 0;
+            for(int j = 0 ; j < 3 ; j++){
+                // if there are duplicates then the size of the set would be less than 9
+                st.insert(grid[row + i][col + j]);
+                rowSum += grid[row + i][col + j];
+                colSum += grid[row + j][col + i];
+            }
+            if(rowSum != 15 || colSum != 15) return 0;
+
+            diagonalSum += grid[row + i][col + i];
+        }
+        if(diagonalSum != 15) return 0;
+        // set size check
+        if(st.size() != 9) return 0;
+        // now all the elements should be from 1 to 9
+        int i = 1;
+        for(auto it : st){
+            if(it != i) return 0;
+            i++;
+        }
+        // now all the checks are done so return 1
+        return 1;
+    }
+
+    int numMagicSquaresInside(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int cnt = 0;
+        // traverse each cell and then we will go with the 3*3 matrix 
+        for(int row = 0 ; row < n ; row++){
+            for(int col = 0 ; col < m ; col++){
+                // if the 3*3 matrix is possible or not from this cell
+                if(row + 2 >= n || col + 2 >= m) continue;
+                cnt += magicSquare(row, col, grid);
+            }
+        }
+        return cnt;
+    }
+};
