@@ -1,0 +1,72 @@
+// TC = O((m*n)^2) ans space is O(m*n)
+class Solution {
+public:
+    void dfs(int row, int col, vector<vector<int>>& grid, vector<vector<int>>& visited) {
+        int m = grid.size();
+        int n = grid[0].size();
+        visited[row][col] = 1;
+        vector<pair<int, int>> directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+        // going to the neighbours
+        for (auto dir : directions) {
+            int nrow = row + dir.first;
+            int ncol = col + dir.second;
+            if (ncol >= 0 && ncol < n && nrow >= 0 && nrow < m && visited[nrow][ncol] == 0 && grid[nrow][ncol] == 1) {
+                dfs(nrow, ncol, grid, visited);
+            }
+        }
+    }
+
+    int minDays(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> visited(m, vector<int>(n, 0));
+        int count = 0;
+        int cntOf1 = 0;
+        // Count the number of connected components of 1s
+        for (int row = 0; row < m; row++) {
+            for (int col = 0; col < n; col++) {
+                if(grid[row][col] == 1) cntOf1++;
+                if (visited[row][col] == 0 && grid[row][col] == 1) {
+                    dfs(row, col, grid, visited);
+                    count++;
+                }
+            }
+        }
+        // When there is only one land cell
+        if(cntOf1 == 1) return 1;
+        // If there are already more than one component, return 0
+        // And if count is zero that means no land cell
+        if (count > 1 || count == 0) return 0;
+
+        // Try removing each cell and check if it increases the number of components
+        for (int row = 0; row < m; row++) {
+            for (int col = 0; col < n; col++) {
+                if (grid[row][col] == 1) {
+                    // Temporarily mark this cell as water
+                    grid[row][col] = 0;
+                    vector<vector<int>> newVisited(m, vector<int>(n, 0));
+                    int newCount = 0;
+                    
+                    // Count the number of connected components after removal
+                    for (int r = 0; r < m; r++) {
+                        for (int c = 0; c < n; c++) {
+                            if (newVisited[r][c] == 0 && grid[r][c] == 1) {
+                                dfs(r, c, grid, newVisited);
+                                newCount++;
+                            }
+                        }
+                    }
+                    
+                    // Restore the cell
+                    grid[row][col] = 1;
+
+                    // If removing this cell results in more than one component
+                    if (newCount > 1) return 1;
+                }
+            }
+        }
+
+        // If removing one cell is not enough, return 2
+        return 2;
+    }
+};
