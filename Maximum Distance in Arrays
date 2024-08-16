@@ -1,0 +1,21 @@
+// TC = O(m) and space is constant;
+class Solution {
+public:
+    int maxDistance(vector<vector<int>>& arrays) {
+        int m = arrays.size();
+        // maintain the prevMin and prevMax of the 1st array
+        int prevMin = arrays[0][0];
+        int prevMax = arrays[0][arrays[0].size() - 1];
+        int maxDist = INT_MIN;
+        // now iterate over the arrays from index 1
+        for(int i = 1 ; i < m ; i++){
+            int size = arrays[i].size();
+            // now check for maxi with maximum difference between prevMin - current array max nad prevMax - current array min
+            maxDist = max(maxDist, max(abs(prevMin - arrays[i][size - 1]), abs(prevMax - arrays[i][0])));
+            // now we have to change the prevMin and prevMax
+            prevMin = min(prevMin, arrays[i][0]);
+            prevMax = max(prevMax, arrays[i][size - 1]);
+        }
+        return maxDist;
+    }
+};
