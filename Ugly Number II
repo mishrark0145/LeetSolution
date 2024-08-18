@@ -1,0 +1,103 @@
+// Brute Force
+// TC = O(numLognum)
+class Solution {
+public:
+    bool checkUgly(int num, unordered_set<int>& st) {
+        while (num > 1) {
+            if (st.find(num) != st.end()) return true;
+            if (num % 2 == 0) num /= 2;
+            else if (num % 3 == 0) num /= 3;
+            else if (num % 5 == 0) num /= 5;
+            else return false;
+        }
+        return true;
+    }
+
+    int nthUglyNumber(int n) {
+        if(n == 1) return 1;
+        // Store all the ugly numbers till n
+        unordered_set<int> st;
+        st.insert(1);
+        int num = 2;
+        while (true) {
+            if (checkUgly(num, st)) {
+                st.insert(num);
+                if (st.size() == n) {
+                    return num;
+                }
+            }
+            num++;
+        }
+        return -1;
+    }
+};
+
+// Optimal Appraoch
+// TC = O(nLogn) and space is O(n)
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        // we will use here prioirty queue and we will store all the ugly number and store in it
+        // mih heap
+        priority_queue<int, vector<int>, greater<int> > pq;
+        pq.push(1);
+        // we will also push into a set to do not push the duplicates
+        set<int> st;
+        st.insert(1);
+        // for loop it executing from 1 to n - 1 bcz when we will pop n - 1 elements the next top will be our answer
+        for(int i = 1 ; i < n ; i++){
+            // initially take the top it will be minimum
+            int ugly = pq.top();
+            // now pop it
+            pq.pop();
+            // now we will multiply it with 2 , 3 and 5 and check into the set if it not present then push into the set and pq
+            if(st.find(ugly*2) == st.end()){
+                st.insert(ugly*2);
+                pq.push(ugly*2);
+            }
+            if(st.find(ugly*3) == st.end()){
+                st.insert(ugly*3);
+                pq.push(ugly*3);
+            }
+            if(st.find(ugly*5) == st.end()){
+                st.insert(ugly*5);
+                pq.push(ugly*5);
+            }
+        }
+        return pq.top();
+    }
+};
+// TC = O(nLogn) and space is O(n)
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        // we will use here prioirty queue and we will store all the ugly number and store in it
+        // mih heap
+        priority_queue<long, vector<long>, greater<long> > pq;
+        pq.push(1);
+        // we will also push into a set to do not push the duplicates
+        set<long> st;
+        st.insert(1);
+        // for loop it executing from 1 to n - 1 bcz when we will pop n - 1 elements the next top will be our answer
+        for(int i = 1 ; i < n ; i++){
+            // initially take the top it will be minimum
+            long ugly = pq.top();
+            // now pop it
+            pq.pop();
+            // now we will multiply it with 2 , 3 and 5 and check into the set if it not present then push into the set and pq
+            if(st.find(ugly*2) == st.end()){
+                st.insert(ugly*2);
+                pq.push(ugly*2);
+            }
+            if(st.find(ugly*3) == st.end()){
+                st.insert(ugly*3);
+                pq.push(ugly*3);
+            }
+            if(st.find(ugly*5) == st.end()){
+                st.insert(ugly*5);
+                pq.push(ugly*5);
+            }
+        }
+        return pq.top();
+    }
+};
