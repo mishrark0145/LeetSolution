@@ -1,0 +1,37 @@
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges, vector<double>& succProb, int start_node, int end_node) {
+        // make the adjaceney list with edge weight as the sucess probability
+        vector<pair<int,double>> adj[n];
+        for(int i = 0 ; i < edges.size() ; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            double wt = succProb[i];
+            adj[u].push_back({v, wt});
+            adj[v].push_back({u, wt});
+        }
+        vector<double> maxProb(n, 0);
+        priority_queue<pair<double,int>> pq;
+        pq.push({1, start_node});
+        maxProb[start_node] = 1;
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+            int node = it.second;
+            double currProb = it.first;
+            if(node == end_node){
+                return currProb;
+            }
+            // visiting the neighbours
+            for(auto ptr : adj[node]){
+                int adjNode = ptr.first;
+                double nxtProb = ptr.second;
+                if(nxtProb * currProb > maxProb[adjNode]){
+                    maxProb[adjNode] = nxtProb * currProb;
+                    pq.push({maxProb[adjNode], adjNode});
+                }
+            }
+        }
+        return 0;
+    }
+};
