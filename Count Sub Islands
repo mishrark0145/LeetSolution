@@ -1,0 +1,47 @@
+// TC = O(m * n)
+class Solution {
+public:
+    bool island(int row, int col, vector<vector<int>>& visited, vector<vector<int>>& grid1, vector<vector<int>>& grid2){
+        // out of bound condition
+        if(row < 0 || row >= grid1.size() || col < 0 || col >= grid1[0].size()){
+            return true;
+        }
+        // if grid2 cell is 0 or visited already, return true
+        if(grid2[row][col] == 0 || visited[row][col] == 1){
+            return true;
+        }
+        // if grid1 cell is 0 and grid2 cell is 1, return false
+        if(grid1[row][col] == 0){
+            return false;
+        }
+
+        // mark this cell as visited
+        visited[row][col] = 1;
+
+        // explore all four directions
+        bool up = island(row - 1, col, visited, grid1, grid2);
+        bool right = island(row, col + 1, visited, grid1, grid2);
+        bool down = island(row + 1, col, visited, grid1, grid2);
+        bool left = island(row, col - 1, visited, grid1, grid2);
+
+        return up && right && down && left;
+    }
+
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        int m = grid1.size();
+        int n = grid1[0].size();
+        vector<vector<int>> visited(m, vector<int>(n, 0));
+        int count = 0;
+        for(int row = 0 ; row < m ; row++){
+            for(int col = 0 ; col < n ; col++){
+                // if the grid2 cell is 1 and not visited, check for sub-island
+                if(grid2[row][col] == 1 && visited[row][col] == 0){
+                    if(island(row, col, visited, grid1, grid2)){
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+};
