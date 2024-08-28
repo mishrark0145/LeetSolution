@@ -1,0 +1,43 @@
+// TC = O(m * n) 
+class Solution {
+public:
+    void dfs(int row, int col, vector<vector<int>>& visited, vector<vector<int>>& land, int& r2, int& c2){
+        // mark the cell as visited
+        visited[row][col] = 1;
+        // update the boundaries of the current farmland
+        r2 = max(r2, row);
+        c2 = max(c2, col);
+       // visiting the neighbours
+        vector<pair<int,int>> directions = { {-1, 0} , {0, -1} , {1, 0} , {0, 1}};
+        for(auto dir : directions){
+            int nrow = row + dir.first;
+            int ncol = col + dir.second;
+            // bound check
+            if(nrow < land.size() && nrow >= 0 && ncol >= 0 && ncol < land[0].size() && land[nrow][ncol] == 1 && visited[nrow][ncol] == 0){
+                dfs(nrow, ncol, visited, land, r2, c2);
+            }
+        }
+    }
+    vector<vector<int>> findFarmland(vector<vector<int>>& land) {
+        int m = land.size();
+        int n = land[0].size();
+        vector<vector<int>> visited(m, vector<int>(n, 0));
+        vector<vector<int>> farmGroup;
+        // TC = (m * n)
+        for(int row = 0 ; row < m ; row++){
+            for(int col = 0; col < n ; col++){
+                if(land[row][col] == 1 && visited[row][col] == 0){
+                    int r1, c1, r2, c2;
+                    r1 = row;
+                    r2 = row;
+                    c1 = col;
+                    c2 = col;
+                    dfs(row, col, visited, land,r2, c2);
+                    // add the found farmland coordinates to the result
+                    farmGroup.push_back({r1, c1, r2, c2});
+                }
+            }
+        }
+        return farmGroup;
+    }
+};
