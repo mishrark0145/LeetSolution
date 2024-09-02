@@ -1,0 +1,80 @@
+// Better Solution
+// TC = O(n * m + m)
+class Solution {
+public:
+    int maximalNetworkRank(int n, vector<vector<int>>& roads) {
+        // Make the adjacency list for the graph so that we can directly now how many nodes are connected with each node
+        vector<int> adj[n];
+        for(int i = 0 ; i < roads.size() ; i++){
+            int u = roads[i][0];
+            int v = roads[i][1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        int maxmRank = INT_MIN;
+        // now we will iterate through each pair of nodes to find the network rank
+        // O(n * m) and m can be approx n^2
+        for(int i = 0 ; i < n ; i++){
+            // Map to know if the two pair have a edge between them
+            unordered_map<int,int> mpp;
+            // will iterate for each nodes edges 
+            for(auto node : adj[i]){
+                mpp[node]++;
+            }
+            for(int j = i + 1 ; j < n ; j++){
+                int ranki = adj[i].size();
+                int rankj = adj[j].size();
+                // check if they have common edge
+                // then we have to subtract one edge and we can do that from any of the ranki or rankj
+                if(mpp[j] != 0){
+                    ranki--;
+                }
+                // now we will check the maxmRank with ranki + rankj
+                maxmRank = max(maxmRank, ranki + rankj);
+            }
+        }
+        return maxmRank;
+    }
+};
+
+// Optimal Solution but space taken is more
+// TC = O(m + 2n^2) and space complextiy is O(n^2 + n)
+class Solution {
+public:
+    int maximalNetworkRank(int n, vector<vector<int>>& roads) {
+        // Make a adjacency matrix to store the graph
+        vector<vector<int>> adj(n, vector<int>(n, 0));
+        // O(m)
+        for(int i = 0 ; i < roads.size() ; i++){
+            int u = roads[i][0];
+            int v = roads[i][1];
+            adj[u][v] = 1;
+            adj[v][u] = 1;
+        }
+        // count the number of indegrees for each node
+        vector<int> indegress(n, 0);
+        // O(n^2)
+        for(int i = 0 ; i < n ; i++){
+            for(int j = 0 ; j < n ; j++){
+                if(adj[i][j] == 1){
+                    indegress[i]++;
+                }
+            }
+        }
+        // Iterate through all pairs to find the maximal network rank
+        int maxmRank = INT_MIN;
+        // O(n^2)
+        for(int i = 0 ; i < n ; i++){
+            for(int j = i + 1 ; j < n ; j++){
+                int rank1 = indegress[i];
+                int rank2 = indegress[j];
+                // if there is direct connection between i and j
+                if(adj[i][j] == 1){
+                    rank1--;
+                }
+                maxmRank = max(maxmRank, rank1 + rank2);
+            }
+        }
+        return maxmRank;
+    }
+};
