@@ -1,0 +1,47 @@
+// Brute Force
+// TC = (time*n)
+class Solution {
+public:
+    int passThePillow(int n, int time) {
+        bool flag = true;
+        int person;
+        int it = 1;
+        while(true){
+            if(flag){
+                it++;
+                time--;
+                if(it == n){
+                    flag = !flag;
+                }
+            }
+            else{
+                it--;
+                time--;
+                if(it == 1){
+                    flag = !flag;
+                }
+            }
+            cout<<it<<endl;
+            if(time == 0){
+                return it;
+            }
+        }
+        return -1;
+    }
+};
+
+
+// Optimal Solution
+class Solution {
+public:
+    int passThePillow(int n, int time) {
+        int rem = time % (n - 1);
+        int side = time / (n - 1);
+        if(side % 2 == 0){
+            return 1 + rem;
+        }
+        else{
+            return n - rem;
+        }
+    }
+};
