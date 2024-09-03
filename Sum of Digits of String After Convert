@@ -1,0 +1,25 @@
+// TC = O(k*n) and space is O(n)
+class Solution {
+public:
+    int getLucky(string s, int k) {
+        // I have to store the ascci value of the alphabets in a new string
+        string str;
+        // O(n)
+        for(int i = 0 ; i < s.size() ; i++){
+            int c = s[i] - 'a' + 1;
+            str += to_string(c);
+        }
+        // now we have to add the contents of the str k times
+        // i.e sum of its digits
+        // O(k * 2*n)
+        while(k--){
+            int temp = 0;
+            for(int i = 0 ; i < str.size() ; i++){
+                int num = str[i] - '0';
+                temp += num; 
+            }
+            str = to_string(temp);
+        } 
+        return stoi(str);
+    }
+};
