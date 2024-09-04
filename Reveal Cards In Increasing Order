@@ -1,0 +1,28 @@
+// TC = O(2*n + nLogn) and space is O(n)
+class Solution {
+public:
+    vector<int> deckRevealedIncreasing(vector<int>& deck) {
+        deque<int> dq;
+        // O(nLogn)
+        sort(deck.rbegin(), deck.rend());
+        dq.push_back(deck[0]);
+        // O(n)
+        // to maintain the ordering of increasing order we are just doing this from the back like we are pushing the greatest element in the
+        // deque then we will first take the front of the dqueue on the back then we will push the new sorted in decreasing order
+        // deck on the back of the dqueue
+        // so we are doing the inverting of the problem
+        for(int i = 1 ; i < deck.size() ; i++){
+            int front = dq.front();
+            dq.pop_front();
+            dq.push_back(front);
+            dq.push_back(deck[i]);
+        }
+        vector<int> ans;
+        // O(n)
+        while(!dq.empty()){
+            ans.push_back(dq.back());
+            dq.pop_back();
+        }
+        return ans;
+    }
+};
