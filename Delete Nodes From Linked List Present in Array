@@ -1,0 +1,36 @@
+// TC = O(2n) and space is O(n)
+class Solution {
+public:
+    ListNode* modifiedList(vector<int>& nums, ListNode* head) {
+        // Here we will store the nums in an unordered_set to check if the current node value is in nums so we have 
+        // to delete the node or not
+        ListNode* dummy = new ListNode(0);
+        ListNode* prev = dummy;
+        ListNode* curr = head;
+        
+        // Storing the nums in a set
+        unordered_set<int> st;
+        // O(n)
+        for(auto num : nums){
+            st.insert(num);
+        }
+
+        // O(n)
+        while(curr != nullptr){
+            // if the curr node value is present in the list
+            if(st.find(curr->val) != st.end()){
+                ListNode* temp = curr->next;
+                curr->next = nullptr;
+                curr = temp;
+                prev->next = nullptr;
+            }
+            // if not
+            else{
+                prev->next = curr;
+                prev = curr;
+                curr = curr->next;
+            }
+        }
+        return dummy->next;
+    }
+};
