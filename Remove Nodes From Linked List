@@ -1,0 +1,45 @@
+// TC = O(3n)
+class Solution {
+public:
+    ListNode* removeNodes(ListNode* head) {
+        // first we will reverse the linked list
+        // O(n)
+        head = reverseList(head);
+        // Now we only have to check if any node is less than the previous maxm
+        int maxi = head->val;
+        ListNode* curr = head->next;
+        ListNode* prev = head;
+        // O(n)
+        while(curr != nullptr){
+            // if it is less we will remove it
+            if(curr->val < maxi){
+                ListNode* temp = curr->next;
+                curr->next = nullptr;
+                curr = temp;
+                prev->next = curr;
+            }
+            // if not keep it and change the prev and curr
+            else{
+                // maxi will also get changed
+                maxi = curr->val;
+                prev = curr;
+                curr = curr->next;
+            }
+        }
+        // now we will simple reverse the linked list and return the head
+        // O(n)
+        return reverseList(head);
+    }
+
+    ListNode* reverseList(ListNode* head){
+        ListNode* prev = nullptr;
+        ListNode* curr = head;
+        while(curr != nullptr){
+            ListNode* temp = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = temp;
+        }
+        return prev;        
+    }
+};
