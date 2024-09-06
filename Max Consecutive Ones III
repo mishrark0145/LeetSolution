@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        // we are using the sliding window and two pointers approach, first we will take the l and r at index 0, then we will move the r
+        // if it is one or it has zeroes less than k  and if it is not then we will move the l till the zeroes is less than or equal to k
+        int l = 0;
+        int r = 0;
+        int zeroes = 0;
+        int maxLength = INT_MIN;
+        // O(n + n) 
+        while(r < nums.size()){
+            if(nums[r] == 0) zeroes++;
+            // this while loop will run for O(n) for the whole outer loop
+            while(zeroes > k){
+                if(nums[l] == 0) zeroes--;
+                l++;
+            }
+            // now check for the if zeroes is less than k than chagne the maxm
+            if(zeroes <= k){
+                maxLength = max(maxLength, r - l + 1);
+            }
+            r++;
+        }
+        return maxLength;
+    }
+};
