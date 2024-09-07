@@ -1,0 +1,24 @@
+// TC = O(n*m)
+class Solution {
+public:
+    // Helper function to check if the linked list starting from head matches
+    // a path in the binary tree starting from root.
+    bool dfs(ListNode* head, TreeNode* root) {
+        if (head == nullptr) return true; // End of linked list, path is found
+        if (root == nullptr) return false; // Reached a leaf in the tree, but list is not fully matched
+        
+        // Check if the current nodes match, and recursively check left and right subtrees
+        if (head->val == root->val) {
+            return dfs(head->next, root->left) || dfs(head->next, root->right);
+        }
+        return false; // Current node doesn't match
+    }
+
+    // Main function to check if the linked list is a subpath of any path in the tree
+    bool isSubPath(ListNode* head, TreeNode* root) {
+        if (root == nullptr) return false; // Reached end of the tree without finding a path
+        
+        // Either the path starts at the current root or try finding the path in the left or right subtree
+        return dfs(head, root) || isSubPath(head, root->left) || isSubPath(head, root->right);
+    }
+};
