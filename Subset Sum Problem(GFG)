@@ -1,0 +1,29 @@
+// TC = O(sum*N) and space is O(N*sum) and auxilary stack space of O(N)
+class Solution{   
+public:
+    bool findSum(vector<int>& arr, int sum, int index, vector<vector<int>>& dp){
+        if(sum == 0){
+            return true;
+        }
+        if(index == 0){
+            return (sum == arr[0]);
+        }
+        
+        if(dp[index][sum] != -1) return dp[index][sum];
+        // we can take the current element or not
+        bool notTake = findSum(arr, sum, index - 1, dp);
+        // if without taking the element we got the true then simply reutrn true
+        if(notTake) return dp[index][sum] = true;
+        // if we take
+        bool take = false;
+        if(sum >= arr[index]){
+            take = findSum(arr, sum - arr[index], index - 1, dp);
+        }
+        return dp[index][sum] = take || notTake;
+    }
+    bool isSubsetSum(vector<int>arr, int sum){
+        int n = arr.size();
+        vector<vector<int>> dp(n, vector<int>(sum + 1, -1));
+        return findSum(arr, sum, n - 1, dp);
+    }
+};
