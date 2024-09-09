@@ -1,0 +1,71 @@
+// Memoization
+// TC = O(W*N) and space is O(2N + W) and auxillary stack space O(W)
+class Solution{
+public:
+    int maxmProfit(vector<vector<int>>& wtVal, int wt, vector<int>& dp){
+        if(wt <= 0){
+            return 0;
+        }
+        if(dp[wt] != -1) return dp[wt];
+        int maxi = 0;
+        // we can take any item any number of times
+        for(auto it : wtVal){
+            int currWt = it[0];
+            int currVal = it[1];
+            // if the currWt is less than or equal to remainig wt
+            if(currWt <= wt){
+                int profit = currVal + maxmProfit(wtVal, wt - currWt, dp);
+                maxi = max(profit, maxi);
+            }
+        }
+        return dp[wt] = maxi;
+    }
+    int knapSack(int N, int W, int val[], int wt[])
+    {
+        // first i will store the int and values in a 2d vector
+        vector<vector<int>> wtVal(N, vector<int>(2));
+        for(int i = 0 ; i < N ; i++){
+            wtVal[i][0] = wt[i];
+            wtVal[i][1] = val[i];
+        }
+        // memoization 1d dp
+        vector<int> dp(W + 1, -1);
+        return maxmProfit(wtVal, W, dp);
+    }
+};
+
+
+// Tabulation
+// TC = O(W*N) and space is O(W + 2N)
+class Solution{
+public:
+    
+    int knapSack(int N, int W, int val[], int wt[])
+    {
+        // first i will store the int and values in a 2d vector
+        vector<vector<int>> wtVal(N, vector<int>(2));
+        for(int i = 0 ; i < N ; i++){
+            wtVal[i][0] = wt[i];
+            wtVal[i][1] = val[i];
+        }
+        // Tabulation 1d dp
+        vector<int> dp(W + 1, -1);
+        
+        dp[0] = 0;
+        for(int i = 1 ; i <= W ; i++){
+            int maxi = 0;
+            // we can take any item any number of times
+            for(auto it : wtVal){
+                int currWt = it[0];
+                int currVal = it[1];
+                // if the currWt is less than or equal to remainig wt
+                if(currWt <= i){
+                    int profit = currVal + dp[i - currWt];
+                    maxi = max(profit, maxi);
+                }
+            }
+            dp[i] = maxi;
+        }
+        return dp[W];
+    }
+};
