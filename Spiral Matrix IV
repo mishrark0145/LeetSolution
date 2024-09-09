@@ -1,0 +1,55 @@
+// TC = O(m*n)
+class Solution {
+public:
+    vector<vector<int>> spiralMatrix(int m, int n, ListNode* head) {
+        vector<vector<int>> result(m, vector<int>(n, -1));
+        int top = 0;
+        int bottom = m - 1;
+        int left = 0;
+        int right = n - 1;
+        while(head != nullptr){
+            // move from left to right
+            // top will be constant 
+            for(int i = left ; i <= right ; i++){
+                result[top][i] = head->val;
+                head = head->next;
+                if(head == nullptr) break;
+            }
+            if(head == nullptr) break;
+            top++;
+            // now we will go from top to bottom
+            // we will keep the right constant and start from top will go to the bottom
+            for(int i = top ; i <= bottom ; i++){
+                result[i][right] = head->val;
+                head = head->next;
+                if(head == nullptr) break;
+            }
+            if(head == nullptr) break;
+            right--;
+            // now we will move from the right to left
+            // now as we have moved the top so there might be a chance that top just have crossed the bottom
+            if(top <= bottom){
+                // now we will keep the bottom contant
+                for(int i = right ; i >= left ; i--){
+                    result[bottom][i] = head->val;
+                    head = head->next;
+                    if(head == nullptr) break;
+                }
+                bottom--;
+            }
+            if(head == nullptr) break;
+            // now we have to also check for the right should not have crossed the left
+            if(left <= right){
+                // moving from bottom to top keeping the left constant
+                for(int i = bottom ; i >= top ; i--){
+                    result[i][left] = head->val;
+                    head = head->next;
+                    if(head == nullptr) break;
+                }
+                left++;
+            }
+            if(head == nullptr) break;
+        }
+        return result;
+    }
+};
