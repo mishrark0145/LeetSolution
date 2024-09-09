@@ -1,0 +1,73 @@
+// TC = O(2^N) ans the number of nodes are increasing by 2 times prev level
+// space is O(N) recursion stack space
+// TLE
+class Solution{
+  public:
+    int maxmSellingPrice(int price[], int len, int n){
+        if(len <= 0){
+            return 0;
+        }
+        int maxi = 0;
+        for(int i = 0 ; i < n ; i++){
+            int sell = 0;
+            if(len >= i + 1){
+                sell = price[i] + maxmSellingPrice(price, len - i - 1, n); 
+            }
+            maxi = max(maxi, sell);
+        }
+        return maxi;
+    }
+    int cutRod(int price[], int n) {
+        return maxmSellingPrice(price, n, n);
+    }
+};
+
+
+
+// Memoization
+// TC = O(N^2) and space is O(N) recursion stack space
+class Solution{
+  public:
+    int maxmSellingPrice(int price[], int len, int n, vector<int>& dp){
+        if(len <= 0){
+            return 0;
+        }
+        if(dp[len] != -1) return dp[len];
+        int maxi = 0;
+        for(int i = 0 ; i < n ; i++){
+            int sell = 0;
+            if(len >= i + 1){
+                sell = price[i] + maxmSellingPrice(price, len - i - 1, n, dp); 
+            }
+            maxi = max(maxi, sell);
+        }
+        return dp[len] = maxi;
+    }
+    int cutRod(int price[], int n) {
+        vector<int> dp(n + 1, -1);
+        return maxmSellingPrice(price, n, n, dp);
+    }
+};
+
+
+// Tabulation
+// TC = O(N^2) and space is O(N)
+class Solution{
+  public:
+    int cutRod(int price[], int n) {
+        vector<int> dp(n + 1, -1);
+        dp[0] = 0;
+        for(int len = 1 ; len <= n ; len++){
+            int maxi = 0;
+            for(int i = 0 ; i < n ; i++){
+                int sell = 0;
+                if(len >= i + 1){
+                    sell = price[i] + dp[len - i - 1]; 
+                }
+                maxi = max(maxi, sell);
+            }
+            dp[len] = maxi;
+        }
+        return dp[n];
+    }
+};
