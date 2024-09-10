@@ -1,0 +1,41 @@
+// TC = O(N*Log(1000))
+class Solution {
+public:
+    // O(max(a, b))
+    // int gcd(int a, int b){
+    //     if(a == 0 || b == 0) return 0;
+
+    //     else if(a == b) return a;
+
+    //     else if(a > b) return gcd(a - b, b);
+
+    //     else return gcd(a, b - a);
+    // }
+
+    // TC = O(Log(min(a,b)))
+    int gcd(int a, int b){
+        if(b == 0) return a;
+        return gcd(b, a % b);
+    }
+
+    ListNode* insertGreatestCommonDivisors(ListNode* head) {
+        // We will iterate through pair to find the node which we have to insert
+        ListNode* left = head;
+        ListNode* right = head->next;
+        while(right != nullptr){
+            // first take the value of pair
+            int a = left->val;
+            int b = right->val;
+            int common = gcd(a, b);
+            // now we have to insert it between left and right
+            ListNode* temp = new ListNode(common);
+            // left next will point to common value and common value will point to right
+            left->next = temp;
+            temp->next = right;
+            // now move the right and left
+            left = right;
+            right = right->next;
+        }
+        return head;
+    }
+};
