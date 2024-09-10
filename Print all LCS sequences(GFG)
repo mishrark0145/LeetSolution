@@ -1,0 +1,75 @@
+class Solution {
+private:
+    void findAllLcs(int i, int j, string &lcs, string &s, string &t, vector<vector<int>>& dp, set<string>& result, unordered_map<string, bool>& memo) {
+        // Base case: if either string is exhausted
+        if (i == 0 || j == 0) {
+            // Store the current LCS (needs to be reversed)
+            result.insert(lcs);
+            return;
+        }
+        
+        // Generate a memo key for the current state
+        string key = to_string(i) + "," + to_string(j) + "," + lcs;
+
+        // If this state has already been computed, skip it
+        if (memo.find(key) != memo.end()) return;
+
+        // Mark this state as visited
+        memo[key] = true;
+       
+        // If characters match, include this character in LCS
+        if (s[i - 1] == t[j - 1]) {
+            lcs.push_back(s[i - 1]);
+            findAllLcs(i - 1, j - 1, lcs, s, t, dp, result, memo);
+            lcs.pop_back();  // Backtrack
+        } else {
+            // If the current length is the same, explore both directions
+            if (dp[i - 1][j] == dp[i][j] && dp[i][j - 1] == dp[i][j]) {
+                findAllLcs(i - 1, j, lcs, s, t, dp, result, memo);
+                findAllLcs(i, j - 1, lcs, s, t, dp, result, memo);
+            } else if (dp[i - 1][j] == dp[i][j]) {
+                findAllLcs(i - 1, j, lcs, s, t, dp, result, memo);
+            } else {
+                findAllLcs(i, j - 1, lcs, s, t, dp, result, memo);
+            }
+        }
+    }
+
+public:
+    vector<string> all_longest_common_subsequences(string s, string t) {
+        int n = s.size();
+        int m = t.size();
+        
+        // DP table to store lengths of LCS
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+        
+        // Populate the DP table
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (s[i - 1] == t[j - 1]) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        
+        vector<string> ans;
+        set<string> result;
+        string lcs = "";
+        
+        unordered_map<string, bool> memo;
+        
+        // Find all LCS using backtracking
+        findAllLcs(n, m, lcs, s, t, dp, result, memo);
+        
+        // Reverse each found LCS since they were built backwards
+        for (auto& str : result) {
+            string revStr = str;
+            reverse(revStr.begin(), revStr.end());
+            ans.push_back(revStr);
+        }
+        
+        sort(ans.begin(), ans.end());  // Sort the results
+        return ans;
+    }
