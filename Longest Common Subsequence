@@ -1,72 +1,82 @@
 //Recursion(TLE)
 
+// TC = O(2^(m + n)) and space is O(m + n)
 class Solution {
 public:
-    int longestCommonSubsequence(string text1, string text2) {
-        int n1 = text1.size();
-        int n2 = text2.size();
-        return rec( n1 - 1 , n2 - 1 , text1 , text2);
-    }
-
-    int rec( int ind1 , int ind2 , string text1 , string text2){
-        if( ind1 < 0 || ind2 < 0){
+    int commonSub(string text1, string text2, int ptr1, int ptr2){
+        if(ptr1 < 0 || ptr2 < 0){
             return 0;
         }
-        if( text1[ind1] == text2[ind2]){
-            return 1 + rec( ind1 - 1 , ind2 - 1 , text1 , text2);
+        // if the character matches for text1 and text2
+        if(text1[ptr1] == text2[ptr2]){
+            return 1 + commonSub(text1, text2, ptr1 - 1, ptr2 - 1);
         }
-        return max( rec( ind1 - 1 , ind2 , text1 , text2) , rec( ind1 , ind2 - 1 , text1 , text2));
+        // now we can increase any of the pointer
+        return max(commonSub(text1, text2, ptr1 - 1, ptr2), commonSub(text1, text2, ptr1, ptr2 - 1));
+    }
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size();
+        int n = text2.size();
+        return commonSub(text1, text2, m - 1, n - 1);
     }
 };
 
 //Memoization
 
+// TC = O(m * n) and space is O(m * n) plus the auxilary stack space O(m + n)
 class Solution {
 public:
-    int longestCommonSubsequence(string text1, string text2) {
-        int n1 = text1.size();
-        int n2 = text2.size();
-        vector<vector<int>> dp( n1 , vector<int>( n2 , -1));
-        return rec( n1 - 1 , n2 - 1 , text1 , text2 , dp);
-    }
-
-    int rec( int ind1 , int ind2 , string& text1 , string& text2 , vector<vector<int>>& dp){
-        if( ind1 < 0 || ind2 < 0){
+    int commonSub(string& text1, string& text2, int ptr1, int ptr2, vector<vector<int>>& dp){
+        if(ptr1 < 0 || ptr2 < 0){
             return 0;
         }
-        if( dp[ind1][ind2] != -1) return dp[ind1][ind2];
-        if( text1[ind1] == text2[ind2]){
-            return dp[ind1][ind2] = 1 + rec( ind1 - 1 , ind2 - 1 , text1 , text2 , dp);
+        if(dp[ptr1][ptr2] != -1) return dp[ptr1][ptr2];
+        // if the character matches for text1 and text2
+        int len = 0;
+        if(text1[ptr1] == text2[ptr2]){
+            return dp[ptr1][ptr2] = 1 + commonSub(text1, text2, ptr1 - 1, ptr2 - 1, dp);
         }
-        return dp[ind1][ind2] = max( rec( ind1 - 1 , ind2 , text1 , text2 , dp) , rec( ind1 , ind2 - 1 , text1 , text2 , dp));
+        // now we can increase any of the pointer
+        return dp[ptr1][ptr2] = max(commonSub(text1, text2, ptr1 - 1, ptr2, dp), commonSub(text1, text2, ptr1, ptr2 - 1, dp));
+    }
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size();
+        int n = text2.size();
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return commonSub(text1, text2, m - 1, n - 1, dp);
     }
 };
 
 //Tabulation
 
+// TC = O(m * n) and space is O(m * n) 
 class Solution {
 public:
     int longestCommonSubsequence(string text1, string text2) {
-        int n1 = text1.size();
-        int n2 = text2.size();
-        vector<vector<int>> dp( n1 + 1 , vector<int>( n2 + 1 , -1));
-        //we will shift the index so that it will work for the -1 index
-        for(int i = 0 ; i <= n1; i++){
+        int m = text1.size();
+        int n = text2.size();
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, -1));
+        // we will have to store the negative index to 0 so we have to do the shifting by 1 
+        // base case
+        // we have to make the zero of 1st row and 1st col
+        for(int i = 0; i <= m ; i++){
             dp[i][0] = 0;
         }
-        for(int j = 0 ; j <= n2; j++){
-            dp[0][j] = 0;
+        for(int i = 0; i <= n ; i++){
+            dp[0][i] = 0;
         }
-        for( int ind1 = 1 ; ind1 <= n1 ; ind1++){
-            for( int ind2 = 1 ; ind2 <= n2 ; ind2++){
-                if( text1[ind1 - 1] == text2[ind2 - 1]){
-                    dp[ind1][ind2] = 1 + dp[ind1 - 1][ind2 -1];
+
+        for(int ptr1 = 1; ptr1 <= m ; ptr1++){
+            for(int ptr2 = 1 ; ptr2 <= n ; ptr2++){
+                // zero based indexing for string
+                if(text1[ptr1 - 1] == text2[ptr2 - 1]){
+                    dp[ptr1][ptr2] = 1 + dp[ptr1 - 1][ptr2 - 1];
                 }
-                else{
-                    dp[ind1][ind2] = max( dp[ind1 -1][ind2] , dp[ind1][ind2 -1]);
-                }
+                // now we can increase any of the pointer
+                else
+                    dp[ptr1][ptr2] = max(dp[ptr1 - 1][ptr2], dp[ptr1][ptr2 - 1]);
             }
         }
-        return dp[n1][n2];
+        return dp[m][n];
     }
 };
