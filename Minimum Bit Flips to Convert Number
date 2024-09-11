@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int minBitFlips(int start, int goal) {
+        int count = 0;
+        while(start != 0 || goal != 0){
+            // getting the right most bit for start and goal
+            int startBit = start & 1;
+            int goalBit = goal & 1;
+            // now shifting the goal and start right shift
+            start = start >> 1;
+            goal = goal >> 1;
+            // now if the xor of startbit and goalbit is one that menas we have to change the bit
+            if(startBit ^ goalBit == 1){
+                // so do the count++
+                count++;
+            }
+        }
+        return count;    
+    }
+};
