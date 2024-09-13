@@ -1,0 +1,21 @@
+// TC = O(n + m) and space is O(n)
+class Solution {
+public:
+    vector<int> xorQueries(vector<int>& arr, vector<vector<int>>& queries) {
+        int n = arr.size();
+        vector<int> prefSum(n + 1, 0);
+        // we will store the prefXor of the arr
+        for(int i = 1 ; i <= n ; i++){
+            prefSum[i] = prefSum[i - 1] ^ arr[i - 1]; 
+        }
+        vector<int> ans;
+        // O(m)
+        // now the xor will be prefXor till r ^ prefXor till l - 1 as we will get the common to zero by doing XOR
+        for(auto& query : queries){
+            int l = query[0] + 1;
+            int r = query[1] + 1;
+            ans.push_back(prefSum[r] ^ prefSum[l - 1]);
+        }
+        return ans;
+    }
+};
