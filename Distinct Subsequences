@@ -1,28 +1,72 @@
-//Memoization
-
+// Recursive TLE
+// TC = O(2^(m+n)) and space is auxillary stack space O(m + n)
 class Solution {
 public:
+    int countOfSubseq(int index1, int index2, string& s, string& t){
+         if (index2 < 0) {
+            // If t is empty, there's always 1 subsequence (the empty subsequence).
+            return 1;
+        }
+        if (index1 < 0) {
+            // If s is empty and t is not, no subsequences are possible.
+            return 0;
+        }
+        
+        // now two possibiliteis are there we can take the current index characters or not so if we are taking then we have to first match 
+        // and then check we move forward and in not taking the character from the s string then just move forward
+        int notTakeinS = countOfSubseq(index1 - 1, index2, s, t);
+
+        int takeinS = 0;
+        // check
+        if(s[index1] == t[index2]){
+            // then move forward both the indexes
+            takeinS = countOfSubseq(index1 - 1, index2 - 1, s, t);
+        }
+
+        // return the sum of the take and nottake 
+        return takeinS + notTakeinS;
+    }
     int numDistinct(string s, string t) {
         int n1 = s.size();
         int n2 = t.size();
-        vector<vector<int>> dp( n1 , vector<int>( n2 , -1));
-        return rec( n1 - 1 , n2 - 1 , s , t , dp);
-    }
-
-    int rec( int ind1 , int ind2 , string& s , string& t , vector<vector<int>>& dp){
-        if( ind2 < 0) return 1;
-        if( ind1 < 0) return 0;
-        if( dp[ind1][ind2] != -1) return dp[ind1][ind2];
-        if( s[ind1] == t[ind2]){//if matches
-            return dp[ind1][ind2] = rec( ind1 - 1 , ind2 - 1 , s , t , dp) + rec( ind1 - 1 , ind2 , s , t , dp);//i have added 
-            //when suppose that i dont want that index of the first stirng to be compred
-            //so i will just move the index by 1 (decrement) so the second string not get changed
-            //only the first string is reduced and i am checking for second to find in one
-        }
-        else{//if not matches
-            return dp[ind1][ind2] = rec( ind1 - 1 , ind2 , s , t , dp);
-        }
+        return countOfSubseq(n1 - 1, n2 - 1, s, t);
     }
 };
 
-//Tabulation
+// Memoization
+// TC = O(m*n) and space is auxillary stack space O(m + n)
+class Solution {
+public:
+    int countOfSubseq(int index1, int index2, string& s, string& t, vector<vector<int>>& dp){
+         if (index2 < 0) {
+            // If t is empty, there's always 1 subsequence (the empty subsequence).
+            return 1;
+        }
+        if (index1 < 0) {
+            // If s is empty and t is not, no subsequences are possible.
+            return 0;
+        }
+
+        if(dp[index1][index2] != -1) return dp[index1][index2];
+        
+        // now two possibiliteis are there we can take the current index characters or not so if we are taking then we have to first match 
+        // and then check we move forward and in not taking the character from the s string then just move forward
+        int notTakeinS = countOfSubseq(index1 - 1, index2, s, t, dp);
+
+        int takeinS = 0;
+        // check
+        if(s[index1] == t[index2]){
+            // then move forward both the indexes
+            takeinS = countOfSubseq(index1 - 1, index2 - 1, s, t, dp);
+        }
+
+        // return the sum of the take and nottake 
+        return dp[index1][index2] = takeinS + notTakeinS;
+    }
+    int numDistinct(string s, string t) {
+        int n1 = s.size();
+        int n2 = t.size();
+        vector<vector<int>> dp(n1, vector<int>(n2, -1));
+        return countOfSubseq(n1 - 1, n2 - 1, s, t, dp);
+    }
+};
