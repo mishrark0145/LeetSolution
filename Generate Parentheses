@@ -1,0 +1,32 @@
+// TC = O(2^2n) and space is O(2n) plus auxilary stack space O(2n)
+class Solution {
+public:
+    void findParenthesis(string paren, vector<string>& genParen, int open, int close, int n){
+        if(open == n && close == n){
+            // push paren this into the genParen
+            genParen.push_back(paren);
+            return;
+        }
+
+        // first call would be to take the open parenthesis but the count of open parenthesis should be less than n
+        if(open < n){
+            findParenthesis(paren + '(', genParen, open + 1, close, n);
+        }
+
+        // now for the close one we have to check if the count of open should be greate than close
+        if(open > close){
+            findParenthesis(paren + ')', genParen, open, close + 1, n);
+        }
+
+        return;
+    }
+    vector<string> generateParenthesis(int n) {
+        // we will take the count of open and closed parentheses into consideration to solve this problem
+        // we know first that the open parentheses should always be greater than close that is if it is equal then we have 
+        // to make the open first
+        string paren = "";
+        vector<string> genParen;
+        findParenthesis(paren, genParen, 0, 0, n);
+        return genParen;
+    }
+};
