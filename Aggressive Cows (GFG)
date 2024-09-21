@@ -1,0 +1,50 @@
+// TC = O(n*Log(10^9)) and constant space
+class Solution {
+public:
+    bool canWePlace(vector<int>& stalls, int dist, int k){
+        // here we will iterate through the stalls placing the cows at a minm distance of dist if possible
+        int last = stalls[0]; // placed the first cow at 
+        int count = 1;
+        for(int i = 1 ; i < stalls.size() ; i++){
+            // if the distance is greater than or equal to the minm distance value
+            if(stalls[i] - last >= dist){
+                count++;
+                last = stalls[i];
+                // now we can check if the count is equal to k then return true
+                if(count == k) return true;
+            }
+        }
+        return false;
+    }
+
+    int solve(int n, int k, vector<int> &stalls) {
+        // This problem is case of where we have to find the maximum of minimum like here we have to find the minm of largest distance
+        // between two cows
+        // Now we know the distances between the two cows can be between 1 to 19^9 or 1 to max - min so we can check for the
+        // number of cows k to place in these stalls one by one so the case where we can not that prev one will be our answer
+        // Now that will give tle so what we can do here is apply binary search on the answers that is the distance 
+        
+        // sort the array
+        sort(stalls.begin(), stalls.end());
+        
+        // we will take the maxm value , we can find the max and min but we will not do this here (aise hiii :))
+        int low = 1;
+        int high = 1000000000;
+        
+        while(low <= high){
+            int mid = (low + high) / 2;
+            // now we have to check if for this mid value i.e. the larget minm distace can we place the k cows in the stalls
+            if(canWePlace(stalls, mid, k)){
+                // if we can place it that means our answer is to the right
+                low = mid + 1;
+            }
+            // if it is not possible that menas ans is to the left
+            else{
+                high = mid - 1;
+            }
+        }
+        // now as the low is pointing to the permissible ans and high is not
+        // after binary search the polarity will get changed so the answer would be stored in the high 
+        return high;
+    }
+};
