@@ -1,0 +1,56 @@
+// TC = O(n * Log(sum - max + 1)) and constant space
+#include<bits/stdc++.h>
+int minmPagesFit(vector<int>& arr, int pages, int m){
+    // now to check on the arr we will iterate through it
+    // we will give first student the arr[0]
+    int pagesStudent = 0;
+    int count = 1; // start with first student
+    for(int i = 0 ; i < arr.size() ; i++){
+        // if the pages exceeded the pages size then we will give it to the next student
+        if(pagesStudent + arr[i] > pages){
+            count++;
+            pagesStudent = arr[i];
+        }
+        else{
+            pagesStudent += arr[i];
+        }
+    }
+    return count;
+}
+
+int findPages(vector<int>& arr, int n, int m) {
+    // so as the constraint is the sum of all the arr[i] does not exceed the 10^9 therefore the answer would
+    // be for the lareget minium number of pages student will get be between 1 to 10^9
+    // but we cannot assign taking 1 page to m student so the minm pages i can take should be the maxm of the
+    // arr and also the maxm that we can give is the sum of all the pages to only 1 student
+    // this is similar to the aggressive cows poblem so here we can apply the binary search
+
+    // Now here the we will take the answers from 1 to 10^9 now we have to distribute the minm number of pages
+    // to m number of student so we can do this one by one iterating over the answers and the answer on which
+    // we will fail then the minm number of pages will be the just previous answer
+    // so we can do this by using binary search for fast iteration on answer
+    
+    if (m > n) return -1;  // Impossible if students are more than books
+
+
+    int low = *max_element(arr.begin(), arr.end());
+    int high = 0;
+    for(auto num : arr) high += num;
+    
+    int result = high; // minm number of pages
+    while(low <= high){
+        int mid = (low + high) / 2;
+
+        int student = minmPagesFit(arr, mid, m);
+        
+        // if the count is less than or equal to m
+        if(student <= m){
+            result = mid; // Potential answer, but continue searching for smaller valid answers
+            high = mid - 1;
+        }
+        else{
+            low = mid + 1;
+        }
+    }
+    return result;
+}
