@@ -1,0 +1,48 @@
+// TC = O(n*Log(sum)) and constant space
+class Solution {
+public:
+    int numberSplit(vector<int>& nums, int k, int mid){
+        // we will take the mid as the largest sum that we can take an if a subarray exceed that we will increase the count
+        int currSum = nums[0];
+        int count = 1; // 1 subarray
+        for(int i = 1 ; i < nums.size() ; i++){
+            if(currSum + nums[i] > mid){
+                // that means it has increased its size therefore
+                count++;
+                currSum = nums[i];
+            }
+            else{
+                // if it does not exceed then
+                currSum += nums[i];
+            }
+        }
+        cout<<count<<" "<<mid<<endl;
+        return count;
+    }
+
+    int splitArray(vector<int>& nums, int k) {
+        // we have to split the arrays in k non empty subarrays with largest sum of any subarray is minimized
+        // This is type of binary search where we have to find the maxm of minm
+        // here we have to take the sum of all the subarrays that we can make and we have to make k
+        // the maxm element of the array would give us the splits of n and the total sum would give us the 1 split
+        // so our answer would be between maxm with greatest split and total sum with 1 split so we have to find the answer between it
+        int low = *max_element(nums.begin(), nums.end());
+        int high = accumulate(nums.begin(), nums.end(), 0);
+        // now we will apply the binary serach on answers to get the largest sum minimized
+        while(low <= high){
+            int mid = (low + high) / 2;
+            int count = numberSplit(nums, k, mid);
+            // now we will have the count 
+            // now if the count is less than k that means it is on the right side of the answer therefore remove the right side
+            if(count <= k){
+                high = mid - 1;
+            }
+            else{
+                low = mid + 1;
+            }
+        }
+        // we will return the low as answer bcz high initially poiting to the lower splits so that can be our answer
+        // now after low crossed the high , high will change its polarity so now low will point to the answer
+        return low;
+    }
+};
