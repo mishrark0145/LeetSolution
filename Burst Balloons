@@ -1,0 +1,74 @@
+// Memoization
+// TC = O(n^3) and space is O(n^2) plus O(n) auxilary stack space
+class Solution {
+public:
+    int findMaxCoins(int left, int right, vector<int>& nums, vector<vector<int>>& dp){
+        if(left > right) return 0;
+
+        if(dp[left][right] != -1) return dp[left][right];
+        // now take a maxCost
+        int  maxCost = INT_MIN;
+        // now we will iterate from the left to right taking the index between them 
+        for(int ind = left ; ind <= right ; ind++){
+            // now when we will take the ind then the coin cost added will be nums[left - 1]*nums[ind]*nums[right + 1]
+            int cost = nums[left - 1]*nums[ind]*nums[right + 1] + findMaxCoins(left, ind - 1, nums, dp) + findMaxCoins(ind + 1, right, nums, dp);
+            maxCost = max(cost, maxCost);
+        }
+
+        return dp[left][right] = maxCost;
+    }
+    int maxCoins(vector<int>& nums) {
+        // Now this question is on partitioning dp and to solve it first we have to think from the bottom when we are bursting the last guy
+        // then it is sure that it will be of cost at that index and then 1 on left and 1 on right 
+        // now going up we can have pairs to its left and to its right but they will be independent so now starting our recursion from the top
+        // and picking just one element from the range i to j and then going to left and right 
+        
+        int n = nums.size();
+
+        // Modify the cuts array by adding 1 at the beginning and '1' at the end.
+        nums.push_back(1);
+        nums.insert(nums.begin(), 1);
+
+        // now the range would be from i = 1 to j = n
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
+        return findMaxCoins(1, n, nums, dp);
+    }
+};
+
+
+// Tabulation
+// TC = O(n^3) and space is O(n^2) space
+class Solution {
+public:
+    int maxCoins(vector<int>& nums) {
+        // Now this question is on partitioning dp and to solve it first we have to think from the bottom when we are bursting the last guy
+        // then it is sure that it will be of cost at that index and then 1 on left and 1 on right 
+        // now going up we can have pairs to its left and to its right but they will be independent so now starting our recursion from the top
+        // and picking just one element from the range i to j and then going to left and right 
+        
+        int n = nums.size();
+
+        // Modify the cuts array by adding 1 at the beginning and '1' at the end.
+        nums.push_back(1);
+        nums.insert(nums.begin(), 1);
+
+        vector<vector<int>> dp(n + 2, vector<int>(n + 2, 0));
+
+        for(int left = n ; left >= 1 ; left--){
+            for(int right = 1 ; right <= n ; right++){
+                // now for left > right we dont have to do anything
+                if(left > right) continue;
+                // now take a maxCost
+                int  maxCost = INT_MIN;
+                // now we will iterate from the left to right taking the index between them 
+                for(int ind = left ; ind <= right ; ind++){
+                    // now when we will take the ind then the coin cost added will be nums[left - 1]*nums[ind]*nums[right + 1]
+                    int cost = nums[left - 1]*nums[ind]*nums[right + 1] + dp[left][ind - 1] + dp[ind + 1][right];
+                    maxCost = max(cost, maxCost);
+                }
+                dp[left][right] = maxCost;
+            }
+        }
+        return dp[1][n];
+    }
+};
