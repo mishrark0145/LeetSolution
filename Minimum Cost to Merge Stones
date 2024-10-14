@@ -1,0 +1,51 @@
+// TC = O(n^3 * k)
+class Solution {
+public:
+    int minCost(int i, int j, int piles, vector<int>& prefSum, int k, vector<vector<vector<int>>>& dp){
+        // base case when we have i == j and pile is size of 1
+        if(i == j && piles == 1) return 0;
+
+        // if the pile size is not 1 and we have i != j then return INT_MAX
+        if(i == j) return INT_MAX / 4;
+
+        if(dp[i][j][piles] != -1) return dp[i][j][piles];
+        
+        // if we have to make 1 pile from i to j
+        if(piles == 1){
+            // handle the case when i == 0, prefSum[i - 1] should be considered as 0
+            int sum = prefSum[j] - (i > 0 ? prefSum[i - 1] : 0);
+            return dp[i][j][piles] = minCost(i, j, k, prefSum, k, dp) + sum;
+        }
+        else{
+            int cost = INT_MAX / 4;
+            for(int t = i ; t < j ; t++){
+                cost = min(cost, minCost(i, t , 1, prefSum, k , dp) + minCost(t + 1, j, piles - 1, prefSum, k, dp));
+            }
+            return dp[i][j][piles] = cost;
+        }
+    }
+
+    int mergeStones(vector<int>& stones, int k) {
+        int n = stones.size();
+        // if we are meging n piles to 1 pile
+        // in step-1 we will merge k pile and then we are left with n - k + 1 piles i.e n - (k - 1)
+        // step-2 n - 2*(k - 1)
+        // so we can se that n - m*(k - 1) == 1 as we are doing the 1 pile will be left
+        // n - 1 - m*(k - 1) = 0;
+        // so for m to be integer
+        // (n - 1) % (k - 1) == 0 otherwise merge is not possible
+        if((n - 1) % (k - 1) != 0) return -1;
+        
+        // now make the prefSum 
+        vector<int> prefSum;
+        int sum = 0;
+        for (int i = 0; i < stones.size(); i++) {
+            sum += stones[i];
+            prefSum.push_back(sum);
+        }
+
+        // now the 3d dp 
+        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(n + 1, vector<int>(k + 1, -1)));
+        return minCost(0, n - 1, 1, prefSum, k, dp);
+    }
+};
